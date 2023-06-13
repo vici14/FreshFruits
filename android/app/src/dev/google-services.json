@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "390399027156",
+    "project_id": "fresh-fruits-dev",
+    "storage_bucket": "fresh-fruits-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390399027156:android:b857b263a43b1021219841",
+        "android_client_info": {
+          "package_name": "com.fresh_fruits.app.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390399027156-8cj4opjt6ka1tu9fj756dl67f6ukndce.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fresh_fruits.app.dev",
+            "certificate_hash": "e65a44def7367c9d9a524dd71ac56648dbaba613"
+          }
+        },
+        {
+          "client_id": "390399027156-47h4499dq0f3uq2i6r69402gkobo5vp5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAySpJmCdLLHNzXyKTwIUllnqDt3YlpmWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390399027156-47h4499dq0f3uq2i6r69402gkobo5vp5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "390399027156-iemjtuftvt1a552kcha0fcd932aaba7t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.freshfruits.ios.dev"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390399027156:android:2c684fba4e1ac7e0219841",
+        "android_client_info": {
+          "package_name": "com.fresh_fruits_admin.app.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390399027156-61k8hp3sl1m53nsck0rpglunfhr39f1u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fresh_fruits_admin.app.dev",
+            "certificate_hash": "e65a44def7367c9d9a524dd71ac56648dbaba613"
+          }
+        },
+        {
+          "client_id": "390399027156-47h4499dq0f3uq2i6r69402gkobo5vp5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAySpJmCdLLHNzXyKTwIUllnqDt3YlpmWI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390399027156-47h4499dq0f3uq2i6r69402gkobo5vp5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "390399027156-iemjtuftvt1a552kcha0fcd932aaba7t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.freshfruits.ios.dev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
