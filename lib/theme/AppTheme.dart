@@ -4,17 +4,19 @@ import 'package:flex_seed_scheme/flex_seed_scheme.dart';
 import 'AppColor.dart';
 import 'AppDimen.dart';
 import 'AppFont.dart';
+
 // Define your seed colors.
-const Color primarySeedColor = Colors.green;
-const Color secondarySeedColor = Color(0xFFC6D8AF);
-const Color tertiarySeedColor = Color(0xFF6CA450);
+const Color primarySeedColor = Color(0xFFFECC4C);
+const Color secondarySeedColor = Color(0xFFFE724C);
+const Color tertiarySeedColor = Color(0xFF181725);
 
 class AppTheme {
-
   final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
     brightness: Brightness.light,
     // Primary key color is required, like seed color ColorScheme.fromSeed.
     primaryKey: primarySeedColor,
+    onPrimary: Colors.white,
+    background: Colors.white,
     // You can add optional own seeds for secondary and tertiary key colors.
     secondaryKey: secondarySeedColor,
     tertiaryKey: tertiarySeedColor,
@@ -26,6 +28,7 @@ class AppTheme {
 // Make a dark ColorScheme from the seeds.
   final ColorScheme schemeDark = SeedColorScheme.fromSeeds(
     brightness: Brightness.dark,
+    background: Colors.black,
     primaryKey: primarySeedColor,
     secondaryKey: secondarySeedColor,
     tertiaryKey: tertiarySeedColor,
@@ -50,8 +53,6 @@ class AppTheme {
     tones: FlexTones.ultraContrast(Brightness.dark),
   );
 
-
-
   ThemeData lightTheme() {
     return ThemeData.from(
       colorScheme: schemeLight,
@@ -67,7 +68,6 @@ class AppTheme {
       useMaterial3: true,
     );
   }
-
 
   TextTheme buildTextTheme() {
     return const TextTheme(
@@ -142,19 +142,20 @@ class AppTheme {
 
   static BoxDecoration roundedGreyBorder = BoxDecoration(
     border: Border.all(
-      color: AppColor.borderGrey,
+      color: AppColor.grey,
     ),
     borderRadius: const BorderRadius.all(
       Radius.circular(AppDimen.radius20),
     ),
   );
-  static BoxDecoration roundedStandardGreyBorder = const BoxDecoration(
-      borderRadius: BorderRadius.all(
-        Radius.circular(12),
+  static BoxDecoration roundedStandardGreyBorder = BoxDecoration(
+      borderRadius: const BorderRadius.all(
+        Radius.circular(19),
       ),
+      border: Border.all(color: AppColor.grey),
       color: Colors.white);
 
   static BoxDecoration roundedButtonDecoration = BoxDecoration(
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: AppColor.borderGrey));
+      border: Border.all(color: AppColor.grey));
 }

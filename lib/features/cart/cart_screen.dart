@@ -101,10 +101,11 @@ class _CartScreenState extends State<CartScreen> {
                           children: [
                             _buildProductsList(list),
                             _buildTotal(
-                                totalCost: StringUtil.calculateTotalCost(list)),
+                                totalCost: StringUtils.calculateTotalCost
+                                  (list)),
                             _buildSubmitButton(onTap: () async {
                               bool isSuccess = await cartVM.checkOutCart(
-                                totalCost: StringUtil.calculateTotalCost(list),
+                                totalCost: StringUtils.calculateTotalCost(list),
                                 products: list,
                                 uid: _userViewModel.currentUser?.uid ?? '',
                                 customerName: _nameController.text,

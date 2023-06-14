@@ -1,3 +1,5 @@
+import 'package:fresh_fruit/mock_data.dart';
+
 import '../model/product_model.dart';
 import '../repository/product_repo_impl.dart';
 import '../repository/product_repository.dart';
@@ -18,7 +20,7 @@ class ProductViewModel extends BaseViewModel {
 
   //=======================FIELD VALUE=========================
   bool isLoadingProduct = false;
-  List<ProductModel>? products;
+  List<ProductModel>? products = listCars;
   List<ProductModel>? productsAfterLoggedIn;
 
   bool isLoadingVegetable = false;
@@ -32,6 +34,8 @@ class ProductViewModel extends BaseViewModel {
   bool isLoadingHouseWare = false;
   List<ProductModel> houseWareProducts = [];
   List<ProductModel> houseWareProductsAfterLoggedIn = [];
+
+  bool isLoadingProductMore=false;
 
   //=======================FIELD VALUE=========================
 
