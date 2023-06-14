@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fresh_fruit/service/service_manager.dart';
+import 'package:fresh_fruit/AppViewModel.dart';
+ import 'package:fresh_fruit/service/service_manager.dart';
 import 'package:fresh_fruit/view_model/cart_viewmodel.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
@@ -15,19 +15,26 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
   );
+
+  AppViewModel admin = AppViewModel();
+  admin.init();
   // FirebaseAuth auth = FirebaseAuth.instance;
 
   // FirebaseApp defaultApp = Firebase.app();
 
-  runApp(FreshCar());
+  runApp(
+      MultiProvider(
+        providers: [ChangeNotifierProvider.value(value: admin)],
+        child: FreshFruitApp(),
+      ),);
 }
 
-class FreshCar extends StatefulWidget {
+class FreshFruitApp extends StatefulWidget {
   @override
-  _FreshCarState createState() => _FreshCarState();
+  _FreshFruitAppState createState() => _FreshFruitAppState();
 }
 
-class _FreshCarState extends State<FreshCar> {
+class _FreshFruitAppState extends State<FreshFruitApp> {
   Future<bool>? _initDependencies;
 
   @override
