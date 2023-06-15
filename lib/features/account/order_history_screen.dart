@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
-import 'package:fresh_fruit/utils/currency_formatter.dart';
+import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
 import 'package:fresh_fruit/widgets/my_app_bar.dart';
 import 'package:fresh_fruit/widgets/my_drawer.dart';

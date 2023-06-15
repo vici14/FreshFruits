@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fresh_fruit/model/product_model.dart';
-import 'package:fresh_fruit/utils/currency_formatter.dart';
-import 'package:fresh_fruit/utils/toast_util.dart';
+import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
+import 'package:fresh_fruit/utils/ToastUtil.dart';
 import 'package:fresh_fruit/view_model/product_detail_viewmodel.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
 

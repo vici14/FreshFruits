@@ -9,6 +9,7 @@ import 'AppFont.dart';
 const Color primarySeedColor = Color(0xFFFECC4C);
 const Color secondarySeedColor = Color(0xFFFE724C);
 const Color tertiarySeedColor = Color(0xFF181725);
+const Color surfaceSeedColor = Color(0xff53B175);
 
 class AppTheme {
   final ColorScheme schemeLight = SeedColorScheme.fromSeeds(
@@ -16,6 +17,7 @@ class AppTheme {
     // Primary key color is required, like seed color ColorScheme.fromSeed.
     primaryKey: primarySeedColor,
     onPrimary: Colors.white,
+    surface: surfaceSeedColor,
     background: Colors.white,
     // You can add optional own seeds for secondary and tertiary key colors.
     secondaryKey: secondarySeedColor,

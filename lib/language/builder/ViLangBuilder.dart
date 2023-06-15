@@ -6,4 +6,7 @@ class ViLangBuilder extends LangBuilder{
 
   @override
   String get HOME_SCREEN_SEE_ALL =>"Xem tất cả";
+
+  @override
+  String get HOME_SCREEN_NEW_PRODUCTS =>"Mới nhất";
 }

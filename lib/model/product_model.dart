@@ -6,6 +6,7 @@ class ProductModel {
   double cost;
   String? id;
   String? category;
+  String? unit;
 
   ProductModel({
     required this.imageUrl,
@@ -15,21 +16,24 @@ class ProductModel {
     required this.cost,
     required this.id,
     required this.category,
+    required this.unit,
   });
 
   factory ProductModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
     return ProductModel(
-        id: snapshot['id'],
-        cost: double.parse(snapshot['cost'].toString()),
-        category: snapshot['category'] != null ? snapshot['category'] : '',
-        description: snapshot['description'] != null
-            ? snapshot['description'] as String
-            : '',
-        imageUrl:
-            snapshot['imageUrl'] != null ? snapshot['imageUrl'] as String : '',
-        isLiked:
-            snapshot['isLiked'] != null ? snapshot['isLiked'] as bool : false,
-        name: snapshot['name'] != null ? snapshot['name'] as String : '');
+      id: snapshot['id'],
+      cost: double.parse(snapshot['cost'].toString()),
+      category: snapshot['category'] != null ? snapshot['category'] : '',
+      description: snapshot['description'] != null
+          ? snapshot['description'] as String
+          : '',
+      imageUrl:
+          snapshot['imageUrl'] != null ? snapshot['imageUrl'] as String : '',
+      isLiked:
+          snapshot['isLiked'] != null ? snapshot['isLiked'] as bool : false,
+      name: snapshot['name'] != null ? snapshot['name'] as String : '',
+      unit: snapshot['unit'] != null ? snapshot['unit'] as String : '',
+    );
   }
 
   Map<String, Object?> toJson() {
@@ -40,7 +44,8 @@ class ProductModel {
       'imageUrl': imageUrl,
       'isLiked': isLiked,
       'name': name,
-      'category': category
+      'category': category,
+      'unit':unit,
     };
   }
 
@@ -52,6 +57,7 @@ class ProductModel {
         imageUrl: this.imageUrl,
         isLiked: !this.isLiked,
         id: this.id,
-        category: this.category);
+        category: this.category,
+        unit:unit);
   }
 }

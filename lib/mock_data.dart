@@ -11,6 +11,7 @@ final List<ProductModel> listCars = [
       description: "Fast as fuck",
       isLiked: true,
       category: 'vegetable',
+      unit: '7 trái',
       cost: 500000),
   ProductModel(
       id: '2',
@@ -21,6 +22,7 @@ final List<ProductModel> listCars = [
       description: "Fast as fuck",
       isLiked: false,
       category: 'vegetable',
+      unit: '8 trái',
       cost: 100000),
   ProductModel(
       id: '3',
@@ -31,6 +33,7 @@ final List<ProductModel> listCars = [
       description: "Fast as fuck",
       isLiked: false,
       category: 'vegetable',
+      unit: '7 trái',
       cost: 123343),
   ProductModel(
       id: '4',
@@ -39,6 +42,7 @@ final List<ProductModel> listCars = [
           ".1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80",
       name: "Mercedes",
       description: "Fast as fuck",
+      unit: '10kg',
       isLiked: false,
       category: 'vegetable',
       cost: 123123123),
@@ -52,6 +56,7 @@ final List<ProductModel> listCars = [
       description: "Fast as fuck",
       isLiked: true,
       category: 'vegetable',
+      unit: '2kg',
       cost: 900000),
   ProductModel(
       id: '6',
@@ -62,6 +67,7 @@ final List<ProductModel> listCars = [
       description: "Fast as fuck",
       isLiked: false,
       category: 'vegetable',
+      unit: '3kg',
       cost: 810033),
   ProductModel(
       id: '7',
@@ -70,6 +76,7 @@ final List<ProductModel> listCars = [
       name: "American muscle",
       description: "Fast as fuck",
       category: 'vegetable',
+      unit: '500gr',
       isLiked: false,
       cost: 230320)
 ];
@@ -84,6 +91,8 @@ final List<ProductModel> listCarsInCart = [
       name: "Audi",
       description: "LKA",
       category: 'vegetable',
+      unit: '500gr',
+
       isLiked: true,
       cost: 122121),
   ProductModel(
@@ -95,6 +104,8 @@ final List<ProductModel> listCarsInCart = [
       description: "OOOOOOO",
       isLiked: false,
       category: 'vegetable',
+      unit: '500gr',
+
       cost: 810033),
   ProductModel(
       id: '3',
@@ -103,6 +114,8 @@ final List<ProductModel> listCarsInCart = [
       name: "American muscle",
       category: 'vegetable',
       description: "ZZZZZZk",
+      unit: '500gr',
+
       isLiked: false,
       cost: 230320)
 ];

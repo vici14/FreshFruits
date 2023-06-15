@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
-import 'package:fresh_fruit/utils/currency_formatter.dart';
+import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -39,34 +40,41 @@ class _ProductCardItemState extends State<ProductCardItem> {
     return Consumer<UserViewModel>(
       builder: (BuildContext context, UserViewModel userVM, Widget? child) {
         return GestureDetector(
-          onTap: () {
-            // AnalyticsPlugin.instance
-            //     .trackEventName('product', data: product.toJson());
-            // Navigator.of(context).pushNamed(
-            //   AppRoute.productDetailScreen,
-            //   arguments: ProductDetailScreenParams(
-            //       product: product,
-            //       tapOnFavoriteIcon: widget.tapOnFavoriteIcon,
-            //       isNavigateSecondaryLevel: isNavigateSecondaryLevel()),
-            // );
-          },
+          onTap: () {},
           child: Container(
-            width: 200,
+            width: 175,
             decoration: AppTheme.roundedStandardGreyBorder,
-            child: Flex(
-              direction: Axis.vertical,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildTopImagePart(),
-                _buildMiddleTitlePart(),
-                _buildBottomMoneyPart(),
-              ],
-            ),
+            child: Stack(children: [
+              Flex(
+                direction: Axis.vertical,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildTopImagePart(),
+                  _buildMiddleTitlePart(),
+                  _buildBottomMoneyPart(),
+                ],
+              ),
+              Positioned(right: 13,bottom: 15,child: _buildAddButton() )
+            ]),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildAddButton() {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Theme.of(context).colorScheme.surface),
+      child: const Icon(
+        Icons.add,
+        color: Colors.white,
+        size: 17,
+      ),
     );
   }
 
@@ -132,6 +140,23 @@ class _ProductCardItemState extends State<ProductCardItem> {
               ),
             ),
           ),
+          Positioned(
+            right: 20,
+            top: 16,
+            child: InkWell(
+                onTap: () {
+                  if (product.isLiked) {}
+                },
+                child: !product.isLiked
+                    ? const Icon(
+                        Icons.favorite_border_outlined,
+                        color: AppColor.grey,
+                      )
+                    : Icon(
+                        Icons.favorite_outlined,
+                        color: Theme.of(context).colorScheme.secondary,
+                      )),
+          ),
         ],
       ),
     );
@@ -139,7 +164,7 @@ class _ProductCardItemState extends State<ProductCardItem> {
 
   Widget _buildMiddleTitlePart() {
     return Flexible(
-      flex: 4,
+      flex: 3,
       fit: FlexFit.tight,
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -154,10 +179,23 @@ class _ProductCardItemState extends State<ProductCardItem> {
                     product.name ?? "",
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        height: 1.1,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.blueMain),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(height: 1.1, fontWeight: FontWeight.w500),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      '${product.unit ?? ""}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          height: 1.1,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 10,
+                          color: AppColor.textGrey),
+                    ),
                   ),
                 ]),
               ],
@@ -168,8 +206,6 @@ class _ProductCardItemState extends State<ProductCardItem> {
 
   Widget _buildBottomMoneyPart() {
     return Container(
-      decoration: const BoxDecoration(
-          border: Border(top: BorderSide(color: AppColor.grey))),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
@@ -182,18 +218,12 @@ class _ProductCardItemState extends State<ProductCardItem> {
                   CurrencyFormatter().toDisplayValue(product.cost),
                   style: Theme.of(context)
                       .textTheme
-                      .bodySmall
-                      ?.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
+                      .bodyLarge
+                      ?.copyWith(fontSize: 18, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.start,
                 ),
               ],
             ),
-            InkWell(
-                onTap: () {
-                  if (product.isLiked) {}
-                },
-                child: Icon(!product.isLiked
-                    ? Icons.favorite_border_outlined
-                    : Icons.favorite_outlined)),
           ],
         ),
       ),

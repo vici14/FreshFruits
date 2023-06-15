@@ -2,19 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
- import 'package:fresh_fruit/service/service_manager.dart';
+import 'package:fresh_fruit/route/AppRoute.dart';
+import 'package:fresh_fruit/service/service_manager.dart';
+import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/view_model/cart_viewmodel.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
 import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 
-import 'fresh_car_home_screen.dart';
+import 'HomeNavigationScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-  );
+  await Firebase.initializeApp();
 
   AppViewModel admin = AppViewModel();
   admin.init();
@@ -23,10 +24,11 @@ void main() async {
   // FirebaseApp defaultApp = Firebase.app();
 
   runApp(
-      MultiProvider(
-        providers: [ChangeNotifierProvider.value(value: admin)],
-        child: FreshFruitApp(),
-      ),);
+    MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: admin)],
+      child: FreshFruitApp(),
+    ),
+  );
 }
 
 class FreshFruitApp extends StatefulWidget {
@@ -58,9 +60,12 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
                 create: (BuildContext context) => CartViewModel()),
           ],
           child: MaterialApp(
+            onGenerateRoute: (settings) => AppRoute.onGenerateRoute(settings),
+            theme: AppTheme().lightTheme(),
+            darkTheme: AppTheme().darkTheme(),
             home: Scaffold(
               drawer: MyDrawer(),
-              body: FreshCarHomeScreen(),
+              body: HomeNavigationScreen(),
             ),
           ),
         );

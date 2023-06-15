@@ -7,6 +7,8 @@ import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 
 class FavoriteProductsScreen extends StatefulWidget {
+  const FavoriteProductsScreen({super.key});
+
   @override
   State<FavoriteProductsScreen> createState() {
     return _FavoriteProductsScreenState();

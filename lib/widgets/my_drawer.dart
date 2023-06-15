@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fresh_fruit/features/account/favorite_products_screen.dart';
-import 'package:fresh_fruit/utils/toast_util.dart';
+import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
+import 'package:fresh_fruit/utils/ToastUtil.dart';
 
 import 'package:provider/provider.dart';
-import '../features/account/account_screen.dart';
+import '../features/account/UserScreen.dart';
 import '../features/account/order_history_screen.dart';
 import '../view_model/product_view_model.dart';
 import '../view_model/user_viewmodel.dart';
@@ -28,7 +28,7 @@ class MyDrawer extends StatelessWidget {
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => CustomerProfileScreen()));
+                  builder: (context) => UserScreen()));
             },
             child: const Text(
               'Tài khoản',

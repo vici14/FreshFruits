@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fresh_fruit/utils/validation_util.dart';
+import 'package:fresh_fruit/utils/ValidationUtil.dart';
 
 import '../../view_model/product_view_model.dart';
 import '../../view_model/user_viewmodel.dart';
@@ -7,14 +7,14 @@ import '../../widgets/my_app_bar.dart';
 import '../../widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 
-class CustomerProfileScreen extends StatefulWidget {
+class UserScreen extends StatefulWidget {
   @override
-  State<CustomerProfileScreen> createState() {
-    return _CustomerProfileScreenState();
+  State<UserScreen> createState() {
+    return _UserScreenState();
   }
 }
 
-class _CustomerProfileScreenState extends State<CustomerProfileScreen> {
+class _UserScreenState extends State<UserScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();

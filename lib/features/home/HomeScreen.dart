@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/mock_data.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
@@ -196,13 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHeaderBanner(BuildContext context) {
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: _buildHeaderTitle(
-            title: 'What\'s New',
-            onTapViewMore: () {},
-          ),
-        ),
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: ClipRRect(
@@ -310,12 +305,12 @@ class _HomeScreenState extends State<HomeScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: _buildHeaderTitle(
-            title: 'Featured Products',
+            title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
             onTapViewMore: () {},
           ),
         ),
         SizedBox(
-          height: 350,
+          height: 300,
           child: Consumer<ProductViewModel>(
             builder: (context, viewModel, child) {
               return (productViewModel.isLoadingProduct == true)
@@ -340,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ...List.generate(listCars.length, (index) {
                               var _featuredProducts = listCars[index];
                               return Container(
-                                  margin: const EdgeInsets.only(right: 8),
+                                  margin: const EdgeInsets.only(right: 16),
                                   child: ProductCardItem(
                                     productModel: _featuredProducts,
                                   ));
@@ -379,10 +374,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold),
           ),
-          // TextButton(
-          //   onPressed: onTapViewMore,
-          //   child:
-          // ),
+          TextButton(
+            onPressed: onTapViewMore,
+            child:Text(locale.language.HOME_SCREEN_SEE_ALL,style: Theme.of(context).textTheme
+                .bodyMedium
+                ?.copyWith(color: AppColor.greenMain,fontWeight: FontWeight.w600),)
+          ),
         ],
       ),
     );

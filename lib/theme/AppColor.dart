@@ -7,6 +7,7 @@ class AppColor {
   static const Color greyScaffoldBackground = Color(0xffF6F6F6);
   static const blueFacebook = Color(0xff1877F2);
   static const Color grey = Color(0xffF2F2F2);
+  static const Color textGrey = Color(0xff7c7c7c);
 
 
   static const Color lightYellow = Color(0xffFFDC67);
