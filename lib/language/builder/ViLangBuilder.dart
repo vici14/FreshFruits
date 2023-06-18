@@ -9,4 +9,19 @@ class ViLangBuilder extends LangBuilder{
 
   @override
   String get HOME_SCREEN_NEW_PRODUCTS =>"Mới nhất";
+
+  @override
+  String get AUTHEN_TITLE => 'ECO GROCERY';
+
+  @override
+  String get LOGIN => 'Đăng nhập';
+
+  @override
+  String get SIGNUP => 'Đăng ký';
+
+  @override
+  String get PASSWORD => 'Mật khẩu';
+
+  @override
+  String get FORGOT_PASSWORD => 'Quên mật khẩu?';
 }

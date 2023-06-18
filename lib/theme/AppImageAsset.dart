@@ -8,4 +8,8 @@ class AppImageAsset {
   static const bottomFavouriteIcon ='${_bottomBarFolder}icon_favourite.svg';
   static const bottomCartIcon ='${_bottomBarFolder}icon_cart.svg';
   static const bottomUserIcon ='${_bottomBarFolder}icon_user.svg';
+
+  //login
+  static const authAppBarIcon = '${_assetFolder}auth_app_bar_icon.png';
+  static const authenAppbarBackground = '${_assetFolder}authen_appbar_background.png';
 }
