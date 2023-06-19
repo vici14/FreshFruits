@@ -13,6 +13,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../model/product_model.dart';
 import '../../widgets/loading_indicator/LoadingIndicator.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,9 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
   late UserViewModel userViewModel;
   static const horizontalPadding = 14.0;
   ScrollController featuredProductScrollController = ScrollController();
+  final ScrollController _customScrollController = ScrollController();
   int carouselIndex = 0;
 
-  List<String>listBanners = [AppImageAsset.appBanner1];
+  List<String> listBanners = [AppImageAsset.appBanner1];
+
   @override
   void initState() {
     productViewModel = Provider.of<ProductViewModel>(context, listen: false);
@@ -142,62 +145,103 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildContent(ProductViewModel productViewModel) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.background,
-              bottomOpacity: 0,
-              shadowColor: null,
-              elevation: 0,
-            ),
-            body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return CustomRefreshIndicator(
-                  leadingScrollIndicatorVisible: false,
-                  trailingScrollIndicatorVisible: false,
-                  offsetToArmed: 100.0,
-                  onRefresh: _onRefreshCallback,
-                  builder: (context, child, controller) {
-                    return Stack(
-                      children: [
-                        child,
-                        PositionedIndicatorContainer(
-                          constraints: constraints,
-                          controller: controller,
-                          child: SimpleIndicatorContent(
-                            controller: controller,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      _buildHeaderBanner(context),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      _buildFeaturedProducts(context, productViewModel),
-                      const SizedBox(
-                        height: 22,
-                      ),
-                    ],
+      child: Scaffold(body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return CustomRefreshIndicator(
+            leadingScrollIndicatorVisible: false,
+            trailingScrollIndicatorVisible: false,
+            offsetToArmed: 100.0,
+            onRefresh: _onRefreshCallback,
+            builder: (context, child, controller) {
+              return Stack(
+                children: [
+                  child,
+                  PositionedIndicatorContainer(
+                    constraints: constraints,
+                    controller: controller,
+                    child: SimpleIndicatorContent(
+                      controller: controller,
+                    ),
                   ),
-                );
-              },
-            )),
-      ),
+                ],
+              );
+            },
+            child: CustomScrollView(
+              controller: _customScrollController,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  centerTitle: false,
+                  title: Text('Hello'),actions: [],
+                ),
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 10,
+                  ),
+                ),
+                SliverToBoxAdapter(child: _buildHeaderBanner(context)),
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 5,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: horizontalPadding),
+                    child: _buildHeaderTitle(
+                      title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
+                      onTapViewMore: () {},
+                    ),
+                  ),
+                ),
+                _buildFeaturedProducts(context, productViewModel),
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 22,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: horizontalPadding),
+                    child: _buildHeaderTitle(
+                      title: locale.language.HOME_SCREEN_BEST_SELLING,
+                      onTapViewMore: () {},
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: horizontalPadding),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 285.0,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                        childAspectRatio: 0.6,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        ProductModel product;
+
+                        product = listCars[index];
+                        return ProductCardItem(productModel: product);
+                      }, childCount: listCars.length),
+                    )),
+              ],
+            ),
+          );
+        },
+      )),
     );
   }
 
   Widget _buildHeaderBanner(BuildContext context) {
     return Column(
       children: [
-
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: ClipRRect(
@@ -224,10 +268,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               horizontal: horizontalPadding),
                           //decoration: const BoxDecoration(color: Colors.amber),
                           child: ClipRRect(
-                            clipBehavior: Clip.antiAlias,
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.asset(banner)
-                          )),
+                              clipBehavior: Clip.antiAlias,
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.asset(banner))),
                     );
                   },
                 );
@@ -235,7 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-
       ],
     );
   }
@@ -300,61 +342,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFeaturedProducts(
       BuildContext context, ProductViewModel productViewModel) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: _buildHeaderTitle(
-            title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
-            onTapViewMore: () {},
-          ),
-        ),
-        SizedBox(
-          height: 300,
-          child: Consumer<ProductViewModel>(
-            builder: (context, viewModel, child) {
-              return (productViewModel.isLoadingProduct == true)
-                  ? ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 2,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                            margin: const EdgeInsets.only(right: 8),
-                            child: const ProductCardShimmer());
-                      },
-                    )
-                  : (viewModel.products?.isNotEmpty == true)
-                      ? ListView(
-                          controller: featuredProductScrollController,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            ...List.generate(listCars.length, (index) {
-                              var _featuredProducts = listCars[index];
-                              return Container(
-                                  margin: const EdgeInsets.only(right: 16),
-                                  child: ProductCardItem(
-                                    productModel: _featuredProducts,
-                                  ));
-                            }),
-                            if (viewModel.isLoadingProductMore == true)
-                              const Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColor.greenMain,
-                                ),
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 300,
+        child: Consumer<ProductViewModel>(
+          builder: (context, viewModel, child) {
+            return (productViewModel.isLoadingProduct == true)
+                ? ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: horizontalPadding),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          child: const ProductCardShimmer());
+                    },
+                  )
+                : (viewModel.products?.isNotEmpty == true)
+                    ? ListView(
+                        controller: featuredProductScrollController,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: horizontalPadding),
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          ...List.generate(listCars.length, (index) {
+                            var _featuredProducts = listCars[index];
+                            return Container(
+                                margin: const EdgeInsets.only(right: 16),
+                                child: ProductCardItem(
+                                  productModel: _featuredProducts,
+                                ));
+                          }),
+                          if (viewModel.isLoadingProductMore == true)
+                            const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColor.greenMain,
                               ),
-                          ],
-                        )
-                      : const Center(
-                          child: Text("No Featured Products"),
-                        );
-            },
-          ),
+                            ),
+                        ],
+                      )
+                    : const Center(
+                        child: Text("No Featured Products"),
+                      );
+          },
         ),
-      ],
+      ),
     );
   }
 
@@ -375,11 +408,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ?.copyWith(fontWeight: FontWeight.bold),
           ),
           TextButton(
-            onPressed: onTapViewMore,
-            child:Text(locale.language.HOME_SCREEN_SEE_ALL,style: Theme.of(context).textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColor.greenMain,fontWeight: FontWeight.w600),)
-          ),
+              onPressed: onTapViewMore,
+              child: Text(
+                locale.language.HOME_SCREEN_SEE_ALL,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColor.greenMain, fontWeight: FontWeight.w600),
+              )),
         ],
       ),
     );
