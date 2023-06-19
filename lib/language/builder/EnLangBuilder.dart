@@ -1,11 +1,11 @@
 import 'package:fresh_fruit/language/builder/LangBuilder.dart';
 
-class EnLangBuilder extends LangBuilder{
+class EnLangBuilder extends LangBuilder {
   @override
-  String get HOME_SCREEN_BEST_SELLING =>"Best Selling";
+  String get HOME_SCREEN_BEST_SELLING => "Best Selling";
 
   @override
-  String get HOME_SCREEN_SEE_ALL =>"See all";
+  String get HOME_SCREEN_SEE_ALL => "See all";
 
   @override
   String get HOME_SCREEN_NEW_PRODUCTS => "Newest";
@@ -23,6 +23,17 @@ class EnLangBuilder extends LangBuilder{
   String get PASSWORD => 'Password';
 
   @override
-  // TODO: implement FORGOT_PASSWORD
   String get FORGOT_PASSWORD => 'Forgot password?';
+
+  @override
+  String get CART_SCREEN_HEADER => "Cart";
+
+  @override
+  String get BUTTON_NEXT => "Next";
+
+  @override
+   String get CART_TOTAL => "Total:";
+
+  @override
+  String get USER_NOT_LOGGED_IN => "Please sign in to continue";
 }

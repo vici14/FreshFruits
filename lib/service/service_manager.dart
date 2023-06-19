@@ -7,6 +7,8 @@ import 'package:fresh_fruit/model/user_model.dart';
 
 class ServiceManager {
   static final ServiceManager _instance = ServiceManager._internal();
+
+
   static final fireStore = FirebaseFirestore.instance;
   final CollectionReference productsCollection =
       fireStore.collection('products');
@@ -261,11 +263,13 @@ class ServiceManager {
 
   Stream<QuerySnapshot<OrderedProductModel>> getStreamOrderedItemsInCart(
       String uid) async* {
+    ///example for stream
     var _cart = await getUserCurrentCart(uid);
     var a = _cart.collection('orderedItems').withConverter<OrderedProductModel>(
         fromFirestore: (data, _) =>
             OrderedProductModel.fromQuerySnapshot(data.data()!),
         toFirestore: (orderedProduct, _) => orderedProduct.toJson());
+
     yield* a.snapshots();
   }
 

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 Color hexToColor(String hex) {
   assert(RegExp(r'^#([0-9a-fA-F]{6})|([0-9a-fA-F]{8})$').hasMatch(hex),
-  'hex color must be #rrggbb or #rrggbbaa');
+      'hex color must be #rrggbb or #rrggbbaa');
 
   return Color(
     int.parse(hex.substring(1), radix: 16) +
@@ -11,14 +11,15 @@ Color hexToColor(String hex) {
 }
 
 class AppColor {
+  static const Color primary = Color(0xFFFECC4C);
+  static const Color secondary = Color(0xFFF48567);
   static const Color greenMain = Color(0xff53B175);
-  static const Color blueMain = Color(0xff4A4AF4);
+
   static const Color blueSecondary = Color(0xFFEDEDFD);
   static const Color greyScaffoldBackground = Color(0xffF6F6F6);
   static const blueFacebook = Color(0xff1877F2);
   static const Color grey = Color(0xffF2F2F2);
   static const Color textGrey = Color(0xff7c7c7c);
-
 
   static const Color lightYellow = Color(0xffFFDC67);
   static const Color mint = Color(0xff54E5AD);

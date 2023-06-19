@@ -27,8 +27,8 @@ dependencies:
   shimmer: ^2.0.0
   animated_bottom_navigation_bar: ^1.2.0
   auto_size_text: ^3.0.0
-  flutter_svg: ^2.0.7
-  easy_rich_text: ^2.0.0
+  flutter_svg: ^1.0.3
+  easy_rich_text: 1.1.0
 
 dev_dependencies:
   intl: 0.17.0

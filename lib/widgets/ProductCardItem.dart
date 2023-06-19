@@ -7,6 +7,7 @@ import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
+import 'package:fresh_fruit/widgets/product_select_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
@@ -40,7 +41,32 @@ class _ProductCardItemState extends State<ProductCardItem> {
     return Consumer<UserViewModel>(
       builder: (BuildContext context, UserViewModel userVM, Widget? child) {
         return GestureDetector(
-          onTap: () {},
+          onTap: () async{
+            await showGeneralDialog(
+            barrierColor: Colors.black.withOpacity(0.5),
+            transitionBuilder: (context, a1, a2, widget) {
+              return Transform.scale(
+                scale: a1.value,
+                child: Opacity(
+                  opacity: a1.value,
+                  child: ProductSelectDialog(
+                    productModel: product,
+                  ),
+                ),
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 500),
+            barrierDismissible: true,
+            barrierLabel: '',
+            context: context,
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return ProductSelectDialog(
+                productModel: product,
+              );
+            },
+            );
+          },
           child: Container(
             width: 175,
             decoration: AppTheme.roundedStandardGreyBorder,

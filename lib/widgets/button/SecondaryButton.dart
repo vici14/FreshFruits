@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/theme/AppColor.dart';
 
 class SecondaryButton extends StatelessWidget {
   final String text;
@@ -9,8 +10,9 @@ class SecondaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 67,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
+        color: AppColor.secondary,
         borderRadius: BorderRadius.circular(12),
       ),
       padding: const EdgeInsets.symmetric(vertical: 16),

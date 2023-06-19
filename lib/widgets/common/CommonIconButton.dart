@@ -29,14 +29,16 @@ class CommonIconButton {
     required this.onTap,
   });
 
-  Widget buildBackButton(BuildContext context) {
+  static Widget buildBackButton(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.of(context).pop(),
       child: Container(
+        height: 36,
+        width: 36,
         child: Center(
           child: SvgPicture.asset(
             AppImageAsset.iconBack,
-            color: Theme.of(context).colorScheme.primary,
+            color: AppColor.primary,
           ),
         ),
       ).addShadow(),
@@ -65,6 +67,22 @@ class CommonIconButton {
           child: SvgPicture.asset(
             AppImageAsset.iconNotification,
             color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ).addShadow(),
+    );
+  }
+
+  static Widget buildCartItemDeleteButton(BuildContext context,Function onTap) {
+    return InkWell(
+      onTap: () => onTap,
+      child: Container(
+        height: 36,
+        width: 36,
+        child: Center(
+          child: SvgPicture.asset(
+            AppImageAsset.iconCartItemDelete,
+            color: AppColor.secondary,
           ),
         ),
       ).addShadow(),

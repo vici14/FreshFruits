@@ -16,7 +16,13 @@ abstract class BaseProviderScreenState<T extends StatefulWidget,
 
   bool enableBackButton() => true;
 
+  bool enableSafeAreaTop() => false;
+
+  bool enableSafeAreaBottom() => false;
+
   String appBarTitle() => "Admin";
+
+  List<Widget>? appBarActions() => null;
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +32,24 @@ abstract class BaseProviderScreenState<T extends StatefulWidget,
       },
       builder: (_, child) => Consumer<C>(
         builder: (context, localState, child) {
-          return Scaffold(
-              appBar: enableHeader()
-                  ? CommonAppbar(
-                      title: appBarTitle(),
-                      centerTitle: centerAppBarTitle(),
-                      isAllowBack: enableBackButton(),
-                    )
-                  : null,
-              body: GestureDetector(
-                  onTap: () => FocusScope.of(context).unfocus(),
-                  child: buildContent(context, localState)));
+          return SafeArea(
+            left: false,
+            right: false,
+            top: enableSafeAreaTop(),
+            bottom: enableSafeAreaBottom(),
+            child: Scaffold(
+                appBar: enableHeader()
+                    ? CommonAppbar(
+                        title: appBarTitle(),
+                        centerTitle: centerAppBarTitle(),
+                        isAllowBack: enableBackButton(),
+                        actions: appBarActions(),
+                      )
+                    : null,
+                body: GestureDetector(
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    child: buildContent(context, localState))),
+          );
         },
       ),
     );

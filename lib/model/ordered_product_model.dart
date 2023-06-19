@@ -1,4 +1,3 @@
-
 import 'package:fresh_fruit/model/product_model.dart';
 
 class OrderedProductModel {
@@ -9,15 +8,18 @@ class OrderedProductModel {
   double? cost;
   String? category;
   int quantity;
+  String? unit;
 
-  OrderedProductModel(
-      {required this.id,
-      this.cost,
-      this.name,
-      this.description,
-      this.imageUrl,
-      this.category,
-      this.quantity = 0});
+  OrderedProductModel({
+    required this.id,
+    this.cost,
+    this.name,
+    this.description,
+    this.imageUrl,
+    this.category,
+    this.quantity = 0,
+    this.unit,
+  });
 
   factory OrderedProductModel.initial() {
     return OrderedProductModel(
@@ -44,6 +46,7 @@ class OrderedProductModel {
           snapshot['imageUrl'] != null ? snapshot['imageUrl'] as String : '',
       name: snapshot['name'] != null ? snapshot['name'] as String : '',
       quantity: snapshot['quantity'] != null ? snapshot['quantity'] as int : 0,
+      unit: snapshot['unit'] != null ? snapshot['unit'] as String : '',
     );
   }
 
@@ -56,6 +59,7 @@ class OrderedProductModel {
         description: product.description,
         cost: product.cost,
         name: product.name,
+        unit: product.unit,
         quantity: quantity);
   }
 
@@ -68,6 +72,7 @@ class OrderedProductModel {
       'imageUrl': imageUrl,
       'quantity': quantity,
       'name': name,
+      'unit': unit,
     };
   }
 }

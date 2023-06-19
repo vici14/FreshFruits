@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
 
 class CommonAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -20,32 +21,29 @@ class CommonAppbar extends StatelessWidget implements PreferredSizeWidget {
     return Text(
       title,
       style: textStyle ??
-          Theme.of(context).textTheme.headlineLarge?.copyWith(
-              fontSize: 22,
-              color: const Color(0xff1C1B1F),
-              fontWeight: FontWeight.w500),
+          Theme.of(context)
+              .textTheme
+              .headlineLarge
+              ?.copyWith(fontSize: 20, fontWeight: FontWeight.w500),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      surfaceTintColor: Theme.of(context).colorScheme.primary,
-      backgroundColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      foregroundColor: Theme.of(context).colorScheme.background,
+      surfaceTintColor: Theme.of(context).colorScheme.background,
       titleSpacing: 0,
+      automaticallyImplyLeading: false,
       leading: isAllowBack
-          ? GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 2.0),
-          child: Icon(
-            Icons.arrow_back,
-            size: 24,
-            color: Colors.black,
-          ),
-        ),
-      )
-          : SizedBox(),
+          ? Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Row(
+                children: [CommonIconButton.buildBackButton(context)],
+              ),
+            )
+          : const SizedBox(),
       elevation: 0,
       centerTitle: centerTitle,
       title: _buildTitle(context),

@@ -132,6 +132,47 @@ class AppTheme {
     );
   }
 
+  TextTheme buildDarkTextTheme() {
+    return const TextTheme(
+      headlineSmall: TextStyle(
+          fontSize: AppDimen.fontSize16,
+          color: primarySeedColor,
+          fontWeight: FontWeight.w500,
+          fontFamily: AppFont.gilroy,
+          letterSpacing: 0),
+      headlineMedium: TextStyle(
+          fontSize: AppDimen.fontSize18,
+          color: primarySeedColor,
+          fontWeight: FontWeight.bold,
+          fontFamily: AppFont.gilroy,
+          letterSpacing: 0),
+      headlineLarge: TextStyle(
+          fontSize: AppDimen.fontSize20,
+          color: primarySeedColor,
+          fontWeight: FontWeight.bold,
+          fontFamily: AppFont.gilroy,
+          letterSpacing: 0),
+      bodySmall: TextStyle(
+          fontSize: AppDimen.fontSize12,
+          color: primarySeedColor,
+          fontFamily: AppFont.inter,
+          letterSpacing: 0),
+      bodyMedium: TextStyle(
+          fontSize: AppDimen.fontSize14,
+          color: primarySeedColor,
+          fontFamily: AppFont.inter,
+          letterSpacing: 0),
+      bodyLarge: TextStyle(
+          color: primarySeedColor,
+          fontFamily: AppFont.inter,
+          fontSize: AppDimen.fontSize16,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0),
+
+    );
+  }
+
+
   ButtonThemeData buildButtonTheme() {
     return const ButtonThemeData(
       height: 46,

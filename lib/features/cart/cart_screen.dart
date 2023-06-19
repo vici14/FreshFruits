@@ -1,12 +1,21 @@
+import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fresh_fruit/base/BaseProviderScreenState.dart';
+import 'package:fresh_fruit/features/cart/CartController.dart';
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
+import 'package:fresh_fruit/theme/AppColor.dart';
+import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/utils/ValidationUtil.dart';
 import 'package:fresh_fruit/view_model/cart_viewmodel.dart';
 import 'package:fresh_fruit/view_model/user_viewmodel.dart';
+import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
+import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
+import 'package:fresh_fruit/widgets/image/ImageCachedNetwork.dart';
 import 'package:fresh_fruit/widgets/my_app_bar.dart';
 import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +27,8 @@ class CartScreen extends StatefulWidget {
   }
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState
+    extends BaseProviderScreenState<CartScreen, CartController> {
   double shipCost = 0;
   List<OrderedProductModel>? list;
   final _formKey = GlobalKey<FormState>();
@@ -43,6 +53,11 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   @override
+  initLocalController() {
+    return CartController();
+  }
+
+  @override
   void didChangeDependencies() {
     if (_userViewModel.isLoggedIn) {
       _cartViewModel.getCart(_userViewModel.currentUser?.uid ?? '');
@@ -52,39 +67,47 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        drawer: MyDrawer(),
-        resizeToAvoidBottomInset: false,
-        appBar: const CommonAppBar(
-          title: "Giỏ hàng",
-        ),
-        body: Consumer<CartViewModel>(
-          builder: (BuildContext context, CartViewModel cartVM, Widget? child) {
-            if (!_userViewModel.isLoggedIn) {
-              return const Center(
-                child: Text('Vui lòng đăng nhập'),
-              );
-            }
-            if (cartVM.isGetCart) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return Container(
-              padding: EdgeInsets.only(
-                  left: 12,
-                  right: 12,
-                  top: 10,
-                  bottom: MediaQuery.of(context).size.width * 0.12),
+  String appBarTitle() {
+    return locale.language.CART_SCREEN_HEADER;
+  }
+
+  @override
+  bool enableBackButton() {
+    return true;
+  }
+
+  @override
+  bool enableSafeAreaBottom() {
+    return true;
+  }
+
+  @override
+  Widget buildContent(BuildContext context, localState) {
+    return Consumer<CartViewModel>(
+      builder: (BuildContext context, CartViewModel cartVM, Widget? child) {
+        if (!_userViewModel.isLoggedIn) {
+          return Center(
+            child: Text(locale.language.USER_NOT_LOGGED_IN),
+          );
+        }
+        if (cartVM.isGetCart) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: AppDimen.space16),
               child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 100),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Nhập tên và địa chỉ người nhận'),
-                    _buildInputForm(),
-                    const Text("Chi tiết đơn hàng"),
+                    // const Text('Nhập tên và địa chỉ người nhận'),
+                    // _buildInputForm(),
+                    // const Text("Chi tiết đơn hàng"),
                     StreamBuilder(
                       stream: _stream,
                       builder: (BuildContext context,
@@ -100,22 +123,6 @@ class _CartScreenState extends State<CartScreen> {
                         return Column(
                           children: [
                             _buildProductsList(list),
-                            _buildTotal(
-                                totalCost: StringUtils.calculateTotalCost
-                                  (list)),
-                            _buildSubmitButton(onTap: () async {
-                              bool isSuccess = await cartVM.checkOutCart(
-                                totalCost: StringUtils.calculateTotalCost(list),
-                                products: list,
-                                uid: _userViewModel.currentUser?.uid ?? '',
-                                customerName: _nameController.text,
-                                customerPhone: _phoneController.text,
-                                customerAddress: _addressController.text,
-                              );
-                              if (isSuccess) {
-                                _userViewModel.refreshCurrentUser();
-                              }
-                            }),
                           ],
                         );
                       },
@@ -123,95 +130,63 @@ class _CartScreenState extends State<CartScreen> {
                   ],
                 ),
               ),
-            );
-          },
-        ));
-  }
-
-  Widget _buildTotal({required double totalCost}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.6),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(12),
-          )),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Tạm tính'),
-              Text(CurrencyFormatter()
-                  .toDisplayValue(totalCost, currency: "VNĐ")),
-            ],
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Khuyến mãi'),
-              const Text('0'),
-            ],
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Phí giao hàng'),
-              Text(CurrencyFormatter()
-                  .toDisplayValue(shipCost, currency: "VNĐ")),
-            ],
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          const Divider(
-            height: 1,
-            color: Colors.black,
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Tổng cộng:'),
-              Text(
-                CurrencyFormatter()
-                    .toDisplayValue((totalCost + shipCost), currency: "VNĐ"),
-                style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _buildSubmitButton(
+                onTap: () async {
+                  // bool isSuccess = await cartVM.checkOutCart(
+                  //   totalCost:
+                  //   StringUtils.calculateTotalCost(list),
+                  //   products: list,
+                  //   uid: _userViewModel.currentUser?.uid ?? '',
+                  //   customerName: _nameController.text,
+                  //   customerPhone: _phoneController.text,
+                  //   customerAddress: _addressController.text,
+                  // );
+                  // if (isSuccess) {
+                  //   _userViewModel.refreshCurrentUser();
+                  // }
+                },
               ),
-            ],
-          ),
-        ],
-      ),
+            )
+          ],
+        );
+      },
     );
   }
 
   Widget _buildSubmitButton({required Function()? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(top: 15, bottom: 15),
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            color: Colors.green, borderRadius: BorderRadius.circular(12)),
-        height: 52,
-        child: const Center(
-          child: Text(
-            "Đặt hàng",
-            style: TextStyle(color: Colors.white, fontSize: 16),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimen.space16),
+      decoration:
+          BoxDecoration(color: Theme.of(context).colorScheme.background),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppDimen.space16),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  locale.language.CART_TOTAL,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(fontWeight: FontWeight.w400),
+                ),
+                Text(CurrencyFormatter().toDisplayValue(0, currency: "đ")),
+              ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppDimen.space16),
+            child: SecondaryButton(
+                text: locale.language.BUTTON_NEXT, onTap: () {}),
+          )
+        ],
       ),
     );
   }
@@ -302,70 +277,130 @@ class _CartScreenState extends State<CartScreen> {
   Widget _buildProductsList(List<OrderedProductModel>? items) {
     return Column(
       children: [
-        Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.45,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.45,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Số lượng'),
-                  const Text(
-                    'Đơn giá',
-                    textAlign: TextAlign.end,
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
         ...List.generate(items!.length, (index) {
           var item = items[index];
-          return Container(
-            margin: const EdgeInsets.only(bottom: 5),
-            height: MediaQuery.of(context).size.height * 0.15,
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 5),
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(15)),
-                      border: Border.all(width: 1, color: Colors.teal),
-                      image: DecorationImage(
-                          image: NetworkImage(
-                            item.imageUrl ?? '',
-                          ),
-                          fit: BoxFit.cover)),
-                ),
-                SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    child: Text(item.name ?? '')),
-                SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          item.quantity.toString(),
-                          textAlign: TextAlign.center,
-                        ),
-                        Text(
-                          CurrencyFormatter()
-                              .toDisplayValue(item.cost, currency: "VNĐ"),
-                          textAlign: TextAlign.end,
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-          );
+          return _buildProductItem(item);
         })
+      ],
+    );
+  }
+
+  Widget _buildProductItem(OrderedProductModel item) {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.only(bottom: 28),
+          padding: EdgeInsets.only(right: 25),
+          height: 156,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColor.grey,
+              ),
+              color: Colors.white),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(
+                  left: 32,
+                ),
+                child: ImageCachedNetwork(
+                  imageUrl: item.imageUrl ?? "",
+                  height: 65,
+                  width: 70,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: AppDimen.space10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppDimen.space12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name ?? "",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: EasyRichText(
+                              '${CurrencyFormatter().toDisplayValue(item.cost, currency: 'đ')}/${item.unit}',
+                              patternList: [
+                                EasyRichTextPattern(
+                                  targetString: CurrencyFormatter()
+                                      .toDisplayValue(item.cost, currency: 'đ'),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge
+                                      ?.copyWith(color: AppColor.secondary),
+                                ),
+                                EasyRichTextPattern(
+                                  targetString: item.unit,
+                                  style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(color: AppColor.textGrey),
+                                ),
+                              ],
+                            ),
+
+                          )
+                        ],
+                      ),
+                    ),
+                    Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(17),
+                                  border: Border.all(color: AppColor.grey)),
+                              child: const Center(
+                                child: Icon(Icons.remove),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Text(item.quantity.toString()),
+                          ),
+                          InkWell(
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(17),
+                                  border: Border.all(color: AppColor.grey)),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.add,
+                                  color: AppColor.greenMain,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+            top: 14,
+            right: 23,
+            child: CommonIconButton.buildCartItemDeleteButton(context, () {}))
       ],
     );
   }

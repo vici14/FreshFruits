@@ -5,6 +5,7 @@ import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/view_model/authen_viewmodel.dart';
+import 'package:fresh_fruit/view_model/user_viewmodel.dart';
 import 'package:fresh_fruit/widgets/keyboard_dismisser.dart';
 import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class AuthenScreen extends StatefulWidget {
 
 class _AuthenScreenState extends State<AuthenScreen>
     with TickerProviderStateMixin {
-  AuthViewModel? authViewModel;
+  UserViewModel? userViewModel;
   TabController? tabController;
 
   TextEditingController? loginUserNameCtl;
@@ -29,7 +30,7 @@ class _AuthenScreenState extends State<AuthenScreen>
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      authViewModel = Provider.of<AuthViewModel>(context, listen: false);
+      userViewModel = Provider.of<UserViewModel>(context, listen: false);
     });
     loginUserNameCtl = TextEditingController();
     loginPasswordCtl = TextEditingController();
@@ -113,7 +114,7 @@ class _AuthenScreenState extends State<AuthenScreen>
               controller: tabController,
               indicatorSize: TabBarIndicatorSize.tab,
               indicator: UnderlineTabIndicator(
-                borderRadius: BorderRadius.circular(5.0),
+                // borderRadius: BorderRadius.circular(5.0),
                 borderSide: BorderSide(
                   width: 2.0,
                   color: hexToColor('#A6CE3B'),
@@ -126,7 +127,7 @@ class _AuthenScreenState extends State<AuthenScreen>
                 height: 29 / 14,
                 color: Colors.red,
               ),
-              dividerColor: Colors.transparent,
+              // dividerColor: Colors.transparent,
               tabs: [
                 Tab(text: locale.language.LOGIN),
                 Tab(text: locale.language.SIGNUP),
@@ -193,7 +194,10 @@ class _AuthenScreenState extends State<AuthenScreen>
                     ),
                   ),
                   onTap: () {
-                    authViewModel?.login();
+                    userViewModel?.signInWithEmailAndPassword(email: 'cuongtest'
+                        '@gmail.com', password: '123456');
+                    // userViewModel?.signUpWithEmailAndPassword(email: 'testcuong@gmail.com',
+                    //     password: '123456');
                   },
                 ),
               ],

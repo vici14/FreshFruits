@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:fresh_fruit/features/account/UserScreen.dart';
 import 'package:fresh_fruit/features/authens/authen_screen.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
+import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -113,7 +114,9 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
       floatingActionButton: FloatingActionButton(
         clipBehavior: Clip.antiAlias,
         shape: const CircleBorder(),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoute.cartScreen);
+        },
         child: SvgPicture.asset(
           AppImageAsset.bottomCartIcon,
           width: 32,
