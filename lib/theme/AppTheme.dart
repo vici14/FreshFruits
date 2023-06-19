@@ -18,7 +18,7 @@ class AppTheme {
     primaryKey: primarySeedColor,
     onPrimary: Colors.white,
     surface: surfaceSeedColor,
-    background: Colors.white,
+    background: hexToColor('#FCFCFC'),
     // You can add optional own seeds for secondary and tertiary key colors.
     secondaryKey: secondarySeedColor,
     tertiaryKey: tertiarySeedColor,
