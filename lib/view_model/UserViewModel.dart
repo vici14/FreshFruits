@@ -1,8 +1,8 @@
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
-import 'package:fresh_fruit/repository/user_repo_impl.dart';
-import 'package:fresh_fruit/repository/user_repository.dart';
-import 'package:fresh_fruit/view_model/base_viewmodel.dart';
+import 'package:fresh_fruit/repository/UserRepositoryImpl.dart';
+import 'package:fresh_fruit/repository/UserRepository.dart';
+import 'package:fresh_fruit/view_model/BaseViewModel.dart';
 
 class UserViewModel extends BaseViewModel {
   final UserRepository _repository = UserRepositoryImpl();

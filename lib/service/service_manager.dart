@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fresh_fruit/logger/AppLogger.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 import 'package:fresh_fruit/model/product_model.dart';
@@ -7,7 +8,6 @@ import 'package:fresh_fruit/model/user_model.dart';
 
 class ServiceManager {
   static final ServiceManager _instance = ServiceManager._internal();
-
 
   static final fireStore = FirebaseFirestore.instance;
   final CollectionReference productsCollection =
@@ -25,55 +25,83 @@ class ServiceManager {
   }
 
   Future<DocumentReference<CartModel>> getUserCurrentCart(String uid) async {
-    var _user = await usersCollection.where('uid', isEqualTo: uid).get();
-    var _cart = await _user.docs.first.reference
-        .collection('cart')
-        .withConverter<CartModel>(
-            fromFirestore: (snapshot, _) =>
-                CartModel.fromQuerySnapshot(snapshot.data()!),
-            toFirestore: (cart, _) => cart.toJson())
-        .get();
-    return _cart.docs.first.reference;
+    try {
+      var _user = await usersCollection.where('uid', isEqualTo: uid).get();
+      var _cart = await _user.docs.first.reference
+          .collection('cart')
+          .withConverter<CartModel>(
+              fromFirestore: (snapshot, _) =>
+                  CartModel.fromQuerySnapshot(snapshot.data()!),
+              toFirestore: (cart, _) => cart.toJson())
+          .get();
+      AppLogger.i('getUserCurrentCart ${uid} success');
+
+      return _cart.docs.first.reference;
+    } catch (e) {
+      AppLogger.e(e.toString());
+      rethrow;
+    }
   }
 
   Future<QuerySnapshot<OrderedProductModel>> getProductExistedInCart(
       {required DocumentReference<CartModel> cart,
       required String productId}) async {
-    var productInCart = await cart
-        .collection('orderedItems')
-        .where("id", isEqualTo: productId)
-        .withConverter<OrderedProductModel>(
-            fromFirestore: (data, _) =>
-                OrderedProductModel.fromQuerySnapshot(data.data()!),
-            toFirestore: (orderedProduct, _) => orderedProduct.toJson())
-        .get();
-    return productInCart;
+    try {
+      var productInCart = await cart
+          .collection('orderedItems')
+          .where("id", isEqualTo: productId)
+          .withConverter<OrderedProductModel>(
+              fromFirestore: (data, _) =>
+                  OrderedProductModel.fromQuerySnapshot(data.data()!),
+              toFirestore: (orderedProduct, _) => orderedProduct.toJson())
+          .get();
+
+      AppLogger.i('getProductExistedInCart ${productId} success');
+      return productInCart;
+    } catch (e) {
+      AppLogger.e(e.toString());
+      rethrow;
+    }
   }
 
   Future<DocumentReference<UserModel>> getCurrentUserDocument(
       String uid) async {
-    var _user = await usersCollection
-        .where('uid', isEqualTo: uid)
-        .withConverter(
-          fromFirestore: (snapshot, _) =>
-              UserModel.fromQuerySnapshot(snapshot.data()!),
-          toFirestore: (UserModel user, _) => user.toJson(),
-        )
-        .get();
-    return _user.docs.first.reference;
+    try {
+      var _user = await usersCollection
+          .where('uid', isEqualTo: uid)
+          .withConverter(
+            fromFirestore: (snapshot, _) =>
+                UserModel.fromQuerySnapshot(snapshot.data()!),
+            toFirestore: (UserModel user, _) => user.toJson(),
+          )
+          .get();
+      AppLogger.i('getCurrentUserDocument ${uid} success');
+
+      return _user.docs.first.reference;
+    } catch (e) {
+      AppLogger.e(e.toString());
+      rethrow;
+    }
   }
 
   Future<DocumentReference<ProductModel>> getCurrentProductDocument(
       String id) async {
-    var _product = await productsCollection
-        .where('id', isEqualTo: id)
-        .withConverter(
-          fromFirestore: (snapshot, _) =>
-              ProductModel.fromQuerySnapshot(snapshot.data()!),
-          toFirestore: (ProductModel prduct, _) => prduct.toJson(),
-        )
-        .get();
-    return _product.docs.first.reference;
+    try {
+      var _product = await productsCollection
+          .where('id', isEqualTo: id)
+          .withConverter(
+            fromFirestore: (snapshot, _) =>
+                ProductModel.fromQuerySnapshot(snapshot.data()!),
+            toFirestore: (ProductModel prduct, _) => prduct.toJson(),
+          )
+          .get();
+      AppLogger.i('getCurrentProductDocument ${id} success');
+
+      return _product.docs.first.reference;
+    } catch (e) {
+      AppLogger.e(e.toString());
+      rethrow;
+    }
   }
 
   ServiceManager._internal() {
@@ -96,12 +124,12 @@ class ServiceManager {
             element.data() as Map<String, dynamic>);
         list.add(product);
       });
-      print('product ne :${_products}');
+      AppLogger.i('getProducts ${list.length} success');
       return list;
     } catch (e) {
-      print(e);
+      AppLogger.e(e.toString());
+      rethrow;
     }
-    return [];
   }
 
   Future<List<ProductModel>> getProductsByCategory(String category) async {
@@ -117,10 +145,11 @@ class ServiceManager {
       list = List.generate(
               _products.docs.length, (index) => _products.docs[index].data())
           .toList();
-      print('product by category ne  :${_products}');
+      AppLogger.i('getProductsByCategory ${category} success');
+
       return list;
     } catch (e) {
-      print('getProductsByCategory:${e.toString()}');
+      AppLogger.e(e.toString());
     }
     return [];
   }
@@ -128,17 +157,28 @@ class ServiceManager {
 //====================USER=======================
 
   Future<UserModel?> logOut() async {
-    await FirebaseAuth.instance.signOut();
+    try {
+      await FirebaseAuth.instance.signOut();
+      AppLogger.i('logOut success');
+    } catch (e) {
+      AppLogger.e(e.toString());
+    }
     return null;
   }
 
   Future<UserModel?> getCurrentUser() async {
-    var currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      var _currentUser = await getCurrentUserDocument(currentUser.uid);
-      return _currentUser.get().then((value) => value.data());
+    try {
+      var currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        var _currentUser = await getCurrentUserDocument(currentUser.uid);
+        AppLogger.i('getCurrentUser ${currentUser.uid} success');
+
+        return _currentUser.get().then((value) => value.data());
+      }
+      return null;
+    } catch (e) {
+      AppLogger.e(e.toString());
     }
-    return null;
   }
 
   Future<bool> signUpWithEmailAndPassword(
@@ -146,21 +186,20 @@ class ServiceManager {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      print('signUpCredential${userCredential.credential?.token}');
       var isCreated = createUser(uid: userCredential.user!.uid, email: email);
       if (isCreated) {
         createCollectionCart(userCredential.user!.uid);
       }
+      AppLogger.i(
+          'signUpWithEmailAndPassword ${userCredential.user?.uid} success');
+
       return true;
     } on FirebaseAuthException catch (e) {
+      AppLogger.e(e.toString());
+
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
-    }
+      } else if (e.code == 'email-already-in-use') {}
+    } catch (e) {}
     return false;
   }
 
@@ -174,16 +213,15 @@ class ServiceManager {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      print('signInCredential${userCredential.additionalUserInfo}');
-      if (userCredential != null) {
-        return true;
-      }
+
+      AppLogger.i(
+          'signUpWithEmailAndPassword ${userCredential.additionalUserInfo} success');
+      return true;
     } on FirebaseAuthException catch (e) {
+      AppLogger.e(e.toString());
+
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
+      } else if (e.code == 'wrong-password') {}
     }
     return false;
   }
@@ -204,12 +242,11 @@ class ServiceManager {
   void updateProductLiked(
       {required String productId, required bool status}) async {
     var _currentProduct = await getCurrentProductDocument(productId);
-    _currentProduct
-        .update({'isLiked': status})
-        .then((value) => 'Update '
-            'product  collection success')
-        .catchError((onError) => print('failed '
-            'to update collection'));
+    _currentProduct.update({'isLiked': status}).then((value) {
+      AppLogger.i('updateProductLiked success');
+    }).catchError((onError) {
+      AppLogger.e(onError.toString());
+    });
   }
 
   void unlikeProduct(
@@ -235,17 +272,24 @@ class ServiceManager {
       _currentUser
           .update({'name': name, 'phone': phone, 'address': address}).onError(
               (error, stackTrace) => false);
+      AppLogger.i('updateProfile success');
+
       return true;
     } catch (e) {
-      print('updateProfile:${e.toString()}');
+      AppLogger.e(e.toString());
     }
     return false;
   }
 
   void createCollectionCart(String uid) async {
-    CartModel cartModel = CartModel.initial();
-    var _currentUser = await getCurrentUserDocument(uid);
-    await _currentUser.collection('cart').add(cartModel.toJson());
+    try {
+      CartModel cartModel = CartModel.initial();
+      var _currentUser = await getCurrentUserDocument(uid);
+      await _currentUser.collection('cart').add(cartModel.toJson());
+      AppLogger.i('createCollectionCart success');
+    } catch (e) {
+      AppLogger.e(e.toString());
+    }
   }
 
   void updateHistory(
@@ -255,8 +299,8 @@ class ServiceManager {
         .update({
           'orderHistory': FieldValue.arrayUnion([cartModel.toJson()])
         })
-        .then((value) => print('User Updated list'))
-        .catchError((onError) => print('FAILED'));
+        .then((value) => AppLogger.i('updateHistory success'))
+        .catchError((onError) => AppLogger.e(onError.toString()));
   }
 
 //====================CART=======================
@@ -273,24 +317,53 @@ class ServiceManager {
     yield* a.snapshots();
   }
 
+  void updateQuantity(
+      {required OrderedProductModel product, required String uid}) async {
+    try{
+      var _cart = await getUserCurrentCart(uid);
+      var productInCart =
+      await getProductExistedInCart(cart: _cart, productId: product.id);
+      if (productInCart.docs.isNotEmpty) {
+        ///if product existed,update quantity
+        var _prod = await productInCart.docs.first.reference.get();
+        productInCart.docs.first.reference
+            .update({"quantity": (product.quantity)});
+
+        AppLogger.i('updateQuantity success');
+
+      }
+    }catch(e){
+      AppLogger.e(e.toString());
+    }
+
+  }
+
   void addToCart(
       {required ProductModel productModel,
       required int quantity,
       required String uid}) async {
-    var orderItem = OrderedProductModel.fromProductModel(
-        product: productModel, quantity: quantity);
-    var _cart = await getUserCurrentCart(uid);
-    var productInCart =
-        await getProductExistedInCart(cart: _cart, productId: productModel.id!);
-    if (productInCart.docs.length > 0) {
-      ///if product existed,update quantity
-      var _prod = await productInCart.docs.first.reference.get();
-      productInCart.docs.first.reference
-          .update({"quantity": (_prod.data()!.quantity + quantity)});
-    } else {
-      ///if product non existed,add to collection
-      var _a = await _cart.collection('orderedItems').add(orderItem.toJson());
+    try{
+      var orderItem = OrderedProductModel.fromProductModel(
+          product: productModel, quantity: quantity);
+      var _cart = await getUserCurrentCart(uid);
+      var productInCart =
+      await getProductExistedInCart(cart: _cart, productId: productModel.id!);
+      if (productInCart.docs.isNotEmpty) {
+        ///if product existed,update quantity
+        var _prod = await productInCart.docs.first.reference.get();
+        productInCart.docs.first.reference
+            .update({"quantity": (_prod.data()!.quantity + quantity)});
+      } else {
+        ///if product non existed,add to collection
+        var _a = await _cart.collection('orderedItems').add(orderItem.toJson());
+      }
+      AppLogger.i('addToCart success');
+
+    }catch(e){
+      AppLogger.e(e.toString());
+
     }
+
   }
 
   Future<CartModel?> getCart(String uid) async {
@@ -324,9 +397,12 @@ class ServiceManager {
               customerPhone: customerPhone,
               customerName: customerName)
           .onError((error, stackTrace) => false);
+      AppLogger.i('checkOutCart success');
+
       return true;
     } catch (e) {
-      print('checkOutCart error :${e.toString()}');
+      AppLogger.e(e.toString());
+
     }
     return false;
   }
@@ -338,16 +414,24 @@ class ServiceManager {
     required String customerPhone,
     required String customerAddress,
   }) async {
-    var _currentUser = await getCurrentUserDocument(uid);
-    _currentUser.update({
-      'orderHistory': FieldValue.arrayUnion([
-        cartModel
-            .withShippingInformation(
-                customerName: customerName,
-                customerPhone: customerPhone,
-                customerAddress: customerAddress)
-            .toJson()
-      ])
-    });
+    try{
+      var _currentUser = await getCurrentUserDocument(uid);
+      _currentUser.update({
+        'orderHistory': FieldValue.arrayUnion([
+          cartModel
+              .withShippingInformation(
+              customerName: customerName,
+              customerPhone: customerPhone,
+              customerAddress: customerAddress)
+              .toJson()
+        ])
+      });
+      AppLogger.i('addToHistory success');
+
+    }catch(e){
+      AppLogger.e(e.toString());
+
+    }
+
   }
 }

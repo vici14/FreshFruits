@@ -1,5 +1,5 @@
 import 'package:fresh_fruit/model/product_model.dart';
-import 'package:fresh_fruit/repository/product_repository.dart';
+import 'package:fresh_fruit/repository/ProductRepository.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 
 class ProductRepositoryImplement extends ProductRepository {

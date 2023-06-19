@@ -1,7 +1,7 @@
 import 'package:fresh_fruit/model/product_model.dart';
-import 'package:fresh_fruit/repository/cart_repo_impl.dart';
-import 'package:fresh_fruit/repository/cart_repository.dart';
-import 'package:fresh_fruit/view_model/base_viewmodel.dart';
+import 'package:fresh_fruit/repository/CartRepositoryImpl.dart';
+import 'package:fresh_fruit/repository/CartRepository.dart';
+import 'package:fresh_fruit/view_model/BaseViewModel.dart';
 
 class ProductDetailViewModel extends BaseViewModel {
   CartRepository _repository = CartRepositoryImplement();

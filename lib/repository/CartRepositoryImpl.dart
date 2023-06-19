@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/product_model.dart';
-import 'package:fresh_fruit/repository/cart_repository.dart';
+import 'package:fresh_fruit/repository/CartRepository.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 
 import '../model/ordered_product_model.dart';
@@ -56,5 +56,11 @@ class CartRepositoryImplement extends CartRepository {
   Stream<QuerySnapshot<OrderedProductModel>> getCartItemsStream(
       String uid) async* {
     yield* serviceManager.getStreamOrderedItemsInCart(uid);
+  }
+
+  @override
+  Future<void> updateQuantity(
+      {required OrderedProductModel productModel, required String uid}) async {
+    serviceManager.updateQuantity(product: productModel, uid: uid);
   }
 }

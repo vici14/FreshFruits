@@ -11,8 +11,8 @@ import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/utils/ValidationUtil.dart';
-import 'package:fresh_fruit/view_model/cart_viewmodel.dart';
-import 'package:fresh_fruit/view_model/user_viewmodel.dart';
+import 'package:fresh_fruit/view_model/CartViewModel.dart';
+import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
 import 'package:fresh_fruit/widgets/image/ImageCachedNetwork.dart';
@@ -95,68 +95,63 @@ class _CartScreenState
             child: CircularProgressIndicator(),
           );
         }
-        return Stack(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: AppDimen.space16),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 100),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // const Text('Nhập tên và địa chỉ người nhận'),
-                    // _buildInputForm(),
-                    // const Text("Chi tiết đơn hàng"),
-                    StreamBuilder(
-                      stream: _stream,
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot<OrderedProductModel>>
-                              snap) {
-                        if (!snap.hasData) {
-                          return const Center(child: Text("Empty Cart"));
-                        }
-
-                        List<OrderedProductModel> list = List.generate(
-                            snap.data!.docs.length,
-                            (index) => snap.data!.docs[index].data()).toList();
-                        return Column(
-                          children: [
-                            _buildProductsList(list),
-                          ],
-                        );
-                      },
-                    ),
-                  ],
+        return StreamBuilder(
+          stream: _stream,
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot<OrderedProductModel>> snap) {
+            List<OrderedProductModel> list = List.generate(
+                snap.data?.docs.length ?? 0,
+                (index) => snap.data!.docs[index].data()).toList();
+            if (!snap.hasData) {
+              return const Center(child: Text("Empty Cart"));
+            }
+            return Stack(
+              children: [
+                Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimen.space16),
+                    child: _buildProductsList(list, cartVM)),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: _buildSubmitButton(
+                    totalCost: StringUtils.calculateTotalCost(list),
+                    onTap: () async {
+                      // bool isSuccess = await cartVM.checkOutCart(
+                      //   totalCost:
+                      //   StringUtils.calculateTotalCost(list),
+                      //   products: list,
+                      //   uid: _userViewModel.currentUser?.uid ?? '',
+                      //   customerName: _nameController.text,
+                      //   customerPhone: _phoneController.text,
+                      //   customerAddress: _addressController.text,
+                      // );
+                      // if (isSuccess) {
+                      //   _userViewModel.refreshCurrentUser();
+                      // }
+                    },
+                  ),
                 ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: _buildSubmitButton(
-                onTap: () async {
-                  // bool isSuccess = await cartVM.checkOutCart(
-                  //   totalCost:
-                  //   StringUtils.calculateTotalCost(list),
-                  //   products: list,
-                  //   uid: _userViewModel.currentUser?.uid ?? '',
-                  //   customerName: _nameController.text,
-                  //   customerPhone: _phoneController.text,
-                  //   customerAddress: _addressController.text,
-                  // );
-                  // if (isSuccess) {
-                  //   _userViewModel.refreshCurrentUser();
-                  // }
-                },
-              ),
-            )
-          ],
+                cartVM.isUpdatingProductQuantity
+                    ? SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.secondary,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink()
+              ],
+            );
+          },
         );
       },
     );
   }
 
-  Widget _buildSubmitButton({required Function()? onTap}) {
+  Widget _buildSubmitButton(
+      {required Function()? onTap, required double totalCost}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppDimen.space16),
       decoration:
@@ -177,7 +172,13 @@ class _CartScreenState
                       .bodyLarge
                       ?.copyWith(fontWeight: FontWeight.w400),
                 ),
-                Text(CurrencyFormatter().toDisplayValue(0, currency: "đ")),
+                Text(
+                  CurrencyFormatter().toDisplayValue(totalCost, currency: "đ"),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: AppColor.secondary),
+                ),
               ],
             ),
           ),
@@ -274,23 +275,21 @@ class _CartScreenState
     );
   }
 
-  Widget _buildProductsList(List<OrderedProductModel>? items) {
-    return Column(
-      children: [
-        ...List.generate(items!.length, (index) {
-          var item = items[index];
-          return _buildProductItem(item);
-        })
-      ],
-    );
+  Widget _buildProductsList(
+      List<OrderedProductModel>? items, CartViewModel cartVM) {
+    return ListView.builder(
+        padding: const EdgeInsets.only(bottom: 100),
+        itemCount: items?.length ?? 0,
+        itemBuilder: (context, index) =>
+            _buildProductItem(items![index], cartVM));
   }
 
-  Widget _buildProductItem(OrderedProductModel item) {
+  Widget _buildProductItem(OrderedProductModel item, CartViewModel cartVM) {
     return Stack(
       children: [
         Container(
-          margin: EdgeInsets.only(bottom: 28),
-          padding: EdgeInsets.only(right: 25),
+          margin: const EdgeInsets.only(bottom: 28),
+          padding: const EdgeInsets.only(right: 25),
           height: 156,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -343,13 +342,12 @@ class _CartScreenState
                                 EasyRichTextPattern(
                                   targetString: item.unit,
                                   style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(color: AppColor.textGrey),
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(color: AppColor.textGrey),
                                 ),
                               ],
                             ),
-
                           )
                         ],
                       ),
@@ -359,6 +357,14 @@ class _CartScreenState
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
+                            onTap: () {
+                              if (item.quantity > 1) {
+                                cartVM.updateQuantity(
+                                    productModel:
+                                        item.updateQuantity(--item.quantity),
+                                    uid: _userViewModel.currentUser?.uid ?? '');
+                              }
+                            },
                             child: Container(
                               height: 45,
                               width: 45,
@@ -376,6 +382,12 @@ class _CartScreenState
                             child: Text(item.quantity.toString()),
                           ),
                           InkWell(
+                            onTap: () {
+                              cartVM.updateQuantity(
+                                  productModel:
+                                      item.updateQuantity(++item.quantity),
+                                  uid: _userViewModel.currentUser?.uid ?? '');
+                            },
                             child: Container(
                               height: 45,
                               width: 45,

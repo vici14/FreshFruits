@@ -1,5 +1,5 @@
 import 'package:fresh_fruit/service/service_manager.dart';
-import 'package:fresh_fruit/view_model/base_viewmodel.dart';
+import 'package:fresh_fruit/view_model/BaseViewModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthViewModel extends BaseViewModel {

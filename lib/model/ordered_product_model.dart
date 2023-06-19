@@ -21,6 +21,19 @@ class OrderedProductModel {
     this.unit,
   });
 
+  OrderedProductModel updateQuantity(int updatedQuantity) {
+    return OrderedProductModel(
+      id: id,
+      category: category,
+      cost: cost,
+      description: description,
+      imageUrl: imageUrl,
+      name: name,
+      quantity: updatedQuantity,
+      unit: unit,
+    );
+  }
+
   factory OrderedProductModel.initial() {
     return OrderedProductModel(
         id: '0',

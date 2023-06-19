@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
-import 'package:fresh_fruit/view_model/user_viewmodel.dart';
+import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:provider/provider.dart';
 
-import '../../view_model/user_viewmodel.dart';
+import '../../view_model/UserViewModel.dart';
 import 'package:provider/provider.dart';
 
 abstract class BaseProductCategoryScreen<T extends StatefulWidget>

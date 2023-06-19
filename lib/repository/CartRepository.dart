@@ -1,5 +1,5 @@
-  import 'package:cloud_firestore/cloud_firestore.dart';
- import 'package:fresh_fruit/model/cart_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 
@@ -9,6 +9,11 @@ abstract class CartRepository {
   Future<void> addToCart({
     required ProductModel productModel,
     required int quantity,
+    required String uid,
+  });
+
+  Future<void> updateQuantity({
+    required OrderedProductModel productModel,
     required String uid,
   });
 
@@ -24,5 +29,6 @@ abstract class CartRepository {
     required String customerPhone,
     required String customerAddress,
   });
+
   Stream<QuerySnapshot<OrderedProductModel>> getCartItemsStream(String uid);
 }

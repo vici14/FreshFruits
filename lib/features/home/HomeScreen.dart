@@ -4,7 +4,7 @@ import 'package:fresh_fruit/mock_data.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
-import 'package:fresh_fruit/view_model/user_viewmodel.dart';
+import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/ProductCardItem.dart';
 import 'package:fresh_fruit/widgets/product_card/ProductCardShimmer.dart';
 import 'package:provider/provider.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_fruit/utils/ValidationUtil.dart';
 
 import '../../view_model/product_view_model.dart';
-import '../../view_model/user_viewmodel.dart';
+import '../../view_model/UserViewModel.dart';
 import '../../widgets/my_app_bar.dart';
 import '../../widgets/my_drawer.dart';
 import 'package:provider/provider.dart';

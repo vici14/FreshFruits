@@ -1,6 +1,6 @@
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
-import 'package:fresh_fruit/repository/user_repository.dart';
+import 'package:fresh_fruit/repository/UserRepository.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 
 class UserRepositoryImpl extends UserRepository {

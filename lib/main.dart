@@ -6,9 +6,9 @@ import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/view_model/authen_viewmodel.dart';
-import 'package:fresh_fruit/view_model/cart_viewmodel.dart';
+import 'package:fresh_fruit/view_model/CartViewModel.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
-import 'package:fresh_fruit/view_model/user_viewmodel.dart';
+import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 

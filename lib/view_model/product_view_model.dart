@@ -1,9 +1,9 @@
 import 'package:fresh_fruit/mock_data.dart';
 
 import '../model/product_model.dart';
-import '../repository/product_repo_impl.dart';
-import '../repository/product_repository.dart';
-import 'base_viewmodel.dart';
+import '../repository/ProductRepositoryImpl.dart';
+import '../repository/ProductRepository.dart';
+import 'BaseViewModel.dart';
 
 class ProductViewModel extends BaseViewModel {
   static final ProductViewModel _instance = ProductViewModel._internal();
