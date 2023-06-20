@@ -1,0 +1,8 @@
+{
+    "dbPassword": "Y!*@$&(%&!",
+    "dbScriptPath": "assets/database",
+    "dbVersion": 0,
+    "sentryDSN": "",
+    "sanbox_api_url": "",
+    "production_api_url": ""
+}

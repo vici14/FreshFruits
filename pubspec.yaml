@@ -10,11 +10,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+
+dev_dependencies:
   cupertino_icons: ^1.0.2
+
+  sqflite: 2.0.1
+  localstorage: 4.0.1+2
+
 
   cloud_firestore: 4.4.5
   firebase_core: 2.14.0
   firebase_auth: 4.6.3
+  firebase_crashlytics: ^3.0.17
+  firebase_analytics: ^10.4.1
+  firebase_dynamic_links: ^5.0.16
+
   provider: 6.0.5
   package_info_plus: 4.0.2
   shared_preferences: ^2.0.15
@@ -29,9 +40,11 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_svg: ^1.0.3
   easy_rich_text: 1.1.0
-
-dev_dependencies:
-  intl: 0.17.0
+  flutter_html: ^3.0.0-alpha.6
+  intl: ^0.17.0
+  page_route_animator: ^1.0.3
+  syncfusion_flutter_datepicker: "20.4.44"
+  open_store: ^0.5.0
 
   flutter_test:
     sdk: flutter
@@ -43,3 +56,4 @@ flutter:
   assets:
     - assets/
     - assets/bottom_bar/
+    - assets/config/
