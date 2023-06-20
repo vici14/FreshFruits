@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fresh_fruit/features/account/UserScreen.dart';
-import 'package:fresh_fruit/features/authens/authen_screen.dart';
+import 'package:fresh_fruit/features/authens/authen_intro.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
@@ -84,7 +83,7 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
       HomeScreen(),
       StoreScreen(),
       FavoriteProductsScreen(),
-      AuthenScreen(),
+      const AuthenIntroScreen(),
     ];
   }
 

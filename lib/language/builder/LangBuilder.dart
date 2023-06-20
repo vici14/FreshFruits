@@ -23,4 +23,19 @@ abstract class LangBuilder {
 
   String get USER_NOT_LOGGED_IN;
 
+  String get DONT_HAVE_ACCOUNT_LOGIN;
+
+  String get DONT_HAVE_ACCOUNT_LOGIN_PATTERN_1;
+
+  String get USERNAME;
+
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN;
+
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1;
+
+  String get AUTHEN_INTRO;
+
+  String get LOGIN_OR_SIGNUP;
+
+  String get YOU_DONT_LOGIN_YET;
 }

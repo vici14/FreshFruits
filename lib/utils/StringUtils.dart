@@ -61,3 +61,13 @@ class StringUtils {
     return cardNumber?.substring(cardLength - 4, cardLength) ?? '';
   }
 }
+
+extension StringNotNullOrEmpty on String? {
+  bool isNotNullAndEmpty() {
+    return this != null &&
+        (this?.isNotEmpty ?? false) &&
+        this != "" &&
+        this != 'null' &&
+        this != 'undefined';
+  }
+}

@@ -36,4 +36,28 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get USER_NOT_LOGGED_IN => "Please sign in to continue";
+
+  @override
+  String get DONT_HAVE_ACCOUNT_LOGIN => 'Don’t have an account? Singup';
+
+  @override
+  String get DONT_HAVE_ACCOUNT_LOGIN_PATTERN_1 => 'Singup';
+
+  @override
+  String get USERNAME => 'Username';
+
+  @override
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN => 'Already have an account? Sign in';
+
+  @override
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1 => 'Sign in';
+
+  @override
+  String get AUTHEN_INTRO => 'Get your groceries with Eco Grocery';
+
+  @override
+  String get LOGIN_OR_SIGNUP => 'Signin or Signup';
+
+  @override
+  String get YOU_DONT_LOGIN_YET => 'You don\'t login yet?';
 }

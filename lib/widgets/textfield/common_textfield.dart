@@ -12,7 +12,6 @@ class CommonTextField extends StatelessWidget {
   final void Function()? onCompleted;
   final bool isShowIcon;
   final String? Function(String?)? onChange;
-  final String iconRight;
   final bool autoValidate;
   final Decoration? customDecoration;
   final Widget? suffixIcon;
@@ -42,7 +41,6 @@ class CommonTextField extends StatelessWidget {
     this.isShowIcon = false,
     this.onChange,
     this.suffixIcon,
-    this.iconRight = '',
     this.autoValidate = false,
     this.readOnly = false,
     this.suffixWidget,
@@ -67,17 +65,15 @@ class CommonTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         labelText != null
-            ? Container(
-                child: Text(
-                  labelText ?? '',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    height: 29 / 14,
-                    color: hexToColor('#7C7C7C'),
-                  ),
-                ),
-              )
+            ? Text(
+              labelText ?? '',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                height: 29 / 14,
+                color: hexToColor('#7C7C7C'),
+              ),
+            )
             : Container(),
         Container(
           height: 44,
@@ -117,6 +113,12 @@ class CommonTextField extends StatelessWidget {
                         ),
                       ),
                       focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: hexToColor('#E2E2E2'),
+                        ),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
                           width: 1,
                           color: hexToColor('#E2E2E2'),

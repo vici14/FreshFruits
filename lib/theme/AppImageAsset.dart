@@ -14,6 +14,8 @@ class AppImageAsset {
   static const iconFilter = '${_assetFolder}icon_filter.svg';
   static const authAppBarIcon = '${_assetFolder}auth_app_bar_icon.png';
   static const authenAppbarBackground = '${_assetFolder}authen_appbar_background.png';
+  static const authenBackground = '${_assetFolder}authen_background.png';
   static const iconCartItemDelete = '${_assetFolder}icon_cart_item_delete.svg';
+  static const iconGreenCheck = '${_assetFolder}green_check.svg';
 
 }

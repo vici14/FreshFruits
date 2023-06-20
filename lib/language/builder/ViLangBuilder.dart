@@ -37,4 +37,27 @@ class ViLangBuilder extends LangBuilder {
   @override
   String get USER_NOT_LOGGED_IN => "Vui lòng đăng nhập để tiếp tục";
 
+  @override
+  String get DONT_HAVE_ACCOUNT_LOGIN => 'Không có tài khoản? Đăng ký';
+
+  @override
+  String get DONT_HAVE_ACCOUNT_LOGIN_PATTERN_1 => 'Đăng ký';
+
+  @override
+  String get USERNAME => 'Họ và tên';
+
+  @override
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN => 'Bạn đã có sẵn một tài khoản? Đăng nhập';
+
+  @override
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1 => 'Đăng nhập';
+
+  @override
+  String get AUTHEN_INTRO => 'Get your groceries with Eco Grocery';
+
+  @override
+  String get LOGIN_OR_SIGNUP => 'Đăng nhập hoặc đăng ký';
+
+  @override
+  String get YOU_DONT_LOGIN_YET => 'Bạn chưa đăng nhập?';
 }
