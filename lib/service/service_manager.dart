@@ -181,12 +181,19 @@ class ServiceManager {
     }
   }
 
-  Future<bool> signUpWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<bool> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      var isCreated = createUser(uid: userCredential.user!.uid, email: email);
+      var isCreated = createUser(
+        uid: userCredential.user!.uid,
+        email: email,
+        name: name,
+      );
       if (isCreated) {
         createCollectionCart(userCredential.user!.uid);
       }
@@ -203,8 +210,12 @@ class ServiceManager {
     return false;
   }
 
-  bool createUser({required String uid, required String email}) {
-    userRef.add(UserModel.initial(uid: uid, email: email));
+  bool createUser({
+    required String uid,
+    required String email,
+    required String name,
+  }) {
+    userRef.add(UserModel.initial(uid: uid, email: email, name: name));
     return true;
   }
 
@@ -319,10 +330,10 @@ class ServiceManager {
 
   void updateQuantity(
       {required OrderedProductModel product, required String uid}) async {
-    try{
+    try {
       var _cart = await getUserCurrentCart(uid);
       var productInCart =
-      await getProductExistedInCart(cart: _cart, productId: product.id);
+          await getProductExistedInCart(cart: _cart, productId: product.id);
       if (productInCart.docs.isNotEmpty) {
         ///if product existed,update quantity
         var _prod = await productInCart.docs.first.reference.get();
@@ -330,24 +341,22 @@ class ServiceManager {
             .update({"quantity": (product.quantity)});
 
         AppLogger.i('updateQuantity success');
-
       }
-    }catch(e){
+    } catch (e) {
       AppLogger.e(e.toString());
     }
-
   }
 
   void addToCart(
       {required ProductModel productModel,
       required int quantity,
       required String uid}) async {
-    try{
+    try {
       var orderItem = OrderedProductModel.fromProductModel(
           product: productModel, quantity: quantity);
       var _cart = await getUserCurrentCart(uid);
-      var productInCart =
-      await getProductExistedInCart(cart: _cart, productId: productModel.id!);
+      var productInCart = await getProductExistedInCart(
+          cart: _cart, productId: productModel.id!);
       if (productInCart.docs.isNotEmpty) {
         ///if product existed,update quantity
         var _prod = await productInCart.docs.first.reference.get();
@@ -358,12 +367,9 @@ class ServiceManager {
         var _a = await _cart.collection('orderedItems').add(orderItem.toJson());
       }
       AppLogger.i('addToCart success');
-
-    }catch(e){
+    } catch (e) {
       AppLogger.e(e.toString());
-
     }
-
   }
 
   Future<CartModel?> getCart(String uid) async {
@@ -402,7 +408,6 @@ class ServiceManager {
       return true;
     } catch (e) {
       AppLogger.e(e.toString());
-
     }
     return false;
   }
@@ -414,24 +419,21 @@ class ServiceManager {
     required String customerPhone,
     required String customerAddress,
   }) async {
-    try{
+    try {
       var _currentUser = await getCurrentUserDocument(uid);
       _currentUser.update({
         'orderHistory': FieldValue.arrayUnion([
           cartModel
               .withShippingInformation(
-              customerName: customerName,
-              customerPhone: customerPhone,
-              customerAddress: customerAddress)
+                  customerName: customerName,
+                  customerPhone: customerPhone,
+                  customerAddress: customerAddress)
               .toJson()
         ])
       });
       AppLogger.i('addToHistory success');
-
-    }catch(e){
+    } catch (e) {
       AppLogger.e(e.toString());
-
     }
-
   }
 }

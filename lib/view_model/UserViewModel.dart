@@ -27,13 +27,16 @@ class UserViewModel extends BaseViewModel {
 
   //=======================FIELD VALUE=========================
 
-  Future<bool> signUpWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<bool> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
     try {
       isSigningUp = true;
       notifyListeners();
       var _resp = await _repository.signUpWithEmailAndPassword(
-          email: email, password: password);
+          email: email, password: password, name: name);
       isSigningUp = false;
       notifyListeners();
       return _resp;

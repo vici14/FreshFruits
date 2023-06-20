@@ -61,16 +61,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
           CommonTextField(
             controller: signUpUserNameCtl ?? TextEditingController(),
             labelText: 'Email',
-            suffixIcon: isEmailValid ? Padding(
-              padding: const EdgeInsets.only(left: 28.0),
-              child: SvgPicture.asset(
-                AppImageAsset.iconGreenCheck,
-                fit: BoxFit.scaleDown,
-              ),
-            ) : const SizedBox(),
+            suffixIcon: isEmailValid
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 28.0),
+                    child: SvgPicture.asset(
+                      AppImageAsset.iconGreenCheck,
+                      fit: BoxFit.scaleDown,
+                    ),
+                  )
+                : const SizedBox(),
             onChange: (value) {
               if (RegExp(
-                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                   .hasMatch(value ?? '')) {
                 setState(() {
                   isEmailValid = true;
@@ -135,7 +137,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               patternList: [
                 EasyRichTextPattern(
-                  targetString: locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
+                  targetString:
+                      locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
                   style: const TextStyle(
                     fontSize: 12,
                     height: 12.97 / 12,
@@ -153,9 +156,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void onSignupClick() {
-    if ((signUpUserNameCtl?.text.isNotNullAndEmpty() ?? false) &&
+    if ((signUpNameCtl?.text.isNotNullAndEmpty() ?? false) &&
+        (signUpUserNameCtl?.text.isNotNullAndEmpty() ?? false) &&
         (signUpPasswordCtl?.text.isNotNullAndEmpty() ?? false)) {
       userViewModel?.signUpWithEmailAndPassword(
+        name: signUpNameCtl?.text ?? '',
         email: signUpUserNameCtl?.text ?? '',
         password: signUpPasswordCtl?.text ?? '',
       );

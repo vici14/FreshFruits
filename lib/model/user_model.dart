@@ -1,4 +1,3 @@
-
 import 'package:fresh_fruit/model/cart_model.dart';
 
 import 'product_model.dart';
@@ -21,9 +20,13 @@ class UserModel {
       this.orderHistory,
       this.email});
 
-  factory UserModel.initial({required String uid, required String email}) {
+  factory UserModel.initial({
+    required String uid,
+    required String email,
+    required String name,
+  }) {
     return UserModel(
-        name: '',
+        name: name,
         phone: '',
         address: '',
         favoriteProducts: [],

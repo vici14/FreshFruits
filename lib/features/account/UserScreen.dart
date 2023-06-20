@@ -60,8 +60,8 @@ class _UserScreenState extends State<UserScreen> {
                         ? _buildInputForm()
                         : const SizedBox.shrink(),
                     _buildRegisterButton(onTap: () {
-                      userVM.signUpWithEmailAndPassword(
-                          email: email, password: password);
+                      // userVM.signUpWithEmailAndPassword(
+                      //     email: email, password: password);
                     }),
                     _buildSignInButton(
                       onTap: () async {

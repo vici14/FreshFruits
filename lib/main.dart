@@ -8,7 +8,6 @@ import 'package:fresh_fruit/db/DatabaseManager.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
-import 'package:fresh_fruit/view_model/authen_viewmodel.dart';
 import 'package:fresh_fruit/view_model/CartViewModel.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
@@ -72,8 +71,6 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
                 create: (BuildContext context) => UserViewModel()),
             ChangeNotifierProvider<CartViewModel>(
                 create: (BuildContext context) => CartViewModel()),
-            ChangeNotifierProvider<AuthViewModel>(
-                create: (BuildContext context) => AuthViewModel()),
           ],
           child: MaterialApp(
             navigatorObservers: [observer],
