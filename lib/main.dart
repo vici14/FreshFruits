@@ -1,7 +1,10 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
+import 'package:fresh_fruit/db/DatabaseManager.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
@@ -18,13 +21,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       // name: 'fresh-fruits',
-  );
+      );
 
   AppViewModel admin = AppViewModel();
   admin.init();
   // FirebaseAuth auth = FirebaseAuth.instance;
 
   // FirebaseApp defaultApp = Firebase.app();
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
   runApp(
     MultiProvider(
@@ -35,17 +43,19 @@ void main() async {
 }
 
 class FreshFruitApp extends StatefulWidget {
-
   @override
   _FreshFruitAppState createState() => _FreshFruitAppState();
 }
 
 class _FreshFruitAppState extends State<FreshFruitApp> {
   Future<bool>? _initDependencies;
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  late FirebaseAnalyticsObserver observer;
 
   @override
   void initState() {
     _initDependencies = initDependencies();
+    observer = FirebaseAnalyticsObserver(analytics: analytics);
     super.initState();
   }
 
@@ -66,9 +76,10 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
                 create: (BuildContext context) => AuthViewModel()),
           ],
           child: MaterialApp(
+            navigatorObservers: [observer],
             onGenerateRoute: (settings) => AppRoute.onGenerateRoute(settings),
             theme: AppTheme().lightTheme(),
-            darkTheme: AppTheme().darkTheme(),
+            darkTheme: AppTheme().lightTheme(),
             home: Scaffold(
               drawer: MyDrawer(),
               body: HomeNavigationScreen(),
@@ -81,6 +92,7 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
 
   Future<bool> initDependencies() async {
     ServiceManager().init();
+    await DatabaseManager().init();
     print('done init');
     //delay 1s for splash Screen
     return true;
