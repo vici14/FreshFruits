@@ -24,6 +24,8 @@ abstract class BaseProviderScreenState<T extends StatefulWidget,
 
   List<Widget>? appBarActions() => null;
 
+  Color? setBackgroundColor() => null;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -38,6 +40,7 @@ abstract class BaseProviderScreenState<T extends StatefulWidget,
             top: enableSafeAreaTop(),
             bottom: enableSafeAreaBottom(),
             child: Scaffold(
+              backgroundColor: setBackgroundColor(),
                 appBar: enableHeader()
                     ? CommonAppbar(
                         title: appBarTitle(),

@@ -1,5 +1,4 @@
-
-
+import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
 
@@ -25,6 +24,11 @@ abstract class UserRepository {
       {required String uid, required ProductModel productModel});
 
   Future<UserModel?> getCurrentUser();
+
+  Future<bool> addShippingDetail({
+    required AddressModel address,
+    required String uid,
+  });
 
   Future<UserModel?> logOut();
 }

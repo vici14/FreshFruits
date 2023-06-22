@@ -111,7 +111,9 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
+
       floatingActionButton: FloatingActionButton(
+         key: Key('btnBack'),
         clipBehavior: Clip.antiAlias,
         shape: const CircleBorder(),
         onPressed: () {

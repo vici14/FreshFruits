@@ -1,3 +1,4 @@
+import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
 import 'package:fresh_fruit/repository/UserRepository.dart';
@@ -59,5 +60,11 @@ class UserRepositoryImpl extends UserRepository {
   @override
   Future<UserModel?> logOut() async {
     return await serviceManager.logOut();
+  }
+
+  @override
+  Future<bool> addShippingDetail({required AddressModel address, required
+  String uid}) async{
+    return await serviceManager.addShippingAddress(address: address, uid: uid);
   }
 }

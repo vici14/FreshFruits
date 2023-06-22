@@ -1,3 +1,5 @@
+import 'package:fresh_fruit/logger/AppLogger.dart';
+import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
 import 'package:fresh_fruit/repository/UserRepositoryImpl.dart';
@@ -24,6 +26,9 @@ class UserViewModel extends BaseViewModel {
 
   bool isLoggedIn = false;
   bool isUpdatingProfile = false;
+
+  bool isAddingAddress = false;
+  bool isAddAddressSuccess = false;
 
   //=======================FIELD VALUE=========================
 
@@ -110,5 +115,19 @@ class UserViewModel extends BaseViewModel {
       print("logOut :${e.toString()}");
     }
     return false;
+  }
+
+  Future<void> addShippingDetail(AddressModel address) async {
+    try {
+      isAddingAddress = true;
+      notifyListeners();
+      isAddAddressSuccess = await _repository.addShippingDetail(
+          address: address, uid: currentUser?.uid ?? "");
+      isAddingAddress = false;
+      notifyListeners();
+    } catch (e) {
+      isAddingAddress = false;
+      AppLogger.e('addShippingDetail' + e.toString());
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:fresh_fruit/base/BaseProviderScreenState.dart';
 import 'package:fresh_fruit/features/cart/CartController.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
+import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
@@ -185,7 +186,9 @@ class _CartScreenState
           Padding(
             padding: const EdgeInsets.only(bottom: AppDimen.space16),
             child: SecondaryButton(
-                text: locale.language.BUTTON_NEXT, onTap: () {}),
+                text: locale.language.BUTTON_NEXT, onTap: () {
+                  Navigator.of(context).pushNamed(AppRoute.checkoutScreen);
+            }),
           )
         ],
       ),

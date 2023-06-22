@@ -14,6 +14,22 @@ class District {
   bool operator ==(dynamic other) =>
       other != null && other is District && this.name == other.name;
 
+  factory District.fromQuerySnapshot(Map<String, dynamic> snapshot) {
+    return District(
+      id: snapshot['id'] ?? '',
+      name: snapshot['name'] ?? '',
+      nameWithType: snapshot['nameWithType'] ?? '',
+    );
+  }
+
+  Map<String, Object?> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'nameWithType': nameWithType,
+    };
+  }
+
   @override
   int get hashCode => super.hashCode;
 }

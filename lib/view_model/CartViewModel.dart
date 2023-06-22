@@ -21,7 +21,23 @@ class CartViewModel extends BaseViewModel {
 //=======================FIELD VALUE=========================
   CartModel? currentCart;
   bool isGetCart = false;
-  double totalCost = 0;
+  double _totalCost = 0;
+
+  double? _shippingFee;
+
+  double? get shippingFee => _shippingFee;
+
+  set shippingFee(double? value) {
+    _shippingFee = value;
+    notifyListeners();
+  }
+
+  double get totalCost => _totalCost;
+
+  set totalCost(double value) {
+    _totalCost = value;
+    notifyListeners();
+  }
 
   bool isUpdatingProductQuantity = false;
 

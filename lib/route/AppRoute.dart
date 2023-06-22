@@ -4,6 +4,8 @@ import 'package:fresh_fruit/error/ErrorScreen.dart';
 import 'package:fresh_fruit/features/account/UserScreen.dart';
 import 'package:fresh_fruit/features/authens/authen_screen.dart';
 import 'package:fresh_fruit/features/cart/cart_screen.dart';
+import 'package:fresh_fruit/features/check_out/CheckOutScreen.dart';
+import 'package:fresh_fruit/features/check_out/address/AddDeliveryAddressScreen.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/features/home/HomeScreen.dart';
 import 'package:fresh_fruit/features/splash/SplashScreen.dart';
@@ -19,6 +21,9 @@ class AppRoute {
   static const favouriteScreen='/favourite';
   static const userScreen = '/user';
   static const authenScreen = '/authen';
+  static const checkoutScreen = '/checkout';
+  static const deliveryAddressScreen = '/deliveryAddress';
+  static const addDeliveryAddressScreen = '/addDeliveryAddress';
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     print('settings.name:${settings.name}');
     switch (settings.name) {
@@ -54,7 +59,14 @@ class AppRoute {
         return MaterialPageRoute(
           builder: (context) => AuthenScreen(),
         );
-
+      case AppRoute.checkoutScreen:
+        return MaterialPageRoute(
+          builder: (context) => CheckOutScreen(),
+        );
+      case AppRoute.addDeliveryAddressScreen:
+        return MaterialPageRoute(
+          builder: (context) => AddDeliveryAddressScreen(),
+        );
       default:
         return MaterialPageRoute(
           builder: (context) => ErrorScreen(

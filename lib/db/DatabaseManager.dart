@@ -1,14 +1,16 @@
 import 'package:flutter/services.dart';
+import 'package:fresh_fruit/model/address/AddressDistricts.dart';
+import 'package:fresh_fruit/model/address/AdressWards.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:localstorage/localstorage.dart';
 import 'dart:io';
 
-import '../model/address/address_city.dart';
+import '../model/address/AddressCity.dart';
 
 class DatabaseManager {
-  static final DatabaseManager _instance = DatabaseManager._internal();
+  static late DatabaseManager _instance;
 
   static DatabaseManager get instance => _instance;
 
@@ -18,24 +20,25 @@ class DatabaseManager {
     return _instance;
   }
 
-  Future<void> init() async {
+  static Future<void> init() async {
+    _instance = DatabaseManager._internal();
     await createDB();
   }
 
-  Database? _db;
+  static Database? _db;
 
   Database? get db => _db;
   final LocalStorage storage = LocalStorage('app_data');
   bool initialized = false;
 
-  createDB() async {
+  static createDB() async {
     getLocalDB();
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String databasePath = join(appDocDir.path, 'local_db.db');
     _db = await openDatabase(databasePath);
   }
 
-  getLocalDB() async {
+  static getLocalDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "local_db.db");
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
@@ -69,6 +72,92 @@ class DatabaseManager {
         }
         cities = data;
         return cities;
+      } catch (e) {
+        print('ERR');
+        print(e.toString());
+      }
+    }
+    return [];
+  }
+
+  Future<List<District>> queryDistrict() async {
+    ///HoChiMinh cityId = 79
+    String cityId = "79";
+    if (_db != null) {
+      try {
+        List<Map> list = await _db!
+            .rawQuery('SELECT * FROM locations_districts WHERE city_id="79"');
+        var data = <District>[];
+        for (int i = 0; i < list.length; i++) {
+          District district = District();
+          district.id = int.parse(list[i]["id"]);
+          district.name = list[i]["name"];
+          data.add(district);
+        }
+      data =   sortDistrict(data);
+        return data;
+      } catch (e) {
+        print('ERR');
+        print(e.toString());
+      }
+    }
+    return [];
+  }
+
+  List<District> sortDistrict(List<District> districts) {
+    List<District> _list = [];
+    List<District> _listCharacter = [];
+    for (var district in districts) {
+      if (int.tryParse(district.name!) != null) {
+        _list.add(district);
+       }else{
+        _listCharacter.add(district);
+      }
+      _list.sort(
+        (a, b) {
+          return int.parse(a.name ?? "").compareTo(int.parse(b.name ?? ""));
+        },
+      );
+
+     }
+    _list.addAll(_listCharacter);
+    return _list;
+  }
+
+  List<Ward> sortWard(List<Ward> wards) {
+    List<Ward> _list = [];
+    List<Ward> _listCharacter = [];
+    for (var ward in wards) {
+      if (int.tryParse(ward.name!) != null) {
+        _list.add(ward);
+      }else{
+        _listCharacter.add(ward);
+      }
+      _list.sort(
+            (a, b) {
+          return int.parse(a.name ?? "").compareTo(int.parse(b.name ?? ""));
+        },
+      );
+
+    }
+    _list.addAll(_listCharacter);
+    return _list;
+  }
+
+  Future<List<Ward>> queryWard(String districtId) async {
+    if (_db != null) {
+      try {
+        List<Map> list = await _db!.rawQuery('SELECT * FROM '
+            'locations_wards WHERE district_id="$districtId"');
+        var data = <Ward>[];
+        for (int i = 0; i < list.length; i++) {
+          Ward ward = Ward();
+          ward.id = int.parse(list[i]["id"]);
+          ward.name = list[i]["name"];
+          data.add(ward);
+        }
+        data =sortWard(data);
+        return data;
       } catch (e) {
         print('ERR');
         print(e.toString());

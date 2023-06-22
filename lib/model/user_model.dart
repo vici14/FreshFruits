@@ -1,4 +1,4 @@
-
+import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 
 import 'product_model.dart';
@@ -9,17 +9,20 @@ class UserModel {
   String? address;
   List<ProductModel>? favoriteProducts;
   List<CartModel>? orderHistory;
+  List<AddressModel>? addresses;
   String? uid;
   String? email;
 
-  UserModel(
-      {this.uid,
-      this.name,
-      this.phone,
-      this.address,
-      this.favoriteProducts,
-      this.orderHistory,
-      this.email});
+  UserModel({
+    this.uid,
+    this.name,
+    this.phone,
+    this.address,
+    this.favoriteProducts,
+    this.orderHistory,
+    this.email,
+    this.addresses,
+  });
 
   factory UserModel.initial({required String uid, required String email}) {
     return UserModel(
@@ -28,6 +31,7 @@ class UserModel {
         address: '',
         favoriteProducts: [],
         orderHistory: [],
+        addresses: [],
         email: email,
         uid: uid);
   }
@@ -53,6 +57,13 @@ class UserModel {
               (index) => CartModel.fromQuerySnapshot(
                   snapshot['orderHistory'][index])).toList()
           : [],
+      addresses:
+          (snapshot['addresses'] != null)
+              ? List<AddressModel>.generate(
+                  snapshot['addresses'].length ?? 0,
+                  (index) => AddressModel.fromQuerySnapshot(
+                      snapshot['addresses'][index])).toList()
+              : [],
     );
   }
 
@@ -67,6 +78,8 @@ class UserModel {
           (index) => favoriteProducts![index].toJson()),
       "orderHistory": List.generate(
           orderHistory!.length, (index) => orderHistory![index].toJson()),
+      "addresses": List.generate(
+          addresses?.length ?? 0, (index) => addresses![index].toJson()),
     };
   }
 }

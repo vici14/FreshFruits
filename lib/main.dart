@@ -14,10 +14,13 @@ import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_driver/driver_extension.dart';
 
 import 'HomeNavigationScreen.dart';
 
 void main() async {
+  enableFlutterDriverExtension(commands: [], finders: []);
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
       // name: 'fresh-fruits',
@@ -92,7 +95,10 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
 
   Future<bool> initDependencies() async {
     ServiceManager().init();
-    await DatabaseManager().init();
+    await DatabaseManager.init();
+
+    await DatabaseManager().accessDB();
+
     print('done init');
     //delay 1s for splash Screen
     return true;
