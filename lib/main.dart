@@ -14,12 +14,11 @@ import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_driver/driver_extension.dart';
 
 import 'HomeNavigationScreen.dart';
 
 void main() async {
-  enableFlutterDriverExtension(commands: [], finders: []);
+  // enableFlutterDriverExtension(commands: [], finders: []);
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
