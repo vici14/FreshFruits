@@ -141,9 +141,16 @@ class _AuthenScreenState extends State<AuthenScreen>
         padding: const EdgeInsets.symmetric(horizontal: 25),
         child: TabBarView(
           controller: tabController,
-          children: const [
-            LoginScreen(),
-            SignUpScreen(),
+          children: [
+            const LoginScreen(),
+            SignUpScreen(
+              onSignUpSuccess: () {
+                tabController?.animateTo(
+                  0,
+                  duration: Duration(milliseconds: 300),
+                );
+              },
+            ),
           ],
         ),
       ),

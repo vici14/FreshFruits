@@ -60,4 +60,37 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get YOU_DONT_LOGIN_YET => 'Bạn chưa đăng nhập?';
+
+  @override
+  String get ACCOUNT => 'Tài khoản';
+
+  @override
+  String get HISTORY => 'Lịch sử';
+
+  @override
+  String get PAYMENT_METHOD => 'PT thanh toán';
+
+  @override
+  String get ACCOUNT_PRIVACY_SUBTITLE => 'Set up account privacy';
+
+  @override
+  String get ACCOUNT_PRIVACY_TITLE => 'Account Privacy';
+
+  @override
+  String get FAQS_SUBTITLE => 'Frequently Asked Questions';
+
+  @override
+  String get FAQS_TITLE => 'FAQs';
+
+  @override
+  String get LOG_OUT_SUBTITLE => 'Log out account in application';
+
+  @override
+  String get LOG_OUT_TITLE => 'Log Out';
+
+  @override
+  String get PUSH_NOTIFICATION_SUBTITLE => 'Set up push notifications';
+
+  @override
+  String get PUSH_NOTIFICATION_TITLE => 'Push-Notifications';
 }

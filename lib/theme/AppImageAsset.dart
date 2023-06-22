@@ -17,5 +17,8 @@ class AppImageAsset {
   static const authenBackground = '${_assetFolder}authen_background.png';
   static const iconCartItemDelete = '${_assetFolder}icon_cart_item_delete.svg';
   static const iconGreenCheck = '${_assetFolder}green_check.svg';
-
+  static const defaultAvatar = '${_assetFolder}avatar_default.svg';
+  static const iconFAQS = '${_assetFolder}icon_faqs.svg';
+  static const iconLocker = '${_assetFolder}icon_locker.svg';
+  static const iconLogout = '${_assetFolder}icon_logout.svg';
 }

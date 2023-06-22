@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
 import 'package:fresh_fruit/repository/UserRepositoryImpl.dart';
 import 'package:fresh_fruit/repository/UserRepository.dart';
+import 'package:fresh_fruit/service/storage_service.dart';
 import 'package:fresh_fruit/view_model/BaseViewModel.dart';
 
 class UserViewModel extends BaseViewModel {
@@ -26,6 +28,23 @@ class UserViewModel extends BaseViewModel {
   bool isUpdatingProfile = false;
 
   //=======================FIELD VALUE=========================
+
+  void checkIsLoggedIn() async {
+    String? email = StorageService.shared.getString('email');
+    String? name = StorageService.shared.getString('name');
+    String? uid = await StorageService.shared.readSecureData('uid');
+
+    if ((email?.isNotEmpty ?? false) &&
+        (name?.isNotEmpty ?? false) &&
+        (uid?.isNotEmpty ?? false)) {
+      isLoggedIn = true;
+      currentUser = UserModel.initial(
+        uid: uid ?? '',
+        email: email ?? '',
+        name: name ?? '',
+      );
+    }
+  }
 
   Future<bool> signUpWithEmailAndPassword({
     required String email,
@@ -58,7 +77,7 @@ class UserViewModel extends BaseViewModel {
     refreshCurrentUser();
   }
 
-  Future<bool> signInWithEmailAndPassword(
+  Future<bool> signInWithEmailAndPassword(BuildContext context,
       {required String email, required String password}) async {
     try {
       isLoggingIn = true;
@@ -67,12 +86,15 @@ class UserViewModel extends BaseViewModel {
       var _resp = await _repository.signInWithEmailAndPassword(
           email: email, password: password);
       if (_resp) {
-        currentUser = await _repository.getCurrentUser();
+        currentUser = await _repository.getCurrentUser().then((value) {
+          StorageService.shared.setString('name', value?.name ?? '');
+          StorageService.shared.setString('email', value?.email ?? '');
+          StorageService.shared.setSecureData('uid', value?.uid ?? '');
+        });
         isLoggedIn = true;
       }
       isLoggingIn = false;
       notifyListeners();
-
       return _resp;
     } catch (e) {
       print('signInWithEmailAndPassword:${e.toString()}');
@@ -108,6 +130,9 @@ class UserViewModel extends BaseViewModel {
       currentUser = await _repository.logOut();
       isLoggedIn = false;
       notifyListeners();
+      StorageService.shared.deleteString('name');
+      StorageService.shared.deleteString('email');
+      StorageService.shared.removeSecureData('uid');
       return true;
     } catch (e) {
       print("logOut :${e.toString()}");

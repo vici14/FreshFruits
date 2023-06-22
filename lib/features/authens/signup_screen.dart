@@ -11,7 +11,12 @@ import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  final Function onSignUpSuccess;
+
+  const SignUpScreen({
+    Key? key,
+    required this.onSignUpSuccess,
+  }) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -103,7 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           const SizedBox(height: 51),
           InkWell(
-            onTap: onSignupClick,
+            onTap: () => onSignupClick(context),
             child: Container(
               height: 67,
               width: double.infinity,
@@ -155,15 +160,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void onSignupClick() {
+  void onSignupClick(BuildContext context) async {
     if ((signUpNameCtl?.text.isNotNullAndEmpty() ?? false) &&
         (signUpUserNameCtl?.text.isNotNullAndEmpty() ?? false) &&
         (signUpPasswordCtl?.text.isNotNullAndEmpty() ?? false)) {
-      userViewModel?.signUpWithEmailAndPassword(
+      bool? isSignUpSuccess = await userViewModel?.signUpWithEmailAndPassword(
         name: signUpNameCtl?.text ?? '',
         email: signUpUserNameCtl?.text ?? '',
         password: signUpPasswordCtl?.text ?? '',
       );
+      if (isSignUpSuccess ?? false) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đã đăng ký thành công, bạn hãy đăng nhập!'),
+          ),
+        );
+        widget.onSignUpSuccess();
+      }
     }
   }
 }

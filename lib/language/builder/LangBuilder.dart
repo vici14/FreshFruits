@@ -38,4 +38,26 @@ abstract class LangBuilder {
   String get LOGIN_OR_SIGNUP;
 
   String get YOU_DONT_LOGIN_YET;
+
+  String get ACCOUNT;
+
+  String get PAYMENT_METHOD;
+
+  String get HISTORY;
+
+  String get PUSH_NOTIFICATION_TITLE;
+
+  String get PUSH_NOTIFICATION_SUBTITLE;
+
+  String get ACCOUNT_PRIVACY_TITLE;
+
+  String get ACCOUNT_PRIVACY_SUBTITLE;
+
+  String get FAQS_TITLE;
+
+  String get FAQS_SUBTITLE;
+
+  String get LOG_OUT_TITLE;
+
+  String get LOG_OUT_SUBTITLE;
 }
