@@ -34,10 +34,13 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<bool> signUpWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<bool> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
     return await serviceManager.signUpWithEmailAndPassword(
-        email: email, password: password);
+        email: email, password: password, name: name);
   }
 
   @override

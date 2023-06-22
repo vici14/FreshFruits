@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fresh_fruit/features/account/UserScreen.dart';
-import 'package:fresh_fruit/features/authens/authen_screen.dart';
+import 'package:fresh_fruit/features/authens/authen_intro.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fresh_fruit/view_model/UserViewModel.dart';
+import 'package:provider/provider.dart';
 
 import 'features/home/HomeScreen.dart';
 import 'features/store/store_screen.dart';
@@ -84,7 +86,15 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
       HomeScreen(),
       StoreScreen(),
       FavoriteProductsScreen(),
-      AuthenScreen(),
+      Consumer<UserViewModel>(
+        builder: (_, userVM, __) {
+          if (userVM.isLoggedIn) {
+            return UserScreen();
+          } else {
+            return const AuthenIntroScreen();
+          }
+        },
+      ),
     ];
   }
 

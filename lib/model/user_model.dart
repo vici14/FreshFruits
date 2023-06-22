@@ -1,9 +1,10 @@
 import 'package:fresh_fruit/model/address/AddressModel.dart';
+import 'package:equatable/equatable.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 
 import 'product_model.dart';
 
-class UserModel {
+class UserModel extends Equatable {
   String? name;
   String? phone;
   String? address;
@@ -24,9 +25,13 @@ class UserModel {
     this.addresses,
   });
 
-  factory UserModel.initial({required String uid, required String email}) {
+  factory UserModel.initial({
+    required String uid,
+    required String email,
+    required String name,
+  }) {
     return UserModel(
-        name: '',
+        name: name,
         phone: '',
         address: '',
         favoriteProducts: [],
@@ -82,4 +87,15 @@ class UserModel {
           addresses?.length ?? 0, (index) => addresses![index].toJson()),
     };
   }
+
+  @override
+  List<Object?> get props => [
+        uid,
+        name,
+        phone,
+        address,
+        favoriteProducts,
+        orderHistory,
+        email,
+      ];
 }

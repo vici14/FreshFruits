@@ -47,4 +47,41 @@ abstract class LangBuilder {
 
   String get DELIVERY_ADDRESS_SELECT_WARD;
 
+  String get DONT_HAVE_ACCOUNT_LOGIN;
+
+  String get DONT_HAVE_ACCOUNT_LOGIN_PATTERN_1;
+
+  String get USERNAME;
+
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN;
+
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1;
+
+  String get AUTHEN_INTRO;
+
+  String get LOGIN_OR_SIGNUP;
+
+  String get YOU_DONT_LOGIN_YET;
+
+  String get ACCOUNT;
+
+  String get PAYMENT_METHOD;
+
+  String get HISTORY;
+
+  String get PUSH_NOTIFICATION_TITLE;
+
+  String get PUSH_NOTIFICATION_SUBTITLE;
+
+  String get ACCOUNT_PRIVACY_TITLE;
+
+  String get ACCOUNT_PRIVACY_SUBTITLE;
+
+  String get FAQS_TITLE;
+
+  String get FAQS_SUBTITLE;
+
+  String get LOG_OUT_TITLE;
+
+  String get LOG_OUT_SUBTITLE;
 }

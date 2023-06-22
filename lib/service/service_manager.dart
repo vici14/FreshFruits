@@ -182,12 +182,19 @@ class ServiceManager {
     }
   }
 
-  Future<bool> signUpWithEmailAndPassword(
-      {required String email, required String password}) async {
+  Future<bool> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      var isCreated = createUser(uid: userCredential.user!.uid, email: email);
+      var isCreated = createUser(
+        uid: userCredential.user!.uid,
+        email: email,
+        name: name,
+      );
       if (isCreated) {
         createCollectionCart(userCredential.user!.uid);
       }
@@ -204,8 +211,12 @@ class ServiceManager {
     return false;
   }
 
-  bool createUser({required String uid, required String email}) {
-    userRef.add(UserModel.initial(uid: uid, email: email));
+  bool createUser({
+    required String uid,
+    required String email,
+    required String name,
+  }) {
+    userRef.add(UserModel.initial(uid: uid, email: email, name: name));
     return true;
   }
 

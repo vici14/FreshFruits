@@ -7,8 +7,8 @@ import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/db/DatabaseManager.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
+import 'package:fresh_fruit/service/storage_service.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
-import 'package:fresh_fruit/view_model/authen_viewmodel.dart';
 import 'package:fresh_fruit/view_model/CartViewModel.dart';
 import 'package:fresh_fruit/view_model/product_view_model.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
@@ -21,9 +21,8 @@ void main() async {
   // enableFlutterDriverExtension(commands: [], finders: []);
 
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      // name: 'fresh-fruits',
-      );
+  await Firebase.initializeApp();
+  await StorageService.shared.init();
 
   AppViewModel admin = AppViewModel();
   admin.init();
@@ -71,11 +70,11 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
             ChangeNotifierProvider<ProductViewModel>(
                 create: (BuildContext context) => ProductViewModel()),
             ChangeNotifierProvider<UserViewModel>(
-                create: (BuildContext context) => UserViewModel()),
+              create: (BuildContext context) =>
+                  UserViewModel()..checkIsLoggedIn(),
+            ),
             ChangeNotifierProvider<CartViewModel>(
                 create: (BuildContext context) => CartViewModel()),
-            ChangeNotifierProvider<AuthViewModel>(
-                create: (BuildContext context) => AuthViewModel()),
           ],
           child: MaterialApp(
             navigatorObservers: [observer],

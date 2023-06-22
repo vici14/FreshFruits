@@ -14,8 +14,11 @@ abstract class UserRepository {
   Future<bool> signInWithEmailAndPassword(
       {required String email, required String password});
 
-  Future<bool> signUpWithEmailAndPassword(
-      {required String email, required String password});
+  Future<bool> signUpWithEmailAndPassword({
+    required String email,
+    required String password,
+    required String name,
+  });
 
   Future<void> likeProduct(
       {required String uid, required ProductModel productModel});

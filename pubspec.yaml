@@ -10,10 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-
-dev_dependencies:
-  cupertino_icons: ^1.0.2
+  shared_preferences: ^2.1.2
 
   sqflite: 2.0.1
   localstorage: 4.0.1+2
@@ -28,7 +25,6 @@ dev_dependencies:
 
   provider: 6.0.5
   package_info_plus: 4.0.2
-  shared_preferences: ^2.0.15
   connectivity_plus: ^2.3.6+1
   flex_seed_scheme: ^1.0.0
   custom_refresh_indicator: ^1.2.1
@@ -45,6 +41,11 @@ dev_dependencies:
   page_route_animator: ^1.0.3
   syncfusion_flutter_datepicker: "20.4.44"
   open_store: ^0.5.0
+  flutter_secure_storage: 8.0.0
+  equatable: 2.0.5
+
+dev_dependencies:
+  cupertino_icons: ^1.0.2
 
   flutter_driver:
     sdk: flutter

@@ -1,13 +1,13 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/features/authens/login_screen.dart';
+import 'package:fresh_fruit/features/authens/signup_screen.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
-import 'package:fresh_fruit/view_model/authen_viewmodel.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/keyboard_dismisser.dart';
-import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
 
 class AuthenScreen extends StatefulWidget {
@@ -22,9 +22,6 @@ class _AuthenScreenState extends State<AuthenScreen>
   UserViewModel? userViewModel;
   TabController? tabController;
 
-  TextEditingController? loginUserNameCtl;
-  TextEditingController? loginPasswordCtl;
-
   @override
   void initState() {
     super.initState();
@@ -32,8 +29,6 @@ class _AuthenScreenState extends State<AuthenScreen>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       userViewModel = Provider.of<UserViewModel>(context, listen: false);
     });
-    loginUserNameCtl = TextEditingController();
-    loginPasswordCtl = TextEditingController();
   }
 
   @override
@@ -80,7 +75,7 @@ class _AuthenScreenState extends State<AuthenScreen>
       ),
       child: Column(
         children: [
-          const SizedBox(height: 128),
+          const SizedBox(height: 56),
           Image.asset(
             AppImageAsset.authAppBarIcon,
             fit: BoxFit.cover,
@@ -114,7 +109,7 @@ class _AuthenScreenState extends State<AuthenScreen>
               controller: tabController,
               indicatorSize: TabBarIndicatorSize.tab,
               indicator: UnderlineTabIndicator(
-                // borderRadius: BorderRadius.circular(5.0),
+                borderRadius: BorderRadius.circular(5.0),
                 borderSide: BorderSide(
                   width: 2.0,
                   color: hexToColor('#A6CE3B'),
@@ -127,7 +122,7 @@ class _AuthenScreenState extends State<AuthenScreen>
                 height: 29 / 14,
                 color: Colors.red,
               ),
-              // dividerColor: Colors.transparent,
+              dividerColor: Colors.transparent,
               tabs: [
                 Tab(text: locale.language.LOGIN),
                 Tab(text: locale.language.SIGNUP),
@@ -147,64 +142,14 @@ class _AuthenScreenState extends State<AuthenScreen>
         child: TabBarView(
           controller: tabController,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SizedBox(height: 44),
-                CommonTextField(
-                  controller: loginUserNameCtl ?? TextEditingController(),
-                  labelText: 'Email',
-                ),
-                const SizedBox(height: 21),
-                CommonTextField(
-                  controller: loginUserNameCtl ?? TextEditingController(),
-                  labelText: locale.language.PASSWORD,
-                  password: true,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  locale.language.FORGOT_PASSWORD,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    height: 108.1 / 100,
-                    wordSpacing: 0.05,
-                    color: tertiarySeedColor,
-                  ),
-                ),
-                const SizedBox(height: 51),
-                InkWell(
-                  child: Container(
-                    height: 67,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: primarySeedColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: Text(
-                        locale.language.LOGIN,
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                        fontSize: 22,
-                            wordSpacing: 1,
-                          color: hexToColor('#FFF9FF'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    userViewModel?.signInWithEmailAndPassword(email: 'cuongtest'
-                        '@gmail.com', password: '123456');
-                    // userViewModel?.signUpWithEmailAndPassword(email: 'testcuong@gmail.com',
-                    //     password: '123456');
-                  },
-                ),
-              ],
-            ),
-            Container(
-              height: 100,
-              color: Colors.blue,
+            const LoginScreen(),
+            SignUpScreen(
+              onSignUpSuccess: () {
+                tabController?.animateTo(
+                  0,
+                  duration: Duration(milliseconds: 300),
+                );
+              },
             ),
           ],
         ),

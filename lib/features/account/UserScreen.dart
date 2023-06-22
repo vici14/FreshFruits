@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fresh_fruit/features/account/account_tab.dart';
+import 'package:fresh_fruit/language/LanguagesManager.dart';
+import 'package:fresh_fruit/theme/AppColor.dart';
+import 'package:fresh_fruit/theme/AppImageAsset.dart';
+import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/ValidationUtil.dart';
 
 import '../../view_model/product_view_model.dart';
@@ -14,17 +20,20 @@ class UserScreen extends StatefulWidget {
   }
 }
 
-class _UserScreenState extends State<UserScreen> {
+class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   ProductViewModel? _productViewModel;
   bool canUpdateProfile = false;
   late UserViewModel _userViewModel;
 
+  TabController? tabController;
+
   @override
   void initState() {
+    tabController = TabController(length: 3, vsync: this);
     _userViewModel = Provider.of<UserViewModel>(context, listen: false);
     if (_userViewModel.currentUser != null) {
       canUpdateProfile = true;
@@ -45,46 +54,142 @@ class _UserScreenState extends State<UserScreen> {
         drawer: MyDrawer(),
         appBar: const CommonAppBar(
           title: "Tài khoản",
+          backgroundColor: Colors.white,
         ),
-        body: Consumer<UserViewModel>(
-          builder: (BuildContext context, UserViewModel userVM, Widget? child) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    userVM.isLoggedIn
-                        ? _buildIntro(userVM)
-                        : const SizedBox.shrink(),
-                    userVM.isLoggedIn
-                        ? _buildInputForm()
-                        : const SizedBox.shrink(),
-                    _buildRegisterButton(onTap: () {
-                      userVM.signUpWithEmailAndPassword(
-                          email: email, password: password);
-                    }),
-                    _buildSignInButton(
-                      onTap: () async {
-                        canUpdateProfile = true;
-
-                        var _resp = await userVM.signInWithEmailAndPassword(
-                            email: email, password: password);
-                        if (_resp) {
-                          _productViewModel?.getProductsAfterUserLoggedIn(
-                              userVM.currentUser!.favoriteProducts!);
-                          _productViewModel
-                              ?.updateCategoryProductsAfterUserLoggedIn(
-                                  userVM.currentUser!.favoriteProducts!);
-                        }
-                      },
-                    ),
+        body: Column(
+          children: [
+            _buildCusInfo(),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: TabBarView(
+                  controller: tabController,
+                  children:  [
+                    const AccountTab(),
+                    Container(),
+                    Container(),
                   ],
                 ),
               ),
-            );
-          },
+            ),
+            // userVM.isLoggedIn
+            //     ? _buildIntro(userVM)
+            //     : const SizedBox.shrink(),
+            // userVM.isLoggedIn
+            //     ? _buildInputForm()
+            //     : const SizedBox.shrink(),
+            // _buildRegisterButton(onTap: () {
+            //   userVM.signUpWithEmailAndPassword(
+            //       email: email, password: password);
+            // }),
+            // _buildSignInButton(
+            //   onTap: () async {
+            //     canUpdateProfile = true;
+            //
+            //     var _resp = await userVM.signInWithEmailAndPassword(context,
+            //         email: email, password: password);
+            //     if (_resp) {
+            //       _productViewModel?.getProductsAfterUserLoggedIn(
+            //           userVM.currentUser!.favoriteProducts!);
+            //       _productViewModel
+            //           ?.updateCategoryProductsAfterUserLoggedIn(
+            //               userVM.currentUser!.favoriteProducts!);
+            //     }
+            //   },
+            // ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCusInfo() {
+    return Consumer<UserViewModel>(
+      builder: (BuildContext context, UserViewModel userVM, Widget? child) {
+        return Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Color.fromRGBO(226, 225, 225, 0.25),
+                blurRadius: 10,
+                spreadRadius: 28,
+              )
+            ],
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(40),
+              bottomRight: Radius.circular(40),
+            ),
+            color: Colors.white,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 36),
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: hexToColor('#FBF4E4'),
+                    width: 3.3,
+                  ),
+                  borderRadius: BorderRadius.circular(13.2),
+                ),
+                child: SvgPicture.asset(AppImageAsset.defaultAvatar),
+              ),
+              const SizedBox(height: 25),
+              userVM.isLoggedIn
+                  ? Text(
+                      userVM.currentUser?.name ?? '',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: tertiarySeedColor,
+                      ),
+                    )
+                  : const SizedBox(),
+              const SizedBox(height: 5),
+              userVM.isLoggedIn ? Text(
+                 userVM.currentUser?.email ?? '',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: hexToColor('#FCFCFC'),
+                ),
+              ) : const SizedBox(),
+              const SizedBox(height: 24),
+              SizedBox(
+                height: 42,
+                child: TabBar(
+                  controller: tabController,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  isScrollable: false,
+                  indicator: UnderlineTabIndicator(
+                    borderRadius: BorderRadius.circular(5.0),
+                    borderSide: BorderSide(
+                      width: 2.0,
+                      color: hexToColor('#A6CE3B'),
+                    ),
+                  ),
+                  indicatorPadding: const EdgeInsets.symmetric(horizontal: 45),
+                  labelStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    height: 29 / 14,
+                    color: Colors.red,
+                  ),
+                  dividerColor: Colors.transparent,
+                  tabs: [
+                    Tab(text: locale.language.ACCOUNT),
+                    Tab(text: locale.language.PAYMENT_METHOD),
+                    Tab(text: locale.language.HISTORY),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
