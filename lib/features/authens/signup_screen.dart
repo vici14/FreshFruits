@@ -170,7 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: signUpPasswordCtl?.text ?? '',
       );
       if (isSignUpSuccess ?? false) {
-        if (!context.mounted) return;
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Đã đăng ký thành công, bạn hãy đăng nhập!'),
