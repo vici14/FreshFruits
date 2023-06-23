@@ -47,7 +47,8 @@ class ViLangBuilder extends LangBuilder {
   String get USERNAME => 'Họ và tên';
 
   @override
-  String get ALREADY_HAVE_ACCOUNT_SIGNIN => 'Bạn đã có sẵn một tài khoản? Đăng nhập';
+  String get ALREADY_HAVE_ACCOUNT_SIGNIN =>
+      'Bạn đã có sẵn một tài khoản? Đăng nhập';
 
   @override
   String get ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1 => 'Đăng nhập';
@@ -93,6 +94,7 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get PUSH_NOTIFICATION_TITLE => 'Push-Notifications';
+
   @override
   String get CHECK_OUT_SCREEN_DELIVERY_ADDRESS => "Địa chỉ nhận hàng";
 
@@ -123,6 +125,7 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get DELIVERY_ADDRESS_DISTRICT => "Quận";
+
   @override
   String get DELIVERY_ADDRESS_SELECT_DISTRICT => "Chọn Quận";
 
@@ -131,4 +134,16 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get DELIVERY_ADDRESS_SELECT_WARD => "Chọn Phường";
+
+  @override
+  String get BUTTON_ADD_ADDRESS => "Thêm địa chỉ";
+
+  @override
+  String get DELIVERY_ADDRESSES => "Địa chỉ";
+
+  @override
+  String get DELIVERY_ADDRESS_CURRENT => "Địa chỉ hiện tại";
+
+  @override
+  String get DELIVERY_ADDRESSES_EMPTY => "Vui lòng cập nhật địa chỉ giao hàng";
 }

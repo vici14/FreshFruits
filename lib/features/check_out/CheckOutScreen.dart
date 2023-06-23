@@ -5,7 +5,10 @@ import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
+import 'package:fresh_fruit/utils/StringUtils.dart';
+import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
+import 'package:provider/provider.dart';
 
 import '../../theme/AppColor.dart';
 
@@ -20,6 +23,15 @@ class CheckOutScreen extends StatefulWidget {
 
 class _CheckOutScreenState
     extends BaseProviderScreenState<CheckOutScreen, CheckOutController> {
+  late UserViewModel userViewModel;
+
+  @override
+  void initState() {
+    userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    userViewModel.refreshCurrentUser();
+    super.initState();
+  }
+
   @override
   String appBarTitle() {
     return locale.language.CHECK_OUT_SCREEN_HEADER;
@@ -47,39 +59,46 @@ class _CheckOutScreenState
 
   @override
   Widget buildContent(BuildContext context, CheckOutController localState) {
-    return Stack(children: [
-      Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppDimen.space16, vertical: AppDimen.space16),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 100.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMethodItem(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(AppRoute
-                        .addDeliveryAddressScreen);
-                  },
-                  title: locale.language.CHECK_OUT_SCREEN_DELIVERY_ADDRESS,
-                  value: '2464 Royal Ln. Mesa, New Jersey 45463'),
-              _buildMethodItem(
-                  onTap: () {},
-                  title: locale.language.CHECK_OUT_SCREEN_DELIVERY_METHOD,
-                  value: 'Standard Delivery ( + 2.99 )'),
-              _buildMethodItem(
-                  onTap: () {},
-                  title: locale.language.CHECK_OUT_SCREEN_SHIPPING_TIME,
-                  value: '2464 Royal Ln. Mesa, New Jersey 45463'),
-            ],
+    return Consumer<UserViewModel>(
+      builder: (context, userVM, child) {
+        return Stack(children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppDimen.space16, vertical: AppDimen.space16),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 100.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMethodItem(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(AppRoute.deliveryAddressScreen);
+                      },
+                      title: locale.language.CHECK_OUT_SCREEN_DELIVERY_ADDRESS,
+                      value: userVM.currentUser?.addresses?.first != null
+                          ? StringUtils().displayAddress(
+                              userVM.currentUser!.addresses!.first)
+                          : locale.language.DELIVERY_ADDRESSES_EMPTY),
+                  _buildMethodItem(
+                      onTap: () {},
+                      title: locale.language.CHECK_OUT_SCREEN_DELIVERY_METHOD,
+                      value: 'Standard Delivery ( + 2.99 )'),
+                  _buildMethodItem(
+                      onTap: () {},
+                      title: locale.language.CHECK_OUT_SCREEN_SHIPPING_TIME,
+                      value: '2464 Royal Ln. Mesa, New Jersey 45463'),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-      Align(
-        alignment: Alignment.bottomCenter,
-        child: _buildSubmitButton(totalCost: 0),
-      )
-    ]);
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildSubmitButton(totalCost: 0),
+          )
+        ]);
+      },
+    );
   }
 
   Widget _buildInformation() {

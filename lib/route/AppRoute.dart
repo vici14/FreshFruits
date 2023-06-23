@@ -6,6 +6,7 @@ import 'package:fresh_fruit/features/authens/authen_screen.dart';
 import 'package:fresh_fruit/features/cart/cart_screen.dart';
 import 'package:fresh_fruit/features/check_out/CheckOutScreen.dart';
 import 'package:fresh_fruit/features/check_out/address/AddDeliveryAddressScreen.dart';
+import 'package:fresh_fruit/features/check_out/address/DeliveryAddressScreen.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/features/home/HomeScreen.dart';
 import 'package:fresh_fruit/features/splash/SplashScreen.dart';
@@ -62,6 +63,10 @@ class AppRoute {
       case AppRoute.checkoutScreen:
         return MaterialPageRoute(
           builder: (context) => CheckOutScreen(),
+        );
+      case AppRoute.deliveryAddressScreen:
+        return MaterialPageRoute(
+          builder: (context) => DeliveryAddressScreen(),
         );
       case AppRoute.addDeliveryAddressScreen:
         return MaterialPageRoute(

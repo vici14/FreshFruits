@@ -21,6 +21,8 @@ abstract class LangBuilder {
 
   String get BUTTON_CONFIRM;
 
+  String get BUTTON_ADD_ADDRESS;
+
   String get CART_TOTAL;
 
   String get USER_NOT_LOGGED_IN;
@@ -46,6 +48,12 @@ abstract class LangBuilder {
   String get DELIVERY_ADDRESS_SELECT_DISTRICT;
 
   String get DELIVERY_ADDRESS_SELECT_WARD;
+
+  String get DELIVERY_ADDRESS_CURRENT;
+
+  String get DELIVERY_ADDRESSES;
+
+  String get DELIVERY_ADDRESSES_EMPTY;
 
   String get DONT_HAVE_ACCOUNT_LOGIN;
 

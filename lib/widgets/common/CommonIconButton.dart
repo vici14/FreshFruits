@@ -1,26 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/extension/ContainerUIExt.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 
-extension ShadowContainer on Container {
-  Container addShadow() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-                color: AppColor.grey,
-                spreadRadius: 0.8,
-                blurRadius: 1,
-                offset: Offset(0, 1.2)),
-          ],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColor.grey, width: 1)),
-      child: this,
-    );
-  }
-}
+
 
 class CommonIconButton {
   final Function? onTap;
@@ -41,7 +25,7 @@ class CommonIconButton {
             color: AppColor.primary,
           ),
         ),
-      ).addShadow(),
+      ).addWhiteBoxShadow(),
     );
   }
 
@@ -55,7 +39,7 @@ class CommonIconButton {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-      ).addShadow(),
+      ).addWhiteBoxShadow(),
     );
   }
 
@@ -69,7 +53,7 @@ class CommonIconButton {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-      ).addShadow(),
+      ).addWhiteBoxShadow(),
     );
   }
 
@@ -85,7 +69,7 @@ class CommonIconButton {
             color: AppColor.secondary,
           ),
         ),
-      ).addShadow(),
+      ).addWhiteBoxShadow(),
     );
   }
 }

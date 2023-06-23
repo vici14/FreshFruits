@@ -330,7 +330,21 @@ class ServiceManager {
       rethrow;
     }
   }
-
+  // Future<List<AddressModel>> getAddresses(
+  //     {required AddressModel address, required String uid}) async {
+  //   try {
+  //     var _currentUser = await getCurrentUserDocument(uid);
+  //     _currentUser
+  //         .update({
+  //       'addresses': FieldValue.arrayUnion([address.toJson()])
+  //     })
+  //         .then((value) => AppLogger.i('add shipping Address success'))
+  //         .catchError((onError) => AppLogger.e(onError.toString()));
+  //     return [];
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 //====================CART=======================
 
   Stream<QuerySnapshot<OrderedProductModel>> getStreamOrderedItemsInCart(
@@ -390,6 +404,8 @@ class ServiceManager {
   }
 
   Future<CartModel?> getCart(String uid) async {
+    AppLogger.i('getCart $uid');
+
     var _cart = await getUserCurrentCart(uid)
         .then((value) => value.get().then((vak) => vak.data()));
     return _cart;

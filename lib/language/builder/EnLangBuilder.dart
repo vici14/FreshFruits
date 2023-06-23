@@ -132,4 +132,16 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get DELIVERY_ADDRESS_SELECT_WARD => "Select Ward";
+
+  @override
+  String get BUTTON_ADD_ADDRESS =>"Add Address";
+
+  @override
+  String get DELIVERY_ADDRESSES => "Adresses";
+
+  @override
+  String get DELIVERY_ADDRESS_CURRENT => "Current address";
+
+  @override
+  String get DELIVERY_ADDRESSES_EMPTY => "Please add shipping address";
 }

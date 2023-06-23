@@ -32,7 +32,6 @@ class _ProductSelectDialogState extends State<ProductSelectDialog> {
 
   @override
   void dispose() {
-    _productDetailViewModel.dispose();
     super.dispose();
   }
 

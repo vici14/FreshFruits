@@ -1,6 +1,16 @@
+import 'package:fresh_fruit/language/LanguagesManager.dart';
+import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 
 class StringUtils {
+
+  String displayAddress(AddressModel addressModel){
+    return  '${addressModel.currentAddress}, ${locale.language
+        .DELIVERY_ADDRESS_WARD} ${addressModel.ward?.name},'
+        ' ${locale.language.DELIVERY_ADDRESS_DISTRICT} ${addressModel
+        .district?.name},${addressModel.city?.name}';
+  }
+
   static double calculateTotalCost(List<OrderedProductModel> list) {
     double _cost = 0;
     if (list.isEmpty) return 0;
