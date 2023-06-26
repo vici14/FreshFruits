@@ -6,9 +6,9 @@ import '../repository/ProductRepository.dart';
 import 'BaseViewModel.dart';
 
 class ProductViewModel extends BaseViewModel {
-  static final ProductViewModel _instance = ProductViewModel._internal();
-
   ProductViewModel._internal();
+
+  static final ProductViewModel _instance = ProductViewModel._internal();
 
   factory ProductViewModel() {
     return _instance;
@@ -35,7 +35,7 @@ class ProductViewModel extends BaseViewModel {
   List<ProductModel> houseWareProducts = [];
   List<ProductModel> houseWareProductsAfterLoggedIn = [];
 
-  bool isLoadingProductMore=false;
+  bool isLoadingProductMore = false;
 
   //=======================FIELD VALUE=========================
 

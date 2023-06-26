@@ -25,9 +25,6 @@ abstract class CartRepository {
   Future<bool> checkOutCart({
     required CartModel cartModel,
     required String uid,
-    required String customerName,
-    required String customerPhone,
-    required String customerAddress,
   });
 
   Stream<QuerySnapshot<OrderedProductModel>> getCartItemsStream(String uid);

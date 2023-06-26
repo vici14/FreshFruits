@@ -5,7 +5,7 @@ import 'package:fresh_fruit/repository/UserRepository.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 
 class UserRepositoryImpl extends UserRepository {
-  ServiceManager serviceManager = ServiceManager();
+  ServiceManager serviceManager = ServiceManager.instance();
 
   @override
   Future<bool> changePassword() {
@@ -66,8 +66,15 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<bool> addShippingDetail({required AddressModel address, required
-  String uid}) async{
+  Future<bool> addShippingDetail(
+      {required AddressModel address, required String uid}) async {
     return await serviceManager.addShippingAddress(address: address, uid: uid);
+  }
+
+  @override
+  Future<bool> updateCurrentShippingDetail(
+      {required AddressModel address, required String uid}) async {
+    return await serviceManager.updateCurrentShippingAddress(
+        address: address, uid: uid);
   }
 }

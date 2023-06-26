@@ -3,12 +3,8 @@ import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 
 class StringUtils {
-
-  String displayAddress(AddressModel addressModel){
-    return  '${addressModel.currentAddress}, ${locale.language
-        .DELIVERY_ADDRESS_WARD} ${addressModel.ward?.name},'
-        ' ${locale.language.DELIVERY_ADDRESS_DISTRICT} ${addressModel
-        .district?.name},${addressModel.city?.name}';
+  String displayDateTime(DateTime? dateTime) {
+    return '${dateTime?.hour.toString().padLeft(2, '0')}:${dateTime?.minute.toString().padLeft(2, '0')}';
   }
 
   static double calculateTotalCost(List<OrderedProductModel> list) {
@@ -19,6 +15,7 @@ class StringUtils {
     }
     return _cost;
   }
+
   static bool isNotNullAndEmpty(String? value) {
     return value != null &&
         value.isNotEmpty &&

@@ -1,15 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
+import 'package:fresh_fruit/service/GoogleMapService.dart';
+import 'package:google_geocoding_api/google_geocoding_api.dart';
 
 class ServiceManager {
-  static final ServiceManager _instance = ServiceManager._internal();
+  ServiceManager._internal();
 
+  static late final ServiceManager _instance = ServiceManager._internal();
+
+  static ServiceManager instance() => _instance;
+
+  //Firebase
   static final fireStore = FirebaseFirestore.instance;
   final CollectionReference productsCollection =
       fireStore.collection('products');
@@ -21,9 +29,27 @@ class ServiceManager {
     toFirestore: (user, _) => user.toJson(),
   );
 
-  factory ServiceManager() {
-    return _instance;
+  static Future<void> init(AppFlavor appFlavor) async {
+    GoogleMapService.init(appFlavor);
   }
+
+  Future<void> delay({Duration? time}) async {
+    await Future.delayed(time ?? Duration(milliseconds: 500));
+  }
+
+  //==================GOOGLE MAP==================//
+  Future<dynamic> calculateDistance(
+      {required List<String> origins,
+      required List<String> destinations}) async {
+    return await GoogleMapService.instance()
+        .calculateDistance(origins: origins, destinations: destinations);
+  }
+
+  Future<GoogleGeocodingResponse> searchAddress(String address) async{
+    return await GoogleMapService.instance().searchAddress(address);
+  }
+
+//==================GOOGLE MAP==================//
 
   Future<DocumentReference<CartModel>> getUserCurrentCart(String uid) async {
     try {
@@ -103,16 +129,6 @@ class ServiceManager {
       AppLogger.e(e.toString());
       rethrow;
     }
-  }
-
-  ServiceManager._internal() {
-    //Singleton
-    //create Firebase
-    init();
-  }
-
-  void init() async {
-    //create DB or sthg
   }
 
 //====================PRODUCTS=======================
@@ -318,6 +334,8 @@ class ServiceManager {
   Future<bool> addShippingAddress(
       {required AddressModel address, required String uid}) async {
     try {
+      await delay();
+
       var _currentUser = await getCurrentUserDocument(uid);
       _currentUser
           .update({
@@ -330,21 +348,37 @@ class ServiceManager {
       rethrow;
     }
   }
-  // Future<List<AddressModel>> getAddresses(
-  //     {required AddressModel address, required String uid}) async {
-  //   try {
-  //     var _currentUser = await getCurrentUserDocument(uid);
-  //     _currentUser
-  //         .update({
-  //       'addresses': FieldValue.arrayUnion([address.toJson()])
-  //     })
-  //         .then((value) => AppLogger.i('add shipping Address success'))
-  //         .catchError((onError) => AppLogger.e(onError.toString()));
-  //     return [];
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+
+  Future<bool> updateCurrentShippingAddress(
+      {required AddressModel address, required String uid}) async {
+    try {
+      await delay();
+      var _currentUser = await getCurrentUserDocument(uid);
+      _currentUser
+          .update({'currentAddress': address.toJson()})
+          .then((value) => AppLogger.i('updateCurrentShippingAddress success'))
+          .catchError((onError) => AppLogger.e(onError.toString()));
+      return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+// Future<List<AddressModel>> getAddresses(
+//     {required AddressModel address, required String uid}) async {
+//   try {
+//     var _currentUser = await getCurrentUserDocument(uid);
+//     _currentUser
+//         .update({
+//       'addresses': FieldValue.arrayUnion([address.toJson()])
+//     })
+//         .then((value) => AppLogger.i('add shipping Address success'))
+//         .catchError((onError) => AppLogger.e(onError.toString()));
+//     return [];
+//   } catch (e) {
+//     rethrow;
+//   }
+// }
 //====================CART=======================
 
   Stream<QuerySnapshot<OrderedProductModel>> getStreamOrderedItemsInCart(
@@ -414,11 +448,13 @@ class ServiceManager {
   Future<bool> checkOutCart({
     required CartModel cartModel,
     required String uid,
-    required String customerName,
-    required String customerPhone,
-    required String customerAddress,
   }) async {
     try {
+      await addToHistory(
+        uid: uid,
+        cartModel: cartModel,
+      ).onError((error, stackTrace) => false);
+      AppLogger.i('checkOutCart success');
       var _cart = await getUserCurrentCart(uid);
       _cart
           .collection('orderedItems')
@@ -426,17 +462,6 @@ class ServiceManager {
           .then((value) => value.docs.forEach((element) {
                 element.reference.delete();
               }));
-      // await _cart
-      //     .update(CartModel.initial().toJson())
-      //     .onError((error, stackTrace) => false);
-      await addToHistory(
-              uid: uid,
-              cartModel: cartModel,
-              customerAddress: customerAddress,
-              customerPhone: customerPhone,
-              customerName: customerName)
-          .onError((error, stackTrace) => false);
-      AppLogger.i('checkOutCart success');
 
       return true;
     } catch (e) {
@@ -448,23 +473,16 @@ class ServiceManager {
   Future<void> addToHistory({
     required CartModel cartModel,
     required String uid,
-    required String customerName,
-    required String customerPhone,
-    required String customerAddress,
   }) async {
     try {
-      var _currentUser = await getCurrentUserDocument(uid);
-      _currentUser.update({
-        'orderHistory': FieldValue.arrayUnion([
-          cartModel
-              .withShippingInformation(
-                  customerName: customerName,
-                  customerPhone: customerPhone,
-                  customerAddress: customerAddress)
-              .toJson()
-        ])
-      });
-      AppLogger.i('addToHistory success');
+      if (cartModel.canCheckOut) {
+        var _currentUser = await getCurrentUserDocument(uid);
+        _currentUser.update({
+          'orderHistory': FieldValue.arrayUnion([cartModel.toJson()])
+        });
+      } else {
+        AppLogger.i('cannot addToHistory');
+      }
     } catch (e) {
       AppLogger.e(e.toString());
     }

@@ -151,6 +151,22 @@ class UserViewModel extends BaseViewModel {
       notifyListeners();
       isAddAddressSuccess = await _repository.addShippingDetail(
           address: address, uid: currentUser?.uid ?? "");
+      refreshCurrentUser();
+      isAddingAddress = false;
+      notifyListeners();
+    } catch (e) {
+      isAddingAddress = false;
+      AppLogger.e('addShippingDetail' + e.toString());
+    }
+  }
+
+  Future<void> updateCurrentShippingDetail(AddressModel? address) async {
+    try {
+      isAddingAddress = true;
+      notifyListeners();
+      isAddAddressSuccess = await _repository.updateCurrentShippingDetail(
+          address: address!, uid: currentUser?.uid ?? "");
+      refreshCurrentUser();
       isAddingAddress = false;
       notifyListeners();
     } catch (e) {

@@ -66,6 +66,10 @@ class _AddDeliveryAddressScreenState extends BaseProviderScreenState<
   Widget buildContent(BuildContext context, localState) {
     return Consumer<UserViewModel>(
       builder: (context, userVM, child) {
+        if (userVM.isAddAddressSuccess) {
+          userVM.isAddAddressSuccess = false;
+          Navigator.of(context).pop();
+        }
         return GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Stack(
@@ -190,7 +194,7 @@ class _AddDeliveryAddressScreenState extends BaseProviderScreenState<
                   ),
                 ),
               ),
-              if(userVM.isAddingAddress) const CommonCircularLoading()
+              if (userVM.isAddingAddress) const CommonCircularLoading()
             ],
           ),
         );

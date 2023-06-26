@@ -11,9 +11,20 @@ import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
+import 'package:fresh_fruit/widgets/common/CommonCircularLoading.dart';
 import 'package:provider/provider.dart';
 
+class DeliveryAddressScreenParams {
+  final Function(AddressModel) onChangedAddressCallback;
+
+  DeliveryAddressScreenParams({required this.onChangedAddressCallback});
+}
+
 class DeliveryAddressScreen extends StatefulWidget {
+  final DeliveryAddressScreenParams params;
+
+  const DeliveryAddressScreen({super.key, required this.params});
+
   @override
   State<DeliveryAddressScreen> createState() {
     return _DeliveryAddressScreenState();
@@ -29,6 +40,12 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
     userViewModel = Provider.of<UserViewModel>(context, listen: false);
     userViewModel.refreshCurrentUser();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    userViewModel.refreshCurrentUser();
+    super.didChangeDependencies();
   }
 
   @override
@@ -64,6 +81,7 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
         return Stack(
           children: [
             SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 100),
               child: (userVM.currentUser?.addresses?.isEmpty == true)
                   ? Center(
                       child: Text(
@@ -79,7 +97,7 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
                       child: Column(
                         children: [
                           _buildCurrentAddress(
-                              userVM.currentUser!.addresses!.first),
+                              userVM.currentUser?.currentAddress),
                           _listAddress(userVM.currentUser?.addresses ?? [])
                         ],
                       ),
@@ -97,14 +115,17 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
                   },
                 ),
               ),
-            )
+            ),
+            userVM.isAddingAddress
+                ? const Center(child: CommonCircularLoading())
+                : const SizedBox.shrink()
           ],
         );
       },
     );
   }
 
-  Widget _buildCurrentAddress(AddressModel addressModel) {
+  Widget _buildCurrentAddress(AddressModel? addressModel) {
     return Column(
       children: [
         Padding(
@@ -118,7 +139,7 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
                 locale.language.DELIVERY_ADDRESS_CURRENT,
                 style: Theme.of(context).textTheme.subtitle1,
               ),
-              _buildAddressItem(addressModel)
+              _buildAddressItem(addressModel, isCurrent: true)
             ],
           ),
         ),
@@ -126,21 +147,33 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
     );
   }
 
-  Widget _buildAddressItem(AddressModel addressModel) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(AppDimen.space16),
-          child: EasyRichText(
-            StringUtils().displayAddress(addressModel),
-            defaultStyle: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppColor.textGrey),
-            patternList: [],
-          ),
-        ).addWhiteBoxShadow(),
-      ],
+  Widget _buildAddressItem(AddressModel? addressModel,
+      {bool isCurrent = false}) {
+    return Container(
+      margin: EdgeInsets.only(bottom: !isCurrent ? AppDimen.space16 : 0),
+      child: GestureDetector(
+        onTap: () {
+          if (!isCurrent) {
+            userViewModel.updateCurrentShippingDetail(addressModel);
+            widget.params.onChangedAddressCallback(addressModel!);
+          }
+        },
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppDimen.space16),
+              child: EasyRichText(
+                addressModel?.getDisplayAddress ?? "",
+                defaultStyle: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: AppColor.textGrey),
+                patternList: [],
+              ),
+            ).addWhiteBoxShadow(),
+          ],
+        ),
+      ),
     );
   }
 

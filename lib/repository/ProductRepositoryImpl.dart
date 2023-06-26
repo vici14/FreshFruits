@@ -3,7 +3,7 @@ import 'package:fresh_fruit/repository/ProductRepository.dart';
 import 'package:fresh_fruit/service/service_manager.dart';
 
 class ProductRepositoryImplement extends ProductRepository {
-  ServiceManager serviceManager = ServiceManager();
+  ServiceManager serviceManager = ServiceManager.instance();
   @override
   Future<bool> addToFavorite(String productId) {
     // TODO: implement addToFavorite

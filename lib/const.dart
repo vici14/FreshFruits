@@ -1,0 +1,2 @@
+const GOOGLE_SERVICE_DEV= "AIzaSyD4vJIv3vjTwq8gMvXDGhAxbZPWKET96t0";
+const GOOGLE_SERVICE_PROD= "AIzaSyCzu-QjiQ4mndPsX54mwcvFZJSrJ8WzeiYcd ";

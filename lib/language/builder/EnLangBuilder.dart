@@ -134,7 +134,7 @@ class EnLangBuilder extends LangBuilder {
   String get DELIVERY_ADDRESS_SELECT_WARD => "Select Ward";
 
   @override
-  String get BUTTON_ADD_ADDRESS =>"Add Address";
+  String get BUTTON_ADD_ADDRESS => "Add Address";
 
   @override
   String get DELIVERY_ADDRESSES => "Adresses";
@@ -144,4 +144,17 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get DELIVERY_ADDRESSES_EMPTY => "Please add shipping address";
+
+  @override
+  String get DELIVERY_TIME => "Please select time for delivery";
+
+  @override
+  String get CHECK_OUT_SCREEN_DELIVERY_AND_PAYMENT => "Delivery & Payment";
+
+  @override
+  String get CART_CHECKOUT_VALIDATE_MISSING_FIELD => "Please update Delivery "
+      "address, time";
+
+  @override
+   String get DEFAULT => "(default)";
 }

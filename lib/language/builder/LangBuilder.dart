@@ -37,6 +37,8 @@ abstract class LangBuilder {
 
   String get CHECK_OUT_SCREEN_SHIPPING_INFORMATION;
 
+  String get CHECK_OUT_SCREEN_DELIVERY_AND_PAYMENT;
+
   String get ADD_DELIVERY_ADDRESS_HEADER;
 
   String get DELIVERY_ADDRESS_HEADER;
@@ -54,6 +56,9 @@ abstract class LangBuilder {
   String get DELIVERY_ADDRESSES;
 
   String get DELIVERY_ADDRESSES_EMPTY;
+
+  String get DELIVERY_TIME;
+
 
   String get DONT_HAVE_ACCOUNT_LOGIN;
 
@@ -92,4 +97,8 @@ abstract class LangBuilder {
   String get LOG_OUT_TITLE;
 
   String get LOG_OUT_SUBTITLE;
+
+  String get CART_CHECKOUT_VALIDATE_MISSING_FIELD;
+
+  String get DEFAULT;
 }

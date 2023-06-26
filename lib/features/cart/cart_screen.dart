@@ -11,14 +11,11 @@ import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
-import 'package:fresh_fruit/utils/ValidationUtil.dart';
 import 'package:fresh_fruit/view_model/CartViewModel.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
 import 'package:fresh_fruit/widgets/image/ImageCachedNetwork.dart';
-import 'package:fresh_fruit/widgets/my_app_bar.dart';
-import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
@@ -32,10 +29,6 @@ class _CartScreenState
     extends BaseProviderScreenState<CartScreen, CartController> {
   double shipCost = 0;
   List<OrderedProductModel>? list;
-  final _formKey = GlobalKey<FormState>();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
   late CartViewModel _cartViewModel;
   late UserViewModel _userViewModel;
   Stream<QuerySnapshot<OrderedProductModel>>? _stream;
@@ -115,22 +108,9 @@ class _CartScreenState
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: _buildSubmitButton(
-                    totalCost: StringUtils.calculateTotalCost(list),
-                    onTap: () async {
-                      // bool isSuccess = await cartVM.checkOutCart(
-                      //   totalCost:
-                      //   StringUtils.calculateTotalCost(list),
-                      //   products: list,
-                      //   uid: _userViewModel.currentUser?.uid ?? '',
-                      //   customerName: _nameController.text,
-                      //   customerPhone: _phoneController.text,
-                      //   customerAddress: _addressController.text,
-                      // );
-                      // if (isSuccess) {
-                      //   _userViewModel.refreshCurrentUser();
-                      // }
-                    },
-                  ),
+                      totalCost: StringUtils.calculateTotalCost(list),
+                      cartViewModel: cartVM,
+                      items: list),
                 ),
                 cartVM.isUpdatingProductQuantity
                     ? SizedBox(
@@ -151,8 +131,11 @@ class _CartScreenState
     );
   }
 
-  Widget _buildSubmitButton(
-      {required Function()? onTap, required double totalCost}) {
+  Widget _buildSubmitButton({
+    required CartViewModel cartViewModel,
+    required double totalCost,
+    required List<OrderedProductModel> items,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppDimen.space16),
       decoration:
@@ -186,95 +169,14 @@ class _CartScreenState
           Padding(
             padding: const EdgeInsets.only(bottom: AppDimen.space16),
             child: SecondaryButton(
-                text: locale.language.BUTTON_NEXT, onTap: () {
+                text: locale.language.BUTTON_NEXT,
+                onTap: () {
+                  cartViewModel.updateOrderedProducts(items);
                   Navigator.of(context).pushNamed(AppRoute.checkoutScreen);
-            }),
+                }),
           )
         ],
       ),
-    );
-  }
-
-  Widget _buildInputForm() {
-    return Consumer<UserViewModel>(
-      builder: (BuildContext context, UserViewModel userVM, Widget? child) {
-        if (userVM.isLoggedIn && userVM.currentUser != null) {
-          _phoneController.text = userVM.currentUser?.phone ?? '';
-          _nameController.text = userVM.currentUser?.name ?? '';
-          _addressController.text = userVM.currentUser?.address ?? '';
-        }
-        return Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                      border: Border.all(width: 1, color: Colors.green)),
-                  child: TextFormField(
-                    validator: (val) => ValidationUtil.isNotNullOrEmpty(val),
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                        hintText: "Họ và tên ",
-                        border: InputBorder.none),
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                      border: Border.all(width: 1, color: Colors.green)),
-                  child: TextFormField(
-                    validator: (val) => ValidationUtil.isNotNullOrEmpty(val),
-                    controller: _phoneController,
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                        hintText: "Số điện thoại ",
-                        border: InputBorder.none),
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                      border: Border.all(width: 1, color: Colors.green)),
-                  child: TextFormField(
-                    controller: _addressController,
-                    validator: (val) => ValidationUtil.isNotNullOrEmpty(val),
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 5),
-                        hintText: "Địa chỉ người nhận ",
-                        border: InputBorder.none),
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                // _buildCustomButton(
-                //     onTap: () {
-                //       if (isValidate()) {
-                //         userVM.updateProfile(
-                //             name: _nameController.text,
-                //             phone: _phoneController.text,
-                //             address: _addressController.text);
-                //       }
-                //     },
-                //     title: "Cập nhật thông tin"),
-              ],
-            ));
-      },
     );
   }
 

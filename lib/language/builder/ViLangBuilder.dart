@@ -146,4 +146,17 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get DELIVERY_ADDRESSES_EMPTY => "Vui lòng cập nhật địa chỉ giao hàng";
+
+  @override
+  String get DELIVERY_TIME => "Vui lòng chọn thời gian giao hàng";
+
+  @override
+  String get CHECK_OUT_SCREEN_DELIVERY_AND_PAYMENT => "Giao hàng & Thanh toán";
+
+  @override
+  String get CART_CHECKOUT_VALIDATE_MISSING_FIELD =>
+      "Vui lòng cập nhật địa chỉ nhận hàng và thời gian ";
+
+  @override
+  String get DEFAULT => "(mặc định)";
 }

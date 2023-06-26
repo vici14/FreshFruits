@@ -71,8 +71,8 @@ class OrderHistoryScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Địa chỉ:'),
-              Text(cartModel.customerAddress ?? '')
+              // const Text('Địa chỉ:'),
+              // Text(cartModel.customerAddress ?? '')
             ],
           ),
           const Divider(
@@ -92,8 +92,8 @@ class OrderHistoryScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('Ngày thanh toán:'),
-              Text(DateFormat("yMd").format(DateTime.fromMicrosecondsSinceEpoch(
-                  cartModel.orderCheckoutTime ?? 0))),
+              // Text(DateFormat("yMd").format(DateTime.fromMicrosecondsSinceEpoch(
+              //     cartModel.orderCheckoutTime ?? 0))),
             ],
           ),
         ],

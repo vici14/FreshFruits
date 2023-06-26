@@ -1,3 +1,4 @@
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/address/AddressCity.dart';
 import 'package:fresh_fruit/model/address/AddressDistricts.dart';
 import 'package:fresh_fruit/model/address/AdressWards.dart';
@@ -14,6 +15,10 @@ class AddressModel {
     this.ward,
     this.currentAddress,
   });
+
+  String get getDisplayAddress =>
+      '$currentAddress, ${locale.language.DELIVERY_ADDRESS_WARD} ${ward?.name},'
+      ' ${locale.language.DELIVERY_ADDRESS_DISTRICT} ${district?.name},${city?.name}';
 
   factory AddressModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
     return AddressModel(

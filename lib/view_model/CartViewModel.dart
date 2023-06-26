@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fresh_fruit/model/ShippingDetailModel.dart';
+import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/repository/CartRepositoryImpl.dart';
 import 'package:fresh_fruit/repository/CartRepository.dart';
 import 'package:fresh_fruit/view_model/BaseViewModel.dart';
@@ -57,26 +59,45 @@ class CartViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void updateOrderedProducts(List<OrderedProductModel> items) {
+    currentCart = currentCart?.copyWith(orderedItems: items);
+  }
+
   Future<bool> checkOutCart({
     required String uid,
+    required String note,
     required String customerName,
     required String customerPhone,
-    required String customerAddress,
-    required List<OrderedProductModel> products,
+    required DateTime orderCheckoutTime,
     required double totalCost,
+    required ShippingDetailModel shippingDetail,
+    required AddressModel addressModel,
+    required DateTime deliveryTime,
+    required PaymentMethod paymentMethod,
   }) async {
-    currentCart!.totalCost = totalCost;
-    currentCart!.orderedItems = products;
-    bool isSuccess = await _repository.checkOutCart(
+    currentCart = currentCart?.copyWith(
+      paymentMethod: paymentMethod,
+      deliveryTime: deliveryTime,
+      addressModel: addressModel,
+      orderCheckoutTime: orderCheckoutTime,
+      customerName: customerName,
+      customerPhone: customerPhone,
+      note: note,
+      shippingDetail: shippingDetail,
+      totalCost: totalCost,
+    );
+    if (currentCart?.canCheckOut == true) {
+      bool isSuccess = await _repository.checkOutCart(
         cartModel: currentCart!,
         uid: uid,
-        customerName: customerName,
-        customerPhone: customerPhone,
-        customerAddress: customerAddress);
-    if (isSuccess) {
-      getCart(uid);
-      return true;
+      );
+
+      if (isSuccess) {
+        getCart(uid);
+        return true;
+      }
     }
+
     return false;
   }
 
@@ -97,5 +118,9 @@ class CartViewModel extends BaseViewModel {
     _repository.updateQuantity(productModel: productModel, uid: uid);
     isUpdatingProductQuantity = false;
     notifyListeners();
+  }
+
+  void updateCartShippingDetail(ShippingDetailModel shippingDetailModel) {
+    currentCart = currentCart?.copyWith(shippingDetail: shippingDetailModel);
   }
 }

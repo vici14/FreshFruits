@@ -33,5 +33,10 @@ abstract class UserRepository {
     required String uid,
   });
 
+  Future<bool> updateCurrentShippingDetail({
+    required AddressModel address,
+    required String uid,
+  });
+
   Future<UserModel?> logOut();
 }

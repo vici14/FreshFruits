@@ -39,8 +39,8 @@ class AppViewModel extends ChangeNotifier implements BaseProvider {
   @override
   Future<void> init() async {
     // _packageInfo = await PackageInfo.fromPlatform();
-    // var flavor = await flavorChannel.invokeMethod("getFlavor");
-    // _appFlavor = flavor == 'dev' ? AppFlavor.dev : AppFlavor.prod;
+    var flavor = await flavorChannel.invokeMethod("getFlavor");
+    _appFlavor = flavor == 'dev' ? AppFlavor.dev : AppFlavor.prod;
     _systemVersion = Platform.isIOS ? '1' : '2';
 
   }

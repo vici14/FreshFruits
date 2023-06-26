@@ -7,23 +7,22 @@ import 'product_model.dart';
 class UserModel extends Equatable {
   String? name;
   String? phone;
-  String? address;
   List<ProductModel>? favoriteProducts;
   List<CartModel>? orderHistory;
   List<AddressModel>? addresses;
+  AddressModel? currentAddress;
   String? uid;
   String? email;
 
-  UserModel({
-    this.uid,
-    this.name,
-    this.phone,
-    this.address,
-    this.favoriteProducts,
-    this.orderHistory,
-    this.email,
-    this.addresses,
-  });
+  UserModel(
+      {this.uid,
+      this.name,
+      this.phone,
+      this.favoriteProducts,
+      this.orderHistory,
+      this.email,
+      this.addresses,
+      this.currentAddress});
 
   factory UserModel.initial({
     required String uid,
@@ -33,7 +32,7 @@ class UserModel extends Equatable {
     return UserModel(
         name: name,
         phone: '',
-        address: '',
+        currentAddress: null,
         favoriteProducts: [],
         orderHistory: [],
         addresses: [],
@@ -46,7 +45,9 @@ class UserModel extends Equatable {
       uid: snapshot['uid'] != null ? snapshot['uid'] : '',
       email: snapshot['email'] != null ? snapshot['email'] : '',
       name: snapshot['name'] != null ? snapshot['name'] : '',
-      address: snapshot['address'] != null ? snapshot['address'] : '',
+      currentAddress: snapshot['currentAddress'] != null
+          ? AddressModel.fromQuerySnapshot(snapshot['currentAddress'])
+          : null,
       phone: snapshot['phone'] != null ? snapshot['phone'] : '',
       favoriteProducts: (snapshot['favoriteProducts'].length > 0 &&
               snapshot['favoriteProducts'] != null)
@@ -62,13 +63,12 @@ class UserModel extends Equatable {
               (index) => CartModel.fromQuerySnapshot(
                   snapshot['orderHistory'][index])).toList()
           : [],
-      addresses:
-          (snapshot['addresses'] != null)
-              ? List<AddressModel>.generate(
-                  snapshot['addresses'].length ?? 0,
-                  (index) => AddressModel.fromQuerySnapshot(
-                      snapshot['addresses'][index])).toList()
-              : [],
+      addresses: (snapshot['addresses'] != null)
+          ? List<AddressModel>.generate(
+              snapshot['addresses'].length ?? 0,
+              (index) => AddressModel.fromQuerySnapshot(
+                  snapshot['addresses'][index])).toList()
+          : [],
     );
   }
 
@@ -78,7 +78,7 @@ class UserModel extends Equatable {
       "email": email,
       "name": name,
       "phone": phone,
-      "address": address,
+      "currentAddress": currentAddress?.toJson(),
       "favoriteProducts": List.generate(favoriteProducts!.length,
           (index) => favoriteProducts![index].toJson()),
       "orderHistory": List.generate(
@@ -93,7 +93,7 @@ class UserModel extends Equatable {
         uid,
         name,
         phone,
-        address,
+        currentAddress,
         favoriteProducts,
         orderHistory,
         email,

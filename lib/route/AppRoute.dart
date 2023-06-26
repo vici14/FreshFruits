@@ -16,15 +16,16 @@ class AppRoute {
   static const root = '/';
   static const splashScreen = '/splash';
   static const homeNavigationScreen = '/homeNavigation';
-  static const homeScreen ='/home';
-  static const searchScreen ='/search';
-  static const cartScreen='/cart';
-  static const favouriteScreen='/favourite';
+  static const homeScreen = '/home';
+  static const searchScreen = '/search';
+  static const cartScreen = '/cart';
+  static const favouriteScreen = '/favourite';
   static const userScreen = '/user';
   static const authenScreen = '/authen';
   static const checkoutScreen = '/checkout';
   static const deliveryAddressScreen = '/deliveryAddress';
   static const addDeliveryAddressScreen = '/addDeliveryAddress';
+
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     print('settings.name:${settings.name}');
     switch (settings.name) {
@@ -65,8 +66,12 @@ class AppRoute {
           builder: (context) => CheckOutScreen(),
         );
       case AppRoute.deliveryAddressScreen:
+        final args = settings.arguments as DeliveryAddressScreenParams;
+
         return MaterialPageRoute(
-          builder: (context) => DeliveryAddressScreen(),
+          builder: (context) => DeliveryAddressScreen(
+            params: args,
+          ),
         );
       case AppRoute.addDeliveryAddressScreen:
         return MaterialPageRoute(
