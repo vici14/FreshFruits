@@ -126,4 +126,8 @@ abstract class LangBuilder {
   String get ORDER_STATUS_CANCEL;
 
   String get BUTTON_SAVE_IMAGE;
+
+  String get CHECKOUT_SUGGEST_DESTINATION;
+
+  String get PRODUCT_DETAIL_DESCRIPTION;
 }

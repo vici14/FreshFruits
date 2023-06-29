@@ -8,9 +8,12 @@ import 'package:fresh_fruit/model/address/AddressCity.dart';
 import 'package:fresh_fruit/model/address/AddressDistricts.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
+import 'package:fresh_fruit/utils/PermissionUtil.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonCircularLoading.dart';
+import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../model/address/AddressModel.dart';
 import '../../../model/address/AdressWards.dart';
@@ -30,6 +33,7 @@ class _AddDeliveryAddressScreenState extends BaseProviderScreenState<
       GlobalKey<DropDownDistrictsState>();
   final GlobalKey<DropDownWardsState> wardKey = GlobalKey<DropDownWardsState>();
   late UserViewModel userViewModel;
+  Position? _currentPosition;
 
   @override
   void initState() {
@@ -61,6 +65,20 @@ class _AddDeliveryAddressScreenState extends BaseProviderScreenState<
   initLocalController() {
     return AddDeliveryAddressController();
   }
+
+  // @override
+  // List<Widget>? appBarActions() {
+  //   return [
+  //     CommonIconButton.buildLocationButton(
+  //       context,
+  //       () async {
+  //         setState(() async {
+  //           _currentPosition = await PermissionUtil().determinePosition();
+  //         });
+  //       },
+  //     )
+  //   ];
+  // }
 
   @override
   Widget buildContent(BuildContext context, localState) {

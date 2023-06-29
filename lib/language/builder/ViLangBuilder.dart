@@ -201,4 +201,10 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get BUTTON_SAVE_IMAGE => "Lưu về máy";
+
+  @override
+  String get CHECKOUT_SUGGEST_DESTINATION => 'Gợi ý :';
+
+  @override
+  String get PRODUCT_DETAIL_DESCRIPTION =>"Thông tin sản phẩm";
 }

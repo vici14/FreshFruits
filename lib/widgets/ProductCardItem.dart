@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/features/product_detail/ProductDetailScreen.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/product_model.dart';
+import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
@@ -42,30 +44,32 @@ class _ProductCardItemState extends State<ProductCardItem> {
       builder: (BuildContext context, UserViewModel userVM, Widget? child) {
         return GestureDetector(
           onTap: () async{
-            await showGeneralDialog(
-            barrierColor: Colors.black.withOpacity(0.5),
-            transitionBuilder: (context, a1, a2, widget) {
-              return Transform.scale(
-                scale: a1.value,
-                child: Opacity(
-                  opacity: a1.value,
-                  child: ProductSelectDialog(
-                    productModel: product,
-                  ),
-                ),
-              );
-            },
-            transitionDuration: const Duration(milliseconds: 500),
-            barrierDismissible: true,
-            barrierLabel: '',
-            context: context,
-            pageBuilder: (BuildContext context, Animation<double> animation,
-                Animation<double> secondaryAnimation) {
-              return ProductSelectDialog(
-                productModel: product,
-              );
-            },
-            );
+            Navigator.of(context).pushNamed(AppRoute.productDetailScreen,
+                arguments: ProductDetailScreenArgs(widget.productModel));
+            // await showGeneralDialog(
+            // barrierColor: Colors.black.withOpacity(0.5),
+            // transitionBuilder: (context, a1, a2, widget) {
+            //   return Transform.scale(
+            //     scale: a1.value,
+            //     child: Opacity(
+            //       opacity: a1.value,
+            //       child: ProductSelectDialog(
+            //         productModel: product,
+            //       ),
+            //     ),
+            //   );
+            // },
+            // transitionDuration: const Duration(milliseconds: 500),
+            // barrierDismissible: true,
+            // barrierLabel: '',
+            // context: context,
+            // pageBuilder: (BuildContext context, Animation<double> animation,
+            //     Animation<double> secondaryAnimation) {
+            //   return ProductSelectDialog(
+            //     productModel: product,
+            //   );
+            // },
+            // );
           },
           child: Container(
             width: 175,

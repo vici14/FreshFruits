@@ -9,6 +9,7 @@ import 'package:fresh_fruit/features/check_out/address/AddDeliveryAddressScreen.
 import 'package:fresh_fruit/features/check_out/address/DeliveryAddressScreen.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/features/home/HomeScreen.dart';
+import 'package:fresh_fruit/features/product_detail/ProductDetailScreen.dart';
 import 'package:fresh_fruit/features/splash/SplashScreen.dart';
 import 'package:fresh_fruit/features/store/store_screen.dart';
 
@@ -25,6 +26,7 @@ class AppRoute {
   static const checkoutScreen = '/checkout';
   static const deliveryAddressScreen = '/deliveryAddress';
   static const addDeliveryAddressScreen = '/addDeliveryAddress';
+  static const productDetailScreen = '/productDetail';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     print('settings.name:${settings.name}');
@@ -76,6 +78,12 @@ class AppRoute {
       case AppRoute.addDeliveryAddressScreen:
         return MaterialPageRoute(
           builder: (context) => AddDeliveryAddressScreen(),
+        );
+      case AppRoute.productDetailScreen:
+        final args = settings.arguments as ProductDetailScreenArgs;
+
+        return MaterialPageRoute(
+          builder: (context) => ProductDetailScreen(args: args),
         );
       default:
         return MaterialPageRoute(

@@ -200,4 +200,10 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get BUTTON_SAVE_IMAGE => "Save to gallery";
+
+  @override
+  String get CHECKOUT_SUGGEST_DESTINATION => 'Suggest :';
+
+  @override
+  String get PRODUCT_DETAIL_DESCRIPTION =>"Description";
 }

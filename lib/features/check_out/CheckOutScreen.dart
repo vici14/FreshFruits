@@ -14,6 +14,7 @@ import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
+import 'package:fresh_fruit/utils/PermissionUtil.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/view_model/CartViewModel.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
@@ -21,6 +22,7 @@ import 'package:fresh_fruit/widgets/button/OnPrimaryTextButton.dart';
 import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonCircularLoading.dart';
+import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
 import 'package:provider/provider.dart';
 
 import '../../theme/AppColor.dart';
@@ -75,6 +77,9 @@ class _CheckOutScreenState
     return AppColor.greyScaffoldBackground;
   }
 
+
+
+
   @override
   Widget buildContent(BuildContext context, CheckOutController localState) {
     return Consumer2<UserViewModel, CartViewModel>(
@@ -88,37 +93,12 @@ class _CheckOutScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildMethodItem(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                          AppRoute.deliveryAddressScreen,
-                          arguments: DeliveryAddressScreenParams(
-                            onChangedAddressCallback:
-                                (AddressModel address) async {
-                              if (userVM.currentUser?.currentAddress != null &&
-                                  !localState.isCalculatingAddress) {
-                                await localState
-                                    .calculateShippingDistance(address);
-                              }
-                              if (localState.shippingDetail != null) {
-                                cartVM.updateCartShippingDetail(
-                                    localState.shippingDetail!.copyWith(
-                                        shippingDiscount:
-                                            localState.getShippingDiscount(
-                                                userViewModel.currentUser
-                                                    ?.currentAddress,
-                                                localState.deliveryTime)));
-                              }
-                            },
-                          ),
-                        );
-                      },
-                      title: locale.language.CHECK_OUT_SCREEN_DELIVERY_ADDRESS,
-                      value: userVM.currentUser?.currentAddress != null
-                          ? userVM
-                              .currentUser!.currentAddress!.getDisplayAddress
-                          : locale.language.DELIVERY_ADDRESSES_EMPTY),
-                  _buildMethodItem(
+                  _buildAddress(
+                    cartVM: cartVM,
+                    localState: localState,
+                    userVM: userVM,
+                  ),
+                  _buildTimeSelect(
                       onTap: () {
                         showTimeBottomPicker(localState, userVM);
                       },
@@ -355,6 +335,127 @@ class _CheckOutScreenState
         });
   }
 
+  Widget _buildTimeSelect(
+      {required String title,
+      required String value,
+      required Function() onTap}) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Container(
+        padding:
+            const EdgeInsets.only(top: 18, left: 27, bottom: 25, right: 27),
+        margin: const EdgeInsets.only(bottom: AppDimen.space12),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(
+              height: AppDimen.space8,
+            ),
+            Text(
+              value,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColor.textGrey),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAddress(
+      {required UserViewModel userVM,
+      required CartViewModel cartVM,
+      required CheckOutController localState}) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          AppRoute.deliveryAddressScreen,
+          arguments: DeliveryAddressScreenParams(
+            onChangedAddressCallback: (AddressModel address) async {
+              if (userVM.currentUser?.currentAddress != null &&
+                  !localState.isCalculatingAddress) {
+                await localState.calculateShippingDistance(address);
+              }
+              if (localState.shippingDetail != null) {
+                cartVM.updateCartShippingDetail(localState.shippingDetail!
+                    .copyWith(
+                        shippingDiscount: localState.getShippingDiscount(
+                            userViewModel.currentUser?.currentAddress,
+                            localState.deliveryTime)));
+              }
+            },
+          ),
+        );
+      },
+      child: Container(
+        padding:
+            const EdgeInsets.only(top: 18, left: 27, bottom: 25, right: 27),
+        margin: const EdgeInsets.only(bottom: AppDimen.space12),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              locale.language.CHECK_OUT_SCREEN_DELIVERY_ADDRESS,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(
+              height: AppDimen.space8,
+            ),
+            Text(
+              userVM.currentUser?.currentAddress != null
+                  ? userVM.currentUser!.currentAddress!.getDisplayAddress
+                  : locale.language.DELIVERY_ADDRESSES_EMPTY,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColor.textGrey),
+            ),
+            const SizedBox(
+              height: AppDimen.space8,
+            ),
+            EasyRichText(
+              '${locale.language.CHECKOUT_SUGGEST_DESTINATION}${localState.originDestination ?? ""}',
+              patternList: [
+                EasyRichTextPattern(
+                  targetString:
+                  '${localState.originDestination ?? ""}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppColor.secondary),
+                ),  EasyRichTextPattern(
+                  targetString:
+                  '${locale.language.CHECKOUT_SUGGEST_DESTINATION}',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildPaymentAndShipping(
       CheckOutController localState, CartViewModel cartViewModel,
       {required Function() onTap}) {
@@ -448,45 +549,6 @@ class _CheckOutScreenState
             ),
             Text(localState.paymentMethod.toContent(),
                 style: Theme.of(context).textTheme.bodySmall)
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMethodItem(
-      {required String title,
-      required String value,
-      required Function() onTap}) {
-    return GestureDetector(
-      onTap: () => onTap(),
-      child: Container(
-        padding:
-            const EdgeInsets.only(top: 18, left: 27, bottom: 25, right: 27),
-        margin: const EdgeInsets.only(bottom: AppDimen.space12),
-        width: double.infinity,
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(10)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(
-              height: AppDimen.space8,
-            ),
-            Text(
-              value,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: AppColor.textGrey),
-            )
           ],
         ),
       ),
@@ -677,7 +739,8 @@ class _CheckOutScreenState
                                   ?.copyWith(
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
-                                  ),textAlign: TextAlign.center,
+                                  ),
+                              textAlign: TextAlign.center,
                             ),
                             const SizedBox(
                               height: 15,

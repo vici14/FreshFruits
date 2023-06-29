@@ -28,6 +28,20 @@ class CommonIconButton {
       ).addWhiteBoxShadow(),
     );
   }
+  static Widget buildLocationButton(BuildContext context,Function() onTap) {
+    return InkWell(
+      onTap: () => onTap(),
+      child: Container(
+        height: 36,
+        width: 36,
+        child: const Center(
+          child: Icon(Icons.location_on,
+            color: AppColor.primary,
+          ),
+        ),
+      ).addWhiteBoxShadow(),
+    );
+  }
 
   Widget buildFilterButton(BuildContext context) {
     return InkWell(

@@ -33,6 +33,15 @@ class CheckOutController extends ChangeNotifier {
 
   GlobalKey get momoImageKey => _momoImageKey;
 
+  String? _suggestDestination;
+
+  String? get originDestination => _suggestDestination;
+
+  set originDestination(String? value) {
+    _suggestDestination = value;
+    notifyListeners();
+  }
+
   CheckOutController(this.tickerProviderStateMixin) {
     tabController = TabController(length: 3, vsync: tickerProviderStateMixin);
     tabController?.addListener(() {
@@ -113,7 +122,9 @@ class CheckOutController extends ChangeNotifier {
     var _result = await _googleMapServiceRepository.calculateDistance(
         origins: origins, destinations: destinations);
     DistanceMatrixResponse response = DistanceMatrixResponse.fromJson(_result);
+
     _updateDistanceShippingDetail(response);
+    originDestination = response.originAddresses?.first;
     AppLogger.w(_result);
     isCalculatingAddress = false;
     notifyListeners();
