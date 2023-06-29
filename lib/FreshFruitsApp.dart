@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 
 import 'view_model/UserViewModel.dart';
 import 'view_model/product_view_model.dart';
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class FreshFruitApp extends StatefulWidget {
   @override
@@ -45,6 +46,7 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
       ],
       child: MaterialApp(
         navigatorObservers: [observer],
+        navigatorKey:navigatorKey ,
         onGenerateRoute: (settings) => AppRoute.onGenerateRoute(settings),
         theme: AppTheme().lightTheme(),
         darkTheme: AppTheme().lightTheme(),

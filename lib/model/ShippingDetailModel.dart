@@ -1,3 +1,4 @@
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/DistanceMatrixResponse.dart';
 
 enum ShippingDiscount { FREESHIP, HALF_FEE }
@@ -13,6 +14,15 @@ extension ShippingDiscountExt on ShippingDiscount {
         return 1;
     }
   }
+
+  String toStringContent() {
+    switch (this) {
+      case ShippingDiscount.FREESHIP:
+        return locale.language.CHECK_OUT_SHIPPING_DISCOUNT_FREE_SHIP;
+      case ShippingDiscount.HALF_FEE:
+        return locale.language.CHECK_OUT_SHIPPING_DISCOUNT_HALF_SHIP;
+    }
+  }
 }
 
 class ShippingDetailModel {
@@ -26,6 +36,19 @@ class ShippingDetailModel {
   double convertMetersToKilometers(double meters) {
     double kilometers = meters / 1000.0;
     return double.parse(kilometers.toStringAsFixed(1));
+  }
+
+  ShippingDetailModel copyWith({
+    ShippingDiscount? shippingDiscount,
+    double? price,
+    Distance? distance,
+    Distance? duration,
+  }) {
+    return ShippingDetailModel(
+      distance: distance ?? this.distance,
+      duration: duration ?? this.duration,
+      shippingDiscount: shippingDiscount,
+    );
   }
 
   double getDistanceInKm() => distance != null

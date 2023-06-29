@@ -21,6 +21,7 @@ class ServiceManager {
   static final fireStore = FirebaseFirestore.instance;
   final CollectionReference productsCollection =
       fireStore.collection('products');
+  final CollectionReference ordersCollection = fireStore.collection('orders');
   static final CollectionReference usersCollection =
       fireStore.collection('users');
   final userRef = usersCollection.withConverter<UserModel>(
@@ -45,7 +46,7 @@ class ServiceManager {
         .calculateDistance(origins: origins, destinations: destinations);
   }
 
-  Future<GoogleGeocodingResponse> searchAddress(String address) async{
+  Future<GoogleGeocodingResponse> searchAddress(String address) async {
     return await GoogleMapService.instance().searchAddress(address);
   }
 
@@ -454,6 +455,7 @@ class ServiceManager {
         uid: uid,
         cartModel: cartModel,
       ).onError((error, stackTrace) => false);
+      await addOrderToCollection(cartModel);
       AppLogger.i('checkOutCart success');
       var _cart = await getUserCurrentCart(uid);
       _cart
@@ -485,6 +487,16 @@ class ServiceManager {
       }
     } catch (e) {
       AppLogger.e(e.toString());
+    }
+  }
+
+  Future<bool> addOrderToCollection(CartModel cart) async {
+    try {
+      await ordersCollection.add(cart.toJson());
+      return true;
+    } catch (e) {
+      AppLogger.e(e.toString(), extraMessage: "addOrderToCollection");
+      return false;
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:fresh_fruit/model/OrderModel.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
@@ -8,7 +9,7 @@ class UserModel extends Equatable {
   String? name;
   String? phone;
   List<ProductModel>? favoriteProducts;
-  List<CartModel>? orderHistory;
+  List<OrderModel>? orderHistory;
   List<AddressModel>? addresses;
   AddressModel? currentAddress;
   String? uid;
@@ -56,13 +57,13 @@ class UserModel extends Equatable {
               (index) => ProductModel.fromQuerySnapshot(
                   snapshot['favoriteProducts'][index])).toList()
           : [],
-      orderHistory: (snapshot['orderHistory'].length > 0 &&
-              snapshot['orderHistory'] != null)
-          ? List<CartModel>.generate(
-              snapshot['orderHistory'].length,
-              (index) => CartModel.fromQuerySnapshot(
-                  snapshot['orderHistory'][index])).toList()
-          : [],
+      // orderHistory: (snapshot['orderHistory'].length > 0 &&
+      //         snapshot['orderHistory'] != null)
+      //     ? List<CartModel>.generate(
+      //         snapshot['orderHistory'].length,
+      //         (index) => CartModel.fromQuerySnapshot(
+      //             snapshot['orderHistory'][index])).toList()
+      //     : [],
       addresses: (snapshot['addresses'] != null)
           ? List<AddressModel>.generate(
               snapshot['addresses'].length ?? 0,

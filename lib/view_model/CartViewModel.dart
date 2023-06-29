@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fresh_fruit/logger/AppLogger.dart';
 import 'package:fresh_fruit/model/ShippingDetailModel.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/repository/CartRepositoryImpl.dart';
@@ -29,6 +30,15 @@ class CartViewModel extends BaseViewModel {
 
   double? get shippingFee => _shippingFee;
 
+  bool _isCheckingOut = false;
+
+  bool get isCheckingOut => _isCheckingOut;
+
+  set isCheckingOut(bool value) {
+    _isCheckingOut = value;
+    notifyListeners();
+  }
+
   set shippingFee(double? value) {
     _shippingFee = value;
     notifyListeners();
@@ -52,11 +62,17 @@ class CartViewModel extends BaseViewModel {
   }
 
   void getCart(String uid) async {
-    isGetCart = true;
-    notifyListeners();
-    currentCart = await _repository.getCart(uid);
-    isGetCart = false;
-    notifyListeners();
+    try {
+      isGetCart = true;
+      notifyListeners();
+      currentCart = await _repository.getCart(uid);
+      isGetCart = false;
+      notifyListeners();
+    } catch (e) {
+      isGetCart = false;
+      notifyListeners();
+      AppLogger.e(e.toString());
+    }
   }
 
   void updateOrderedProducts(List<OrderedProductModel> items) {
@@ -69,36 +85,48 @@ class CartViewModel extends BaseViewModel {
     required String customerName,
     required String customerPhone,
     required DateTime orderCheckoutTime,
-    required double totalCost,
     required ShippingDetailModel shippingDetail,
     required AddressModel addressModel,
     required DateTime deliveryTime,
     required PaymentMethod paymentMethod,
   }) async {
-    currentCart = currentCart?.copyWith(
-      paymentMethod: paymentMethod,
-      deliveryTime: deliveryTime,
-      addressModel: addressModel,
-      orderCheckoutTime: orderCheckoutTime,
-      customerName: customerName,
-      customerPhone: customerPhone,
-      note: note,
-      shippingDetail: shippingDetail,
-      totalCost: totalCost,
-    );
-    if (currentCart?.canCheckOut == true) {
-      bool isSuccess = await _repository.checkOutCart(
-        cartModel: currentCart!,
-        uid: uid,
+    try {
+      isCheckingOut = true;
+      notifyListeners();
+      currentCart = currentCart?.copyWith(
+        paymentMethod: paymentMethod,
+        deliveryTime: deliveryTime,
+        addressModel: addressModel,
+        orderCheckoutTime: orderCheckoutTime,
+        customerName: customerName,
+        customerPhone: customerPhone,
+        note: note,
+        shippingDetail: shippingDetail,
+        orderStatus: OrderStatus.PROCESSING,
       );
+      if (currentCart?.canCheckOut == true) {
+        bool isSuccess = await _repository.checkOutCart(
+          cartModel: currentCart!,
+          uid: uid,
+        );
 
-      if (isSuccess) {
-        getCart(uid);
-        return true;
+        if (isSuccess) {
+          getCart(uid);
+          isCheckingOut = false;
+          notifyListeners();
+          return true;
+        }
       }
-    }
+      isCheckingOut = false;
+      notifyListeners();
 
-    return false;
+      return false;
+    } catch (e) {
+      AppLogger.e(e.toString());
+      isCheckingOut = false;
+      notifyListeners();
+      return false;
+    }
   }
 
   Stream<QuerySnapshot<OrderedProductModel>> getCartItemStream(
@@ -122,5 +150,11 @@ class CartViewModel extends BaseViewModel {
 
   void updateCartShippingDetail(ShippingDetailModel shippingDetailModel) {
     currentCart = currentCart?.copyWith(shippingDetail: shippingDetailModel);
+    notifyListeners();
+  }
+
+  void resetDistance() {
+    currentCart = currentCart?.copyWith(shippingDetail: null);
+    notifyListeners();
   }
 }

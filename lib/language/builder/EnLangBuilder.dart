@@ -156,5 +156,48 @@ class EnLangBuilder extends LangBuilder {
       "address, time";
 
   @override
-   String get DEFAULT => "(default)";
+  String get DEFAULT => "(default)";
+
+  @override
+  String get BUTTON_BACK_TO_HOME => "Back to Home";
+
+  @override
+  String get ORDER_FAILED => "Oops! Order Failed";
+
+  @override
+  String get ORDER_FAILED_DESCRIPTION => "Something went wrong.";
+
+  @override
+  String get ORDER_SUCCESS => "Your Order has been accepted";
+
+  @override
+  String get ORDER_SUCCESS_DESCRIPTION =>
+      "Your items has been placcd and is on it’s way to being processed";
+
+  @override
+  String get BUTTON_TRY_AGAIN => "Try again";
+
+  @override
+  String get ORDER_STATUS_CANCEL => "Canceled";
+
+  @override
+  String get ORDER_STATUS_DONE => "Done";
+
+  @override
+  String get ORDER_STATUS_PROCESSING => "Processing";
+
+  @override
+  String get CHECK_OUT_SCREEN_CART_TOTAL => "Cart total:";
+
+  @override
+  String get CHECK_OUT_SHIPPING_DISCOUNT_FREE_SHIP => "Your order got "
+      "\"FREE-SHIP ";
+
+  @override
+  String get CHECK_OUT_SHIPPING_DISCOUNT_HALF_SHIP => "Your order got 50% "
+      "discount "
+      "delivery fee";
+
+  @override
+  String get BUTTON_SAVE_IMAGE => "Save to gallery";
 }

@@ -95,6 +95,7 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
                   : Padding(
                       padding: const EdgeInsets.all(AppDimen.space16),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildCurrentAddress(
                               userVM.currentUser?.currentAddress),
@@ -127,6 +128,7 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
 
   Widget _buildCurrentAddress(AddressModel? addressModel) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(
@@ -154,8 +156,12 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
       child: GestureDetector(
         onTap: () {
           if (!isCurrent) {
-            userViewModel.updateCurrentShippingDetail(addressModel);
-            widget.params.onChangedAddressCallback(addressModel!);
+            userViewModel.updateCurrentShippingDetail(addressModel,() {
+              widget.params.onChangedAddressCallback(addressModel!);
+
+              Navigator.of(context).pop();
+            },);
+            // Navigator.of(context).pop();
           }
         },
         child: Column(

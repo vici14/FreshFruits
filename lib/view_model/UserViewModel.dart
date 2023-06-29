@@ -160,7 +160,8 @@ class UserViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> updateCurrentShippingDetail(AddressModel? address) async {
+  Future<void> updateCurrentShippingDetail(
+      AddressModel? address, Function()? callBack) async {
     try {
       isAddingAddress = true;
       notifyListeners();
@@ -169,6 +170,9 @@ class UserViewModel extends BaseViewModel {
       refreshCurrentUser();
       isAddingAddress = false;
       notifyListeners();
+      if (callBack != null) {
+        callBack();
+      }
     } catch (e) {
       isAddingAddress = false;
       AppLogger.e('addShippingDetail' + e.toString());

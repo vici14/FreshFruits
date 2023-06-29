@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/model/OrderModel.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
@@ -43,7 +44,7 @@ class OrderHistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderHistoryItem(CartModel cartModel) {
+  Widget _buildOrderHistoryItem(OrderModel cartModel) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -85,7 +86,7 @@ class OrderHistoryScreen extends StatelessWidget {
             children: [
               const Text('Tổng đơn hàng'),
               Text(CurrencyFormatter()
-                  .toDisplayValue(cartModel.totalCost, currency: 'VNĐ'))
+                  .toDisplayValue(cartModel.totalPrice, currency: 'VNĐ'))
             ],
           ),
           Row(

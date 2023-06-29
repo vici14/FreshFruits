@@ -159,4 +159,46 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get DEFAULT => "(mặc định)";
+
+  @override
+  String get BUTTON_BACK_TO_HOME => "Trở về trang chủ";
+
+  @override
+  String get ORDER_FAILED => "Oops! Đặt hàng thất bại";
+
+  @override
+  String get ORDER_FAILED_DESCRIPTION => "Có gì đó sai sai!";
+
+  @override
+  String get ORDER_SUCCESS => "Đơn hàng của bạn đã đặt thành công";
+
+  @override
+  String get ORDER_SUCCESS_DESCRIPTION => "Chờ mình ít phút để xác nhận lại "
+      "nhé";
+
+  @override
+  String get BUTTON_TRY_AGAIN => "Thử lại";
+
+  @override
+  String get ORDER_STATUS_CANCEL => "Đã huỷ";
+
+  @override
+  String get ORDER_STATUS_DONE => "Hoàn thành";
+
+  @override
+  String get ORDER_STATUS_PROCESSING => "Đang xử lý";
+
+  @override
+  String get CHECK_OUT_SCREEN_CART_TOTAL => "Giỏ hàng:";
+
+  @override
+  String get CHECK_OUT_SHIPPING_DISCOUNT_FREE_SHIP =>
+      "Đơn hàng này của bạn sẽ được \"FREE-SHIP\"";
+
+  @override
+  String get CHECK_OUT_SHIPPING_DISCOUNT_HALF_SHIP => "Đơn hàng này của bạn "
+      "được giảm 1/2 giá ship";
+
+  @override
+  String get BUTTON_SAVE_IMAGE => "Lưu về máy";
 }

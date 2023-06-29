@@ -1,100 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fresh_fruit/features/check_out/CheckOutController.dart';
-import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/ShippingDetailModel.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
+import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
-import 'package:fresh_fruit/utils/StringUtils.dart';
 
-enum PaymentMethod { COD, MOMO, BANKING }
-
-enum OrderStatus { PROCESSING, CANCEL, DONE }
-
-extension StringMapping on String {
-  PaymentMethod toPaymentMethod() {
-    switch (this) {
-      case 'COD':
-        return PaymentMethod.COD;
-      case 'MOMO':
-        return PaymentMethod.MOMO;
-      case 'BANKING':
-        return PaymentMethod.BANKING;
-      default:
-        return PaymentMethod.COD;
-    }
-  }
-
-  OrderStatus toOrderStatus() {
-    switch (this) {
-      case 'PROCESSING':
-        return OrderStatus.PROCESSING;
-      case 'CANCEL':
-        return OrderStatus.CANCEL;
-      case 'DONE':
-        return OrderStatus.DONE;
-      default:
-        return OrderStatus.PROCESSING;
-    }
-  }
-}
-
-extension OrderStatusExt on OrderStatus {
-  String toJson() {
-    switch (this) {
-      case OrderStatus.PROCESSING:
-        return 'PROCESSING';
-      case OrderStatus.DONE:
-        return 'DONE';
-      case OrderStatus.CANCEL:
-        return 'CANCEL';
-      default:
-        return "PROCESSING";
-    }
-  }
-
-  String toContent() {
-    switch (this) {
-      case OrderStatus.PROCESSING:
-        return locale.language.ORDER_STATUS_PROCESSING;
-      case OrderStatus.DONE:
-        return locale.language.ORDER_STATUS_DONE;
-      case OrderStatus.CANCEL:
-        return locale.language.ORDER_STATUS_CANCEL;
-      default:
-        return locale.language.ORDER_STATUS_PROCESSING;
-    }
-  }
-}
-
-extension PaymentMethodExt on PaymentMethod {
-  String toJson() {
-    switch (this) {
-      case PaymentMethod.COD:
-        return 'COD';
-      case PaymentMethod.MOMO:
-        return 'MOMO';
-      case PaymentMethod.BANKING:
-        return 'BANKING';
-      default:
-        return "COD";
-    }
-  }
-
-  String toContent() {
-    switch (this) {
-      case PaymentMethod.COD:
-        return 'COD ${locale.language.DEFAULT}';
-      case PaymentMethod.MOMO:
-        return 'MOMO';
-      case PaymentMethod.BANKING:
-        return 'BANKING';
-      default:
-        return 'COD ${locale.language.DEFAULT}';
-    }
-  }
-}
-
-class CartModel {
+class OrderModel {
   List<OrderedProductModel>? orderedItems;
   String? note;
   String? customerName;
@@ -107,7 +17,7 @@ class CartModel {
   PaymentMethod? paymentMethod;
   OrderStatus? orderStatus;
 
-  CartModel({
+  OrderModel({
     this.orderCheckoutTime,
     this.orderedItems,
     this.customerName,
@@ -137,11 +47,11 @@ class CartModel {
 
   bool get canCheckOut =>
       customerPhone != null &&
-      addressModel != null &&
-      deliveryTime != null &&
-      paymentMethod != null &&
-      shippingDetail != null &&
-      orderedItems?.isNotEmpty == true;
+          addressModel != null &&
+          deliveryTime != null &&
+          paymentMethod != null &&
+          shippingDetail != null &&
+          orderedItems?.isNotEmpty == true;
 
   // double get totalPrice {
   //   double _totalCost = 0;
@@ -151,8 +61,8 @@ class CartModel {
   //   return _totalCost;
   // }
 
-  factory CartModel.initial() {
-    return CartModel(
+  factory OrderModel.initial() {
+    return OrderModel(
         productsPrice: 0,
         orderedItems: [],
         customerName: '',
@@ -166,12 +76,9 @@ class CartModel {
         orderStatus: OrderStatus.PROCESSING);
   }
 
-  factory CartModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
+  factory OrderModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
     Timestamp _deliveryTimeStamp = Timestamp.now();
     Timestamp _orderCheckoutTime = Timestamp.now();
-    String _orderStatus = '';
-    String _paymentMethod = '';
-
     if (snapshot['deliveryTime'] != null &&
         snapshot['deliveryTime'] is Timestamp) {
       _deliveryTimeStamp = snapshot['deliveryTime'] as Timestamp;
@@ -182,31 +89,23 @@ class CartModel {
       _orderCheckoutTime = snapshot['orderCheckoutTime'] as Timestamp;
     }
 
-    if (snapshot['orderStatus'] != null && snapshot['orderStatus'] is String) {
-      _orderStatus = snapshot['orderStatus'] as String;
-    }
-
-    if (snapshot['paymentMethod'] != null && snapshot['paymentMethod'] is String) {
-      _paymentMethod = snapshot['paymentMethod'] as String;
-    }
-
-    return CartModel(
+    return OrderModel(
       customerName: snapshot['customerName'],
       customerPhone: snapshot['customerPhone'],
       note: snapshot['note'],
       orderedItems: (snapshot['orderedItems'].length > 0 &&
-              snapshot['orderedItems'] != null)
+          snapshot['orderedItems'] != null)
           ? List<OrderedProductModel>.generate(
-              snapshot['orderedItems'].length,
+          snapshot['orderedItems'].length,
               (index) => OrderedProductModel.fromQuerySnapshot(
-                  snapshot['orderedItems'][index])).toList()
+              snapshot['orderedItems'][index])).toList()
           : [],
       productsPrice: snapshot['totalCost'] ?? 0,
       orderCheckoutTime: (snapshot['orderCheckoutTime'] != null &&
-              snapshot['orderCheckoutTime'] is Timestamp)
+          snapshot['orderCheckoutTime'] is Timestamp)
           ? Timestamp.fromMillisecondsSinceEpoch(
-                  _orderCheckoutTime.millisecondsSinceEpoch)
-              .toDate()
+          _orderCheckoutTime.millisecondsSinceEpoch)
+          .toDate()
           : DateTime.now(),
       addressModel: snapshot['address'] != null
           ? AddressModel.fromQuerySnapshot(snapshot['address'])
@@ -215,35 +114,35 @@ class CartModel {
           ? ShippingDetailModel.fromQuerySnapshot(snapshot['shippingDetail'])
           : null,
       deliveryTime: (snapshot['deliveryTime'] != null &&
-              snapshot['deliveryTime'] is Timestamp)
+          snapshot['deliveryTime'] is Timestamp)
           ? Timestamp.fromMillisecondsSinceEpoch(
-                  _deliveryTimeStamp.millisecondsSinceEpoch)
-              .toDate()
+          _deliveryTimeStamp.millisecondsSinceEpoch)
+          .toDate()
           : null,
       paymentMethod: snapshot['paymentMethod'] != null &&
-              snapshot['paymentMethod'] is String
-          ? _paymentMethod.toPaymentMethod()
+          snapshot['paymentMethod'] is String
+          ? snapshot['paymentMethod'].toPaymentMethod()
           : null,
       orderStatus:
-          snapshot['orderStatus'] != null && snapshot['orderStatus'] is String
-              ? _orderStatus.toOrderStatus()
-              : null,
+      snapshot['orderStatus'] != null && snapshot['orderStatus'] is String
+          ? snapshot['orderStatus'].toOrderStatus()
+          : null,
     );
   }
 
-  CartModel copyWith(
+  OrderModel copyWith(
       {List<OrderedProductModel>? orderedItems,
-      String? note,
-      String? customerName,
-      String? customerPhone,
-      DateTime? orderCheckoutTime,
-      double? productsPrice,
-      ShippingDetailModel? shippingDetail,
-      AddressModel? addressModel,
-      DateTime? deliveryTime,
-      PaymentMethod? paymentMethod,
-      OrderStatus? orderStatus}) {
-    return CartModel(
+        String? note,
+        String? customerName,
+        String? customerPhone,
+        DateTime? orderCheckoutTime,
+        double? productsPrice,
+        ShippingDetailModel? shippingDetail,
+        AddressModel? addressModel,
+        DateTime? deliveryTime,
+        PaymentMethod? paymentMethod,
+        OrderStatus? orderStatus}) {
+    return OrderModel(
       customerPhone: customerPhone ?? this.customerPhone,
       customerName: customerName ?? this.customerName,
       orderedItems: orderedItems ?? this.orderedItems,
@@ -253,12 +152,12 @@ class CartModel {
       deliveryTime: deliveryTime ?? this.deliveryTime,
       addressModel: addressModel ?? this.addressModel,
       orderCheckoutTime: orderCheckoutTime ?? this.orderCheckoutTime,
-      shippingDetail: shippingDetail,
+      shippingDetail: shippingDetail ?? this.shippingDetail,
       orderStatus: orderStatus ?? this.orderStatus,
     );
   }
 
-  CartModel withShippingInformation({
+  OrderModel withShippingInformation({
     required AddressModel addressModel,
     required DateTime deliveryTime,
     required PaymentMethod paymentMethod,
@@ -282,7 +181,7 @@ class CartModel {
           ? Timestamp.fromDate(orderCheckoutTime!)
           : null,
       'deliveryTime':
-          deliveryTime != null ? Timestamp.fromDate(deliveryTime!) : null,
+      deliveryTime != null ? Timestamp.fromDate(deliveryTime!) : null,
       'shippingDetail': shippingDetail?.toJson(),
       'addressModel': addressModel?.toJson(),
       'paymentMethod': paymentMethod?.toJson(),

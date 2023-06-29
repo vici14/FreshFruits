@@ -23,6 +23,10 @@ abstract class LangBuilder {
 
   String get BUTTON_ADD_ADDRESS;
 
+  String get BUTTON_BACK_TO_HOME;
+
+  String get BUTTON_TRY_AGAIN;
+
   String get CART_TOTAL;
 
   String get USER_NOT_LOGGED_IN;
@@ -36,6 +40,12 @@ abstract class LangBuilder {
   String get CHECK_OUT_SCREEN_SHIPPING_TIME;
 
   String get CHECK_OUT_SCREEN_SHIPPING_INFORMATION;
+
+  String get CHECK_OUT_SCREEN_CART_TOTAL;
+
+  String get CHECK_OUT_SHIPPING_DISCOUNT_FREE_SHIP;
+
+  String get CHECK_OUT_SHIPPING_DISCOUNT_HALF_SHIP;
 
   String get CHECK_OUT_SCREEN_DELIVERY_AND_PAYMENT;
 
@@ -58,7 +68,6 @@ abstract class LangBuilder {
   String get DELIVERY_ADDRESSES_EMPTY;
 
   String get DELIVERY_TIME;
-
 
   String get DONT_HAVE_ACCOUNT_LOGIN;
 
@@ -101,4 +110,20 @@ abstract class LangBuilder {
   String get CART_CHECKOUT_VALIDATE_MISSING_FIELD;
 
   String get DEFAULT;
+
+  String get ORDER_SUCCESS;
+
+  String get ORDER_SUCCESS_DESCRIPTION;
+
+  String get ORDER_FAILED;
+
+  String get ORDER_FAILED_DESCRIPTION;
+
+  String get ORDER_STATUS_PROCESSING;
+
+  String get ORDER_STATUS_DONE;
+
+  String get ORDER_STATUS_CANCEL;
+
+  String get BUTTON_SAVE_IMAGE;
 }

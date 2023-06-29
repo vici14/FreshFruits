@@ -1,5 +1,10 @@
 class AppImageAsset {
   static const _assetFolder = 'assets/';
+
+  static const imgMomo = '${_assetFolder}img_momo.jpg';
+  static const imgTechcombank = '${_assetFolder}img_techcombank.jpg';
+
+
   static const _bottomBarFolder = '${_assetFolder}bottom_bar/';
   static const appLogo = '${_assetFolder}app_logo.jpeg';
   static const appBanner1 = '${_assetFolder}banner.png';
@@ -21,4 +26,8 @@ class AppImageAsset {
   static const iconFAQS = '${_assetFolder}icon_faqs.svg';
   static const iconLocker = '${_assetFolder}icon_locker.svg';
   static const iconLogout = '${_assetFolder}icon_logout.svg';
+  static const imgOrderSuccess = '${_assetFolder}img_order_success.png';
+  static const imgOrderFailed = '${_assetFolder}img_order_failed.png';
+  static const imgBlurring = '${_assetFolder}img_blurring.png';
+
 }
