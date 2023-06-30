@@ -209,7 +209,7 @@ class _CartScreenState
                   left: 32,
                 ),
                 child: ImageCachedNetwork(
-                  imageUrl: item.imageUrl ?? "",
+                  imageUrl: item.avatar ?? "",
                   height: 65,
                   width: 70,
                 ),

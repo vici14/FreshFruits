@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     productViewModel = Provider.of<ProductViewModel>(context, listen: false);
     userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    productViewModel.getProducts();
     super.initState();
   }
 
@@ -60,6 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //         toFirestore: (carModel, _) => carModel.toJson());
 
   Future<void> _onRefreshCallback() {
+    productViewModel.getProducts();
+
     return Future.value();
   }
 
@@ -366,8 +369,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             horizontal: horizontalPadding),
                         scrollDirection: Axis.horizontal,
                         children: [
-                          ...List.generate(listCars.length, (index) {
-                            var _featuredProducts = listCars[index];
+                          ...List.generate(viewModel.products?.length ?? 0,
+                                  (index) {
+                            var _featuredProducts = viewModel.products![index];
                             return Container(
                                 margin: const EdgeInsets.only(right: 16),
                                 child: ProductCardItem(

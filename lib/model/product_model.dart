@@ -1,5 +1,5 @@
 class ProductModel {
-  String? imageUrl;
+  String? avatar;
   String? name;
   String? description;
   bool isLiked;
@@ -7,9 +7,10 @@ class ProductModel {
   String? id;
   String? category;
   String? unit;
+  List<String>? imageUrls;
 
   ProductModel({
-    required this.imageUrl,
+    required this.avatar,
     required this.name,
     required this.description,
     required this.isLiked,
@@ -17,23 +18,28 @@ class ProductModel {
     required this.id,
     required this.category,
     required this.unit,
+    this.imageUrls = const [],
   });
 
   factory ProductModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
     return ProductModel(
-      id: snapshot['id'],
-      cost: double.parse(snapshot['cost'].toString()),
-      category: snapshot['category'] != null ? snapshot['category'] : '',
-      description: snapshot['description'] != null
-          ? snapshot['description'] as String
-          : '',
-      imageUrl:
-          snapshot['imageUrl'] != null ? snapshot['imageUrl'] as String : '',
-      isLiked:
-          snapshot['isLiked'] != null ? snapshot['isLiked'] as bool : false,
-      name: snapshot['name'] != null ? snapshot['name'] as String : '',
-      unit: snapshot['unit'] != null ? snapshot['unit'] as String : '',
-    );
+        id: snapshot['id'],
+        cost: snapshot['cost'] != null
+            ? double.parse(snapshot['cost'].toString())
+            : 0,
+        category: snapshot['category'] != null ? snapshot['category'] : '',
+        description: snapshot['description'] != null
+            ? snapshot['description'] as String
+            : '',
+        avatar: snapshot['avatar'] != null ? snapshot['avatar'] as String : '',
+        isLiked:
+            snapshot['isLiked'] != null ? snapshot['isLiked'] as bool : false,
+        name: snapshot['name'] != null ? snapshot['name'] as String : '',
+        unit: snapshot['unit'] != null ? snapshot['unit'] as String : '',
+        imageUrls: snapshot['imageUrls'] != null
+            ? List.generate(snapshot['imageUrls'].length,
+                (index) => snapshot['imageUrls'][index] as String).toList()
+            : []);
   }
 
   Map<String, Object?> toJson() {
@@ -41,11 +47,15 @@ class ProductModel {
       'id': id,
       'cost': cost,
       'description': description,
-      'imageUrl': imageUrl,
+      'avatar': avatar,
       'isLiked': isLiked,
       'name': name,
       'category': category,
-      'unit':unit,
+      'unit': unit,
+      'imageUrls': imageUrls?.isNotEmpty == true
+          ? List.generate(imageUrls?.length ?? 0,
+              (index) => imageUrls![index].toString()).toList()
+          : [],
     };
   }
 
@@ -54,10 +64,10 @@ class ProductModel {
         name: this.name,
         cost: this.cost,
         description: this.description,
-        imageUrl: this.imageUrl,
+        avatar: this.avatar,
         isLiked: !this.isLiked,
         id: this.id,
         category: this.category,
-        unit:unit);
+        unit: unit);
   }
 }

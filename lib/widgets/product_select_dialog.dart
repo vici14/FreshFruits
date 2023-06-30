@@ -69,7 +69,7 @@ class _ProductSelectDialogState extends State<ProductSelectDialog> {
                                     Border.all(width: 1, color: Colors.teal),
                                 image: DecorationImage(
                                     image: NetworkImage(
-                                      productDetailVM.productModel.imageUrl ??
+                                      productDetailVM.productModel.avatar ??
                                           '',
                                     ),
                                     fit: BoxFit.fill)),

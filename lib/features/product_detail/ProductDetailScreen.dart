@@ -58,7 +58,6 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
     return "";
   }
 
-
   @override
   Widget buildContent(
       BuildContext context, ProductDetailController localState) {
@@ -76,9 +75,9 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
           ],
         ),
         Align(
-          alignment: Alignment(0,0.95),
+          alignment: Alignment(0, 0.95),
           child: Padding(
-            padding:  EdgeInsets.symmetric(horizontal: horizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: PrimaryButton(
               text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
               onTap: () {},
@@ -227,15 +226,13 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                 print('onPageChanged:$index');
               },
             ),
-            items: [
-              ...[localState.productModel.imageUrl]
-            ].map((i) {
+            items: [...widget.args.productModel.imageUrls ?? []].map((i) {
               return Builder(
                 builder: (BuildContext context) {
                   return CachedNetworkImage(
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
-                    imageUrl: i!,
+                    imageUrl: i,
                     errorWidget: (context, url, error) =>
                         const Center(child: Text("ERROR")),
                     progressIndicatorBuilder: (context, url, progress) =>
@@ -254,10 +251,10 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ...[localState.productModel.imageUrl]
+                ...widget.args.productModel.imageUrls ?? []
               ].map(
                 (media) {
-                  var index = [localState.productModel.imageUrl].indexOf(media);
+                  var index = widget.args.productModel.imageUrls ?? [].indexOf(media);
                   return Container(
                     width: 8.0,
                     height: 8.0,

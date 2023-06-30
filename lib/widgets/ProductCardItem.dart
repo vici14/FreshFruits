@@ -124,7 +124,7 @@ class _ProductCardItemState extends State<ProductCardItem> {
             child: Container(
               constraints: const BoxConstraints.expand(),
               child: SizedBox.square(
-                child: product.imageUrl != null
+                child: product.avatar != null
                     ? ClipRRect(
                         clipBehavior: Clip.antiAlias,
                         borderRadius: const BorderRadius.only(
@@ -133,7 +133,7 @@ class _ProductCardItemState extends State<ProductCardItem> {
                         ),
                         child: CachedNetworkImage(
                           fit: BoxFit.fill,
-                          imageUrl: product.imageUrl!,
+                          imageUrl: product.avatar??"",
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.image_not_supported),
                           progressIndicatorBuilder: (context, url, progress) =>

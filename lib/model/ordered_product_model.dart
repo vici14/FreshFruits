@@ -2,7 +2,7 @@ import 'package:fresh_fruit/model/product_model.dart';
 
 class OrderedProductModel {
   String id;
-  String? imageUrl;
+  String? avatar;
   String? name;
   String? description;
   double? cost;
@@ -15,7 +15,7 @@ class OrderedProductModel {
     this.cost,
     this.name,
     this.description,
-    this.imageUrl,
+    this.avatar,
     this.category,
     this.quantity = 0,
     this.unit,
@@ -27,7 +27,7 @@ class OrderedProductModel {
       category: category,
       cost: cost,
       description: description,
-      imageUrl: imageUrl,
+      avatar: avatar,
       name: name,
       quantity: updatedQuantity,
       unit: unit,
@@ -39,7 +39,7 @@ class OrderedProductModel {
         id: '0',
         quantity: 0,
         category: '',
-        imageUrl: '',
+        avatar: '',
         name: '',
         cost: 0,
         description: '');
@@ -55,8 +55,8 @@ class OrderedProductModel {
       description: snapshot['description'] != null
           ? snapshot['description'] as String
           : '',
-      imageUrl:
-          snapshot['imageUrl'] != null ? snapshot['imageUrl'] as String : '',
+      avatar:
+          snapshot['avatar'] != null ? snapshot['avatar'] as String : '',
       name: snapshot['name'] != null ? snapshot['name'] as String : '',
       quantity: snapshot['quantity'] != null ? snapshot['quantity'] as int : 0,
       unit: snapshot['unit'] != null ? snapshot['unit'] as String : '',
@@ -68,7 +68,7 @@ class OrderedProductModel {
     return OrderedProductModel(
         id: product.id ?? '0',
         category: product.category,
-        imageUrl: product.imageUrl,
+        avatar: product.avatar,
         description: product.description,
         cost: product.cost,
         name: product.name,
@@ -82,7 +82,7 @@ class OrderedProductModel {
       'category': category,
       'cost': cost,
       'description': description,
-      'imageUrl': imageUrl,
+      'avatar': avatar,
       'quantity': quantity,
       'name': name,
       'unit': unit,
