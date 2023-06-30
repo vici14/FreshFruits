@@ -11,6 +11,7 @@ import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/utils/CurrencyFormatter.dart';
 import 'package:fresh_fruit/view_model/CartViewModel.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
+import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -53,30 +54,60 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
   }
 
   @override
+  String appBarTitle() {
+    return "";
+  }
+
+
+  @override
   Widget buildContent(
       BuildContext context, ProductDetailController localState) {
-    return ListView(
+    return Stack(
       children: [
-        _buildProductImagesBanner(localState),
-        _buildNameAndPriceBox(localState),
-        _buildDivider(),
-        SizedBox(
-          height: AppDimen.space18,
+        ListView(
+          children: [
+            _buildProductImagesBanner(localState),
+            _buildNameAndPriceBox(localState),
+            _buildDivider(),
+            SizedBox(
+              height: AppDimen.space18,
+            ),
+            _buildDescription(localState),
+          ],
         ),
-        _buildDescription(localState),
+        Align(
+          alignment: Alignment(0,0.95),
+          child: Padding(
+            padding:  EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: PrimaryButton(
+              text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
+              onTap: () {},
+            ),
+          ),
+        )
       ],
     );
   }
 
   Widget _buildDescription(ProductDetailController localState) {
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: horizontalPadding),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(locale.language.PRODUCT_DETAIL_DESCRIPTION,style: Theme.of
-            (context).textTheme.bodyLarge?.copyWith(fontSize: 22),)
+          Text(
+            locale.language.PRODUCT_DETAIL_DESCRIPTION,
+            style:
+                Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 22),
+          ),
+          Text(
+            localState.productModel.description ?? "",
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppColor.textGrey),
+          )
         ],
       ),
     );

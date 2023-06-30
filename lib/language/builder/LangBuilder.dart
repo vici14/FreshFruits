@@ -130,4 +130,6 @@ abstract class LangBuilder {
   String get CHECKOUT_SUGGEST_DESTINATION;
 
   String get PRODUCT_DETAIL_DESCRIPTION;
+
+  String get PRODUCT_DETAIL_ADD_TO_CART;
 }

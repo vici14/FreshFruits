@@ -207,4 +207,7 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get PRODUCT_DETAIL_DESCRIPTION =>"Thông tin sản phẩm";
+
+  @override
+  String get PRODUCT_DETAIL_ADD_TO_CART =>"Thêm vào giỏ";
 }

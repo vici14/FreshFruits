@@ -206,4 +206,7 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get PRODUCT_DETAIL_DESCRIPTION =>"Description";
+
+  @override
+  String get PRODUCT_DETAIL_ADD_TO_CART =>"Add to Cart";
 }

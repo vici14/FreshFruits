@@ -17,6 +17,7 @@ class PrimaryButton extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(),
       child: Container(
+        height: 67,
         decoration: BoxDecoration(
           color: AppColor.primary,
           borderRadius: BorderRadius.circular(12),
