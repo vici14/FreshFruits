@@ -49,8 +49,7 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
 
   @override
   ProductDetailController initLocalController() {
-    return ProductDetailController(OrderedProductModel.fromProductModel(
-        product: widget.args.productModel, quantity: 1));
+    return ProductDetailController(widget.args.productModel);
   }
 
   @override
@@ -79,8 +78,16 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: PrimaryButton(
+              isLoading: cartVM.isAddingToCart,
               text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
-              onTap: () {},
+              onTap: () async{
+               await cartVM.addToCart(
+                    productModel: localState.productModel,
+                    quantity: localState.quantity,
+                    uid: _userViewModel.currentUser?.uid ?? "");
+               showSnackBar(true) ;
+               Navigator.of(context).pop();
+              },
             ),
           ),
         )
@@ -160,10 +167,7 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                     InkWell(
                       onTap: () {
                         if (localState.quantity > 1) {
-                          cartVM.updateQuantity(
-                              productModel: localState.productModel
-                                  .updateQuantity(--localState.quantity),
-                              uid: _userViewModel.currentUser?.uid ?? '');
+                          localState.quantity--;
                         }
                       },
                       child: Container(
@@ -183,10 +187,7 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                     ),
                     InkWell(
                       onTap: () {
-                        cartVM.updateQuantity(
-                            productModel: localState.productModel
-                                .updateQuantity(++localState.quantity),
-                            uid: _userViewModel.currentUser?.uid ?? '');
+                        localState.quantity++;
                       },
                       child: Container(
                         height: 45,
@@ -250,11 +251,10 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
             alignment: Alignment(0, 0.4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ...widget.args.productModel.imageUrls ?? []
-              ].map(
+              children: [...widget.args.productModel.imageUrls ?? []].map(
                 (media) {
-                  var index = widget.args.productModel.imageUrls ?? [].indexOf(media);
+                  var index =
+                      widget.args.productModel.imageUrls ?? [].indexOf(media);
                   return Container(
                     width: 8.0,
                     height: 8.0,

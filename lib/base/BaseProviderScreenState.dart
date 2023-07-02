@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/common/CommonAppBar.dart';
-
+extension BaseScreenMessenger on BaseProviderScreenState{
+  void showSnackBar(bool isSuccess){
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+        content: Text(isSuccess?'Thành công!':"Thất Bại!"),
+      ),
+    );
+  }
+}
 abstract class BaseProviderScreenState<T extends StatefulWidget,
     C extends ChangeNotifier> extends State<T> {
   C initLocalController();

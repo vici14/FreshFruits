@@ -24,6 +24,15 @@ class CartViewModel extends BaseViewModel {
 //=======================FIELD VALUE=========================
   CartModel? currentCart;
   bool isGetCart = false;
+  bool _isAddingToCart = false;
+
+  bool get isAddingToCart => _isAddingToCart;
+
+  set isAddingToCart(bool value) {
+    _isAddingToCart = value;
+    notifyListeners();
+  }
+
   double _totalCost = 0;
 
   double? _shippingFee;
@@ -53,12 +62,22 @@ class CartViewModel extends BaseViewModel {
 
   bool isUpdatingProductQuantity = false;
 
-  void addToCart(
+  Future<void> addToCart(
       {required ProductModel productModel,
       required int quantity,
-      required String uid}) {
-    _repository.addToCart(
-        quantity: quantity, uid: uid, productModel: productModel);
+      required String uid}) async {
+    try {
+      isAddingToCart = true;
+      notifyListeners();
+      await _repository.addToCart(
+          quantity: quantity, uid: uid, productModel: productModel);
+      isAddingToCart = false;
+      notifyListeners();
+    } catch (e) {
+      isAddingToCart = false;
+      notifyListeners();
+      AppLogger.e(e.toString(), extraMessage: 'add To cart error');
+    }
   }
 
   void getCart(String uid) async {

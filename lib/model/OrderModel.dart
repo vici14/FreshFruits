@@ -6,13 +6,14 @@ import 'package:fresh_fruit/model/ordered_product_model.dart';
 
 class OrderModel {
   List<OrderedProductModel>? orderedItems;
+  String? uid;
   String? note;
   String? customerName;
   String? customerPhone;
   DateTime? orderCheckoutTime;
   double productsPrice;
   ShippingDetailModel? shippingDetail;
-  AddressModel? addressModel;
+  AddressModel? destination;
   DateTime? deliveryTime;
   PaymentMethod? paymentMethod;
   OrderStatus? orderStatus;
@@ -25,10 +26,11 @@ class OrderModel {
     this.note,
     this.productsPrice = 0,
     this.shippingDetail,
-    this.addressModel,
+    this.destination,
     this.deliveryTime,
     this.paymentMethod,
     this.orderStatus,
+    this.uid,
   });
 
   double get allProductsPrice {
@@ -47,11 +49,11 @@ class OrderModel {
 
   bool get canCheckOut =>
       customerPhone != null &&
-          addressModel != null &&
-          deliveryTime != null &&
-          paymentMethod != null &&
-          shippingDetail != null &&
-          orderedItems?.isNotEmpty == true;
+      destination != null &&
+      deliveryTime != null &&
+      paymentMethod != null &&
+      shippingDetail != null &&
+      orderedItems?.isNotEmpty == true;
 
   // double get totalPrice {
   //   double _totalCost = 0;
@@ -69,11 +71,25 @@ class OrderModel {
         customerPhone: '',
         note: '',
         orderCheckoutTime: null,
-        addressModel: null,
+        destination: null,
         deliveryTime: null,
         paymentMethod: null,
         shippingDetail: null,
         orderStatus: OrderStatus.PROCESSING);
+  }
+  factory OrderModel.fromCart(CartModel cartModel) {
+    return OrderModel(
+        productsPrice: cartModel.productsPrice,
+        orderedItems: cartModel.orderedItems,
+        customerName: cartModel.customerName,
+        customerPhone: cartModel.customerPhone,
+        note: cartModel.note,
+        orderCheckoutTime: cartModel.orderCheckoutTime,
+        destination: cartModel.addressModel,
+        deliveryTime: cartModel.deliveryTime,
+        paymentMethod: cartModel.paymentMethod,
+        shippingDetail: cartModel.shippingDetail,
+        orderStatus: cartModel.orderStatus);
   }
 
   factory OrderModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
@@ -90,58 +106,60 @@ class OrderModel {
     }
 
     return OrderModel(
+      uid: snapshot['uid'],
       customerName: snapshot['customerName'],
       customerPhone: snapshot['customerPhone'],
       note: snapshot['note'],
       orderedItems: (snapshot['orderedItems'].length > 0 &&
-          snapshot['orderedItems'] != null)
+              snapshot['orderedItems'] != null)
           ? List<OrderedProductModel>.generate(
-          snapshot['orderedItems'].length,
+              snapshot['orderedItems'].length,
               (index) => OrderedProductModel.fromQuerySnapshot(
-              snapshot['orderedItems'][index])).toList()
+                  snapshot['orderedItems'][index])).toList()
           : [],
       productsPrice: snapshot['totalCost'] ?? 0,
       orderCheckoutTime: (snapshot['orderCheckoutTime'] != null &&
-          snapshot['orderCheckoutTime'] is Timestamp)
+              snapshot['orderCheckoutTime'] is Timestamp)
           ? Timestamp.fromMillisecondsSinceEpoch(
-          _orderCheckoutTime.millisecondsSinceEpoch)
-          .toDate()
+                  _orderCheckoutTime.millisecondsSinceEpoch)
+              .toDate()
           : DateTime.now(),
-      addressModel: snapshot['address'] != null
+      destination: snapshot['address'] != null
           ? AddressModel.fromQuerySnapshot(snapshot['address'])
           : null,
       shippingDetail: snapshot['shippingDetail'] != null
           ? ShippingDetailModel.fromQuerySnapshot(snapshot['shippingDetail'])
           : null,
       deliveryTime: (snapshot['deliveryTime'] != null &&
-          snapshot['deliveryTime'] is Timestamp)
+              snapshot['deliveryTime'] is Timestamp)
           ? Timestamp.fromMillisecondsSinceEpoch(
-          _deliveryTimeStamp.millisecondsSinceEpoch)
-          .toDate()
+                  _deliveryTimeStamp.millisecondsSinceEpoch)
+              .toDate()
           : null,
       paymentMethod: snapshot['paymentMethod'] != null &&
-          snapshot['paymentMethod'] is String
+              snapshot['paymentMethod'] is String
           ? snapshot['paymentMethod'].toPaymentMethod()
           : null,
       orderStatus:
-      snapshot['orderStatus'] != null && snapshot['orderStatus'] is String
-          ? snapshot['orderStatus'].toOrderStatus()
-          : null,
+          snapshot['orderStatus'] != null && snapshot['orderStatus'] is String
+              ? snapshot['orderStatus'].toOrderStatus()
+              : null,
     );
   }
 
   OrderModel copyWith(
       {List<OrderedProductModel>? orderedItems,
-        String? note,
-        String? customerName,
-        String? customerPhone,
-        DateTime? orderCheckoutTime,
-        double? productsPrice,
-        ShippingDetailModel? shippingDetail,
-        AddressModel? addressModel,
-        DateTime? deliveryTime,
-        PaymentMethod? paymentMethod,
-        OrderStatus? orderStatus}) {
+      String? note,
+      String? customerName,
+      String? customerPhone,
+      DateTime? orderCheckoutTime,
+      double? productsPrice,
+      ShippingDetailModel? shippingDetail,
+      AddressModel? addressModel,
+      DateTime? deliveryTime,
+      PaymentMethod? paymentMethod,
+      OrderStatus? orderStatus,
+      String? uid}) {
     return OrderModel(
       customerPhone: customerPhone ?? this.customerPhone,
       customerName: customerName ?? this.customerName,
@@ -150,10 +168,11 @@ class OrderModel {
       note: note ?? this.note,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       deliveryTime: deliveryTime ?? this.deliveryTime,
-      addressModel: addressModel ?? this.addressModel,
+      destination: addressModel ?? this.destination,
       orderCheckoutTime: orderCheckoutTime ?? this.orderCheckoutTime,
       shippingDetail: shippingDetail ?? this.shippingDetail,
       orderStatus: orderStatus ?? this.orderStatus,
+      uid: uid ?? this.uid,
     );
   }
 
@@ -181,11 +200,12 @@ class OrderModel {
           ? Timestamp.fromDate(orderCheckoutTime!)
           : null,
       'deliveryTime':
-      deliveryTime != null ? Timestamp.fromDate(deliveryTime!) : null,
+          deliveryTime != null ? Timestamp.fromDate(deliveryTime!) : null,
       'shippingDetail': shippingDetail?.toJson(),
-      'addressModel': addressModel?.toJson(),
+      'destination': destination?.toJson(),
       'paymentMethod': paymentMethod?.toJson(),
       'orderStatus': orderStatus?.toJson(),
+      'uid': uid,
     };
   }
 }

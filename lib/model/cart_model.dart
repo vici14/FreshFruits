@@ -106,6 +106,7 @@ class CartModel {
   DateTime? deliveryTime;
   PaymentMethod? paymentMethod;
   OrderStatus? orderStatus;
+  String? uid;
 
   CartModel({
     this.orderCheckoutTime,
@@ -119,6 +120,7 @@ class CartModel {
     this.deliveryTime,
     this.paymentMethod,
     this.orderStatus,
+    this.uid,
   });
 
   double get allProductsPrice {
@@ -186,11 +188,13 @@ class CartModel {
       _orderStatus = snapshot['orderStatus'] as String;
     }
 
-    if (snapshot['paymentMethod'] != null && snapshot['paymentMethod'] is String) {
+    if (snapshot['paymentMethod'] != null &&
+        snapshot['paymentMethod'] is String) {
       _paymentMethod = snapshot['paymentMethod'] as String;
     }
 
     return CartModel(
+      uid: snapshot['uid'],
       customerName: snapshot['customerName'],
       customerPhone: snapshot['customerPhone'],
       note: snapshot['note'],
@@ -208,8 +212,8 @@ class CartModel {
                   _orderCheckoutTime.millisecondsSinceEpoch)
               .toDate()
           : DateTime.now(),
-      addressModel: snapshot['address'] != null
-          ? AddressModel.fromQuerySnapshot(snapshot['address'])
+      addressModel: snapshot['destination'] != null
+          ? AddressModel.fromQuerySnapshot(snapshot['destination'])
           : null,
       shippingDetail: snapshot['shippingDetail'] != null
           ? ShippingDetailModel.fromQuerySnapshot(snapshot['shippingDetail'])
@@ -242,7 +246,8 @@ class CartModel {
       AddressModel? addressModel,
       DateTime? deliveryTime,
       PaymentMethod? paymentMethod,
-      OrderStatus? orderStatus}) {
+      OrderStatus? orderStatus,
+       String? uid}) {
     return CartModel(
       customerPhone: customerPhone ?? this.customerPhone,
       customerName: customerName ?? this.customerName,
@@ -253,8 +258,10 @@ class CartModel {
       deliveryTime: deliveryTime ?? this.deliveryTime,
       addressModel: addressModel ?? this.addressModel,
       orderCheckoutTime: orderCheckoutTime ?? this.orderCheckoutTime,
-      shippingDetail: shippingDetail,
+      shippingDetail:
+      shippingDetail,
       orderStatus: orderStatus ?? this.orderStatus,
+      uid: uid ?? this.uid,
     );
   }
 
@@ -284,9 +291,10 @@ class CartModel {
       'deliveryTime':
           deliveryTime != null ? Timestamp.fromDate(deliveryTime!) : null,
       'shippingDetail': shippingDetail?.toJson(),
-      'addressModel': addressModel?.toJson(),
+      'destination': addressModel?.toJson(),
       'paymentMethod': paymentMethod?.toJson(),
       'orderStatus': orderStatus?.toJson(),
+      'uid': uid,
     };
   }
 }

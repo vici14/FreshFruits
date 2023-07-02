@@ -14,7 +14,7 @@ class CartRepositoryImplement extends CartRepository {
       {required ProductModel productModel,
       required int quantity,
       required String uid}) async {
-    return serviceManager.addToCart(
+    return await serviceManager.addToCart(
         productModel: productModel, uid: uid, quantity: quantity);
   }
 
