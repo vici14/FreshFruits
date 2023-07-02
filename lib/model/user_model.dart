@@ -57,13 +57,13 @@ class UserModel extends Equatable {
               (index) => ProductModel.fromQuerySnapshot(
                   snapshot['favoriteProducts'][index])).toList()
           : [],
-      // orderHistory: (snapshot['orderHistory'].length > 0 &&
-      //         snapshot['orderHistory'] != null)
-      //     ? List<CartModel>.generate(
-      //         snapshot['orderHistory'].length,
-      //         (index) => CartModel.fromQuerySnapshot(
-      //             snapshot['orderHistory'][index])).toList()
-      //     : [],
+      orderHistory: (snapshot['orderHistory'].length > 0 &&
+              snapshot['orderHistory'] != null)
+          ? List<OrderModel>.generate(
+              snapshot['orderHistory'].length,
+              (index) => OrderModel.fromQuerySnapshot(
+                  snapshot['orderHistory'][index])).toList()
+          : [],
       addresses: (snapshot['addresses'] != null)
           ? List<AddressModel>.generate(
               snapshot['addresses'].length ?? 0,

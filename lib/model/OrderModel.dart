@@ -95,6 +95,9 @@ class OrderModel {
   factory OrderModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
     Timestamp _deliveryTimeStamp = Timestamp.now();
     Timestamp _orderCheckoutTime = Timestamp.now();
+    String _orderStatus = '';
+
+    String _paymentMethod = '';
     if (snapshot['deliveryTime'] != null &&
         snapshot['deliveryTime'] is Timestamp) {
       _deliveryTimeStamp = snapshot['deliveryTime'] as Timestamp;
@@ -105,6 +108,14 @@ class OrderModel {
       _orderCheckoutTime = snapshot['orderCheckoutTime'] as Timestamp;
     }
 
+    if (snapshot['paymentMethod'] != null &&
+        snapshot['paymentMethod'] is String) {
+      _paymentMethod = snapshot['paymentMethod'] as String;
+    }
+
+    if (snapshot['orderStatus'] != null && snapshot['orderStatus'] is String) {
+      _orderStatus = snapshot['orderStatus'] as String;
+    }
     return OrderModel(
       uid: snapshot['uid'],
       customerName: snapshot['customerName'],
@@ -138,11 +149,11 @@ class OrderModel {
           : null,
       paymentMethod: snapshot['paymentMethod'] != null &&
               snapshot['paymentMethod'] is String
-          ? snapshot['paymentMethod'].toPaymentMethod()
+          ? _paymentMethod.toPaymentMethod()
           : null,
       orderStatus:
           snapshot['orderStatus'] != null && snapshot['orderStatus'] is String
-              ? snapshot['orderStatus'].toOrderStatus()
+              ? _orderStatus.toOrderStatus()
               : null,
     );
   }

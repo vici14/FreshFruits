@@ -8,38 +8,34 @@ import 'package:fresh_fruit/widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class OrderHistoryScreen extends StatelessWidget {
+class OrderHistoryScreen extends StatefulWidget {
+  @override
+  State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
+}
+
+class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MyDrawer(),
-      appBar: const CommonAppBar(
-        title: "Lịch sử đơn hàng",
-      ),
-      body: Container(
-        // padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        padding:
-            const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 20),
-        child: Consumer<UserViewModel>(
-          builder: (BuildContext context, UserViewModel userVM, Widget? child) {
-            if (!userVM.isLoggedIn) {
-              return const Center(
-                child: Text("Vui lòng đăng nhập"),
-              );
-            }
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  ...List.generate(userVM.currentUser!.orderHistory!.length,
-                      (index) {
-                    var cart = userVM.currentUser!.orderHistory![index];
-                    return _buildOrderHistoryItem(cart);
-                  })
-                ],
-              ),
+    return Container(
+      // padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      padding:
+      const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 20),
+      child: Consumer<UserViewModel>(
+        builder: (BuildContext context, UserViewModel userVM, Widget? child) {
+          if (!userVM.isLoggedIn) {
+            return const Center(
+              child: Text("Vui lòng đăng nhập"),
             );
-          },
-        ),
+          }
+          return ListView.builder(
+              itemCount: userVM.currentUser?.orderHistory?.length ?? 0,
+              itemBuilder: (context, index) {
+                var order = userVM.currentUser?.orderHistory![index];
+                return _buildOrderHistoryItem(order!);
+              });
+
+
+        },
       ),
     );
   }
@@ -72,8 +68,8 @@ class OrderHistoryScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // const Text('Địa chỉ:'),
-              // Text(cartModel.customerAddress ?? '')
+              const Text('Địa chỉ:'),
+              Text(cartModel.destination?.getDisplayAddress ?? '')
             ],
           ),
           const Divider(

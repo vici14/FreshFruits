@@ -23,8 +23,23 @@ class UserViewModel extends BaseViewModel {
   //=======================FIELD VALUE=========================
 
   UserModel? currentUser;
-  bool isSigningUp = false;
-  bool isLoggingIn = false;
+  bool _isSigningUp = false;
+
+  bool get isSigningUp => _isSigningUp;
+
+  set isSigningUp(bool value) {
+    _isSigningUp = value;
+    notifyListeners();
+  }
+
+  bool _isLoggingIn = false;
+
+  bool get isLoggingIn => _isLoggingIn;
+
+  set isLoggingIn(bool value) {
+    _isLoggingIn = value;
+    notifyListeners();
+  }
 
   bool isLoggedIn = false;
   bool isUpdatingProfile = false;
@@ -58,12 +73,10 @@ class UserViewModel extends BaseViewModel {
   }) async {
     try {
       isSigningUp = true;
-      notifyListeners();
-      var _resp = await _repository.signUpWithEmailAndPassword(
+       var _resp = await _repository.signUpWithEmailAndPassword(
           email: email, password: password, name: name);
       isSigningUp = false;
-      notifyListeners();
-      return _resp;
+       return _resp;
     } catch (e) {
       print('signUpWithEmailAndPassword: ${e.toString()}');
     }
@@ -84,23 +97,20 @@ class UserViewModel extends BaseViewModel {
 
   Future<bool> signInWithEmailAndPassword(BuildContext context,
       {required String email, required String password}) async {
+
     try {
       isLoggingIn = true;
-      isLoggedIn = false;
-      notifyListeners();
-      var _resp = await _repository.signInWithEmailAndPassword(
+       var _resp = await _repository.signInWithEmailAndPassword(
           email: email, password: password);
       if (_resp) {
-        currentUser = await _repository.getCurrentUser().then((value) {
-          StorageService.shared.setString('name', value?.name ?? '');
-          StorageService.shared.setString('email', value?.email ?? '');
-          StorageService.shared.setSecureData('uid', value?.uid ?? '');
-        });
+        currentUser = await _repository.getCurrentUser();
+        StorageService.shared.setString('name', currentUser?.name ?? '');
+        StorageService.shared.setString('email', currentUser?.email ?? '');
+        StorageService.shared.setSecureData('uid', currentUser?.uid ?? '');
         isLoggedIn = true;
       }
       isLoggingIn = false;
-      notifyListeners();
-      return _resp;
+       return _resp;
     } catch (e) {
       print('signInWithEmailAndPassword:${e.toString()}');
     }

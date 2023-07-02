@@ -107,8 +107,9 @@ class CartModel {
   PaymentMethod? paymentMethod;
   OrderStatus? orderStatus;
   String? uid;
-
+  double? totalPrice;
   CartModel({
+    this.totalPrice,
     this.orderCheckoutTime,
     this.orderedItems,
     this.customerName,
@@ -132,7 +133,7 @@ class CartModel {
     return _cost;
   }
 
-  double get totalPrice {
+  double get getTotalPrice {
     if (shippingDetail == null) return allProductsPrice;
     return shippingDetail!.totalShippingPrice + allProductsPrice;
   }
@@ -198,6 +199,7 @@ class CartModel {
       customerName: snapshot['customerName'],
       customerPhone: snapshot['customerPhone'],
       note: snapshot['note'],
+
       orderedItems: (snapshot['orderedItems'].length > 0 &&
               snapshot['orderedItems'] != null)
           ? List<OrderedProductModel>.generate(
@@ -279,7 +281,7 @@ class CartModel {
   Map<String, dynamic> toJson() {
     return {
       'productsPrice': allProductsPrice,
-      'totalPrice': totalPrice,
+      'totalPrice': getTotalPrice,
       'orderedItems': List.generate(
           orderedItems?.length ?? 0, (index) => orderedItems![index].toJson()),
       'note': note,

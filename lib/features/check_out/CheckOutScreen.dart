@@ -237,7 +237,7 @@ class _CheckOutScreenState
                   ),
                   Text(
                     CurrencyFormatter().toDisplayValue(
-                        cartViewModel.currentCart?.totalPrice,
+                        cartViewModel.currentCart?.getTotalPrice,
                         currency: "đ"),
                     style: Theme.of(context)
                         .textTheme
@@ -617,7 +617,7 @@ class _CheckOutScreenState
                 ),
                 Text(
                   CurrencyFormatter().toDisplayValue(
-                      cartViewModel.currentCart?.totalPrice,
+                      cartViewModel.currentCart?.getTotalPrice,
                       currency: "đ"),
                   style: Theme.of(context)
                       .textTheme

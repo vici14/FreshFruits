@@ -5,6 +5,7 @@ import 'package:fresh_fruit/features/account/UserScreen.dart';
 import 'package:fresh_fruit/features/authens/authen_intro.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
+import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
@@ -101,23 +102,26 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
   }
 
   bool onScrollNotification(ScrollNotification notification) {
-    if (notification is UserScrollNotification &&
-        notification.metrics.axis == Axis.vertical) {
-      switch (notification.direction) {
-        case ScrollDirection.forward:
-          shouldCartFloat.value = false;
-          _hideBottomBarAnimationController.reverse();
-          _fabAnimationController.forward(from: 0);
-          break;
-        case ScrollDirection.reverse:
-          shouldCartFloat.value = true;
-          _hideBottomBarAnimationController.forward();
-          _fabAnimationController.reverse(from: 1);
-          break;
-        case ScrollDirection.idle:
-          break;
+    if(_bottomNavIndex == 0){
+      if (notification is UserScrollNotification &&
+          notification.metrics.axis == Axis.vertical) {
+        switch (notification.direction) {
+          case ScrollDirection.forward:
+            shouldCartFloat.value = false;
+            _hideBottomBarAnimationController.reverse();
+            _fabAnimationController.forward(from: 0);
+            break;
+          case ScrollDirection.reverse:
+            shouldCartFloat.value = true;
+            _hideBottomBarAnimationController.forward();
+            _fabAnimationController.reverse(from: 1);
+            break;
+          case ScrollDirection.idle:
+            break;
+        }
       }
     }
+
     return false;
   }
 
@@ -133,7 +137,8 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
           floatingActionButton: FloatingActionButton(
             key: Key('btnBack'),
             clipBehavior: Clip.antiAlias,
-            shape: const CircleBorder(),
+            shape: const CircleBorder(),backgroundColor:               AppColor.primary
+              ,
             onPressed: () {
               Navigator.pushNamed(context, AppRoute.cartScreen);
             },

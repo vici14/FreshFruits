@@ -1,49 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fresh_fruit/extension/ContainerUIExt.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
+import 'package:fresh_fruit/theme/AppColor.dart';
+import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:provider/provider.dart';
 
-class AccountTab extends StatelessWidget {
+import '../../model/address/AddressModel.dart';
+import '../../route/AppRoute.dart';
+import '../check_out/address/DeliveryAddressScreen.dart';
+
+class AccountTab extends StatefulWidget {
   const AccountTab({Key? key}) : super(key: key);
 
+  @override
+  State<AccountTab> createState() => _AccountTabState();
+}
+
+class _AccountTabState extends State<AccountTab> {
   @override
   Widget build(BuildContext context) {
     UserViewModel userViewModel = Provider.of<UserViewModel>(context);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 38),
-          _buildItem(
-            onTap: () {},
-            title: locale.language.PUSH_NOTIFICATION_TITLE,
-            subTitle: locale.language.PUSH_NOTIFICATION_SUBTITLE,
-            assetPath: AppImageAsset.iconNotification,
+    return Consumer<UserViewModel>(
+      builder: (context, userViewModel, child) {
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 38),
+              _buildItem(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    AppRoute.deliveryAddressScreen,
+                    arguments: DeliveryAddressScreenParams(
+                      onChangedAddressCallback: (AddressModel address) async {},
+                    ),
+                  );
+                },
+                title: locale.language.CHECK_OUT_SCREEN_DELIVERY_ADDRESS,
+                subTitle: userViewModel
+                        .currentUser?.currentAddress?.getDisplayAddress ??
+                    "chưa có",
+                icon: Icons.location_on,
+              ),
+              const SizedBox(height: 10,),
+              _buildItem(
+                onTap: () {
+                  userViewModel.logOut();
+                },
+                title: locale.language.LOG_OUT_TITLE,
+                subTitle: locale.language.LOG_OUT_SUBTITLE,
+                  icon: Icons.exit_to_app,
+              ),
+            ],
           ),
-          _buildItem(
-            onTap: () {},
-            title: locale.language.ACCOUNT_PRIVACY_TITLE,
-            subTitle: locale.language.ACCOUNT_PRIVACY_SUBTITLE,
-            assetPath: AppImageAsset.iconLocker,
-          ),
-          _buildItem(
-            onTap: () {},
-            title: locale.language.FAQS_TITLE,
-            subTitle: locale.language.FAQS_SUBTITLE,
-            assetPath: AppImageAsset.iconFAQS,
-          ),
-          _buildItem(
-            onTap: () {
-             userViewModel.logOut();
-            },
-            title: locale.language.LOG_OUT_TITLE,
-            subTitle: locale.language.LOG_OUT_SUBTITLE,
-            assetPath: AppImageAsset.iconLogout,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -51,40 +65,36 @@ class AccountTab extends StatelessWidget {
     required Function onTap,
     required String title,
     required String subTitle,
-    required String assetPath,
+    required IconData icon,
   }) {
     return InkWell(
       onTap: () => onTap(),
       child: Container(
-        padding: const EdgeInsets.only(
-          left: 29,
-          top: 18,
-          bottom: 23,
-        ),
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
+
+        padding: const EdgeInsets.all(AppDimen.space16),
         child: Row(
           children: [
-            SvgPicture.asset(
-              assetPath,
-              width: 25,
-              height: 25,
+            Icon(
+              icon,
+              size: 25,
+              color: AppColor.primary,
             ),
             const SizedBox(width: 24.5),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title),
-                const SizedBox(width: 3),
-                Text(subTitle),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title),
+                  const SizedBox(width: 3),
+                  Text(subTitle,style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: AppColor.textGrey),),
+
+                ],
+              ),
             ),
           ],
         ),
-      ),
+      ).addWhiteBoxShadow(),
     );
   }
 }

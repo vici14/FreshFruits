@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fresh_fruit/features/account/account_tab.dart';
-import 'package:fresh_fruit/language/LanguagesManager.dart';
+ import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
@@ -12,6 +12,8 @@ import '../../view_model/UserViewModel.dart';
 import '../../widgets/my_app_bar.dart';
 import '../../widgets/my_drawer.dart';
 import 'package:provider/provider.dart';
+
+import '../order/OrderHistoryScreen.dart';
 
 class UserScreen extends StatefulWidget {
   @override
@@ -33,7 +35,7 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    tabController = TabController(length: 3, vsync: this);
+    tabController = TabController(length: 2, vsync: this);
     _userViewModel = Provider.of<UserViewModel>(context, listen: false);
     if (_userViewModel.currentUser != null) {
       canUpdateProfile = true;
@@ -42,20 +44,16 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     _productViewModel = Provider.of<ProductViewModel>(context, listen: false);
-    String email = 'cuongchau19@gmail.com';
-    String password = '123456789';
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        drawer: MyDrawer(),
-        appBar: const CommonAppBar(
-          title: "Tài khoản",
-          backgroundColor: Colors.white,
-        ),
+
         body: Column(
           children: [
             _buildCusInfo(),
@@ -66,8 +64,7 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
                   controller: tabController,
                   children:  [
                     const AccountTab(),
-                    Container(),
-                    Container(),
+                    OrderHistoryScreen(),
                   ],
                 ),
               ),
@@ -162,7 +159,8 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
                 height: 42,
                 child: TabBar(
                   controller: tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorSize: TabBarIndicatorSize.tab,            labelColor: Colors.black,
+
                   isScrollable: false,
                   indicator: UnderlineTabIndicator(
                     // borderRadius: BorderRadius.circular(5.0),
@@ -172,17 +170,11 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
                     ),
                   ),
                   indicatorPadding: const EdgeInsets.symmetric(horizontal: 45),
-                  labelStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    height: 29 / 14,
-                    color: Colors.red,
-                  ),
+
                   // dividerColor: Colors.transparent,
                   tabs: [
                     Tab(text: locale.language.ACCOUNT),
-                    Tab(text: locale.language.PAYMENT_METHOD),
-                    Tab(text: locale.language.HISTORY),
+                     Tab(text: locale.language.HISTORY),
                   ],
                 ),
               ),
