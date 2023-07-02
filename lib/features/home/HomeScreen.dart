@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/mock_data.dart';
@@ -31,11 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<String> listBanners = [AppImageAsset.appBanner1];
 
+  TextEditingController? searchController;
+  FocusNode? searchNode;
+  bool isAnimatedText = true;
+
   @override
   void initState() {
     productViewModel = Provider.of<ProductViewModel>(context, listen: false);
     userViewModel = Provider.of<UserViewModel>(context, listen: false);
     productViewModel.getProducts();
+    searchController = TextEditingController();
+    searchNode = FocusNode();
     super.initState();
   }
 
@@ -169,72 +176,115 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               );
             },
-            child: CustomScrollView(
-              controller: _customScrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  centerTitle: false,
-                  title: Text('Hello'),actions: [],
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 10,
+            child: GestureDetector(
+              onTap: () => searchNode?.unfocus(),
+              child: CustomScrollView(
+                controller: _customScrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    centerTitle: false,
+                    title: const Text('Hello'),
+                    actions: const [],
                   ),
-                ),
-                SliverToBoxAdapter(child: _buildHeaderBanner(context)),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 5,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: horizontalPadding),
-                    child: _buildHeaderTitle(
-                      title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
-                      onTapViewMore: () {},
-                    ),
-                  ),
-                ),
-                _buildFeaturedProducts(context, productViewModel),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 22,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: horizontalPadding),
-                    child: _buildHeaderTitle(
-                      title: locale.language.HOME_SCREEN_BEST_SELLING,
-                      onTapViewMore: () {},
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: horizontalPadding),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 285.0,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        childAspectRatio: 0.6,
+                  SliverToBoxAdapter(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColor.grey,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
                       ),
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        ProductModel product;
-
-                        product = listCars[index];
-                        return ProductCardItem(productModel: product);
-                      }, childCount: listCars.length),
-                    )),
-              ],
+                      margin: const EdgeInsets.symmetric(horizontal: 25),
+                      child: TextField(
+                        controller: searchController,
+                        focusNode: searchNode,
+                        decoration: InputDecoration(
+                          label: DefaultTextStyle(
+                            style: const TextStyle(
+                                fontSize: 14.0, color: Colors.black),
+                            textAlign: TextAlign.start,
+                            textWidthBasis: TextWidthBasis.longestLine,
+                            child: searchNode?.hasFocus == false
+                                ? AnimatedTextKit(
+                                    repeatForever: true,
+                                    animatedTexts: [
+                                      RotateAnimatedText('AWESOMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'),
+                                      RotateAnimatedText('OPTIMISTIC'),
+                                      RotateAnimatedText('DIFFERENT'),
+                                    ],
+                                    
+                                  )
+                                : const SizedBox(),
+                          ),
+                          prefixIcon: const Icon(Icons.store),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                        // height: 10,
+                        ),
+                  ),
+                  SliverToBoxAdapter(child: _buildHeaderBanner(context)),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 5,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      child: _buildHeaderTitle(
+                        title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
+                        onTapViewMore: () {},
+                      ),
+                    ),
+                  ),
+                  // s_buildFeaturedProducts(context, productViewModel),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 22,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      child: _buildHeaderTitle(
+                        title: locale.language.HOME_SCREEN_BEST_SELLING,
+                        onTapViewMore: () {},
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      sliver: SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 285.0,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 0.6,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          ProductModel product;
+            
+                          product = listCars[index];
+                          return ProductCardItem(productModel: product);
+                        }, childCount: listCars.length),
+                      )),
+                ],
+              ),
             ),
           );
         },
