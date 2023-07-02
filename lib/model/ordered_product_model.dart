@@ -6,7 +6,7 @@ class OrderedProductModel {
   String? name;
   String? description;
   double? cost;
-  String? category;
+  ProductCategory? category;
   int quantity;
   String? unit;
 
@@ -38,7 +38,7 @@ class OrderedProductModel {
     return OrderedProductModel(
         id: '0',
         quantity: 0,
-        category: '',
+        category: ProductCategory.UNDEFINED,
         avatar: '',
         name: '',
         cost: 0,
@@ -46,9 +46,14 @@ class OrderedProductModel {
   }
 
   factory OrderedProductModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {
+    String _category = "";
+    if (snapshot['category'] != null &&
+        snapshot['category'] is String) {
+      _category = snapshot['category'] as String;
+    }
     return OrderedProductModel(
       id: snapshot['id'],
-      category: snapshot['category'],
+      category: snapshot['category'] != null ? _category.toProdCategory() : null,
       cost: snapshot['cost'] != null
           ? double.parse(snapshot['cost'].toString())
           : 0,
@@ -79,7 +84,7 @@ class OrderedProductModel {
   Map<String, Object?> toJson() {
     return {
       'id': id,
-      'category': category,
+      'category': category?.toName(),
       'cost': cost,
       'description': description,
       'avatar': avatar,

@@ -1,5 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/const.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/mock_data.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -185,40 +187,59 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverAppBar(
                     backgroundColor: Theme.of(context).colorScheme.background,
                     centerTitle: false,
-                    title: const Text('Hello'),
+                    title: EasyRichText(
+                      locale.language
+                          .HOME_SCREEN_HELLO(userViewModel.currentUser?.name),
+                      patternList: [
+                        EasyRichTextPattern(
+                            targetString: locale.language.HOME_SCREEN_HELLO(
+                                userViewModel.currentUser?.name),
+                            style: Theme.of(context).textTheme.bodyLarge),
+                      ],
+                    ),
                     actions: const [],
                   ),
                   SliverToBoxAdapter(
                     child: Container(
                       decoration: const BoxDecoration(
-                        color: AppColor.grey,
+                        color: AppColor.greenMain,
                         borderRadius: BorderRadius.all(
                           Radius.circular(12),
                         ),
                       ),
-                      margin: const EdgeInsets.symmetric(horizontal: 25),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
                       child: TextField(
                         controller: searchController,
                         focusNode: searchNode,
                         decoration: InputDecoration(
                           label: DefaultTextStyle(
-                            style: const TextStyle(
-                                fontSize: 14.0, color: Colors.black),
-                            textAlign: TextAlign.start,
-                            textWidthBasis: TextWidthBasis.longestLine,
-                            child: searchNode?.hasFocus == false
-                                ? AnimatedTextKit(
-                                    repeatForever: true,
-                                    animatedTexts: [
-                                      RotateAnimatedText('AWESOMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'),
-                                      RotateAnimatedText('OPTIMISTIC'),
-                                      RotateAnimatedText('DIFFERENT'),
-                                    ],
-                                    
-                                  )
-                                : const SizedBox(),
+                              style: const TextStyle(
+                                  fontSize: 14.0, color: Colors.black),
+                              textAlign: TextAlign.start,
+                              textWidthBasis: TextWidthBasis.longestLine,
+                              child: AnimatedTextKit(
+                                pause: const Duration(microseconds: 700),
+                                repeatForever: true,
+                                animatedTexts: [
+                                  RotateAnimatedText(HIEU_ADDRESS,
+                                      duration: const Duration(seconds: 2),
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(color: Colors.white)),
+                                  RotateAnimatedText(DISCOUNT_530PM,
+                                      duration: const Duration(seconds: 2),
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(color: Colors.white)),
+                                ],
+                              )),
+                          prefixIcon: const Icon(
+                            Icons.store,
+                            color: AppColor.primary,
                           ),
-                          prefixIcon: const Icon(Icons.store),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide.none,
@@ -248,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  // s_buildFeaturedProducts(context, productViewModel),
+                  _buildNewProducts(context, productViewModel),
                   const SliverToBoxAdapter(
                     child: SizedBox(
                       height: 22,
@@ -278,10 +299,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
                           ProductModel product;
-            
-                          product = listCars[index];
+
+                          product = productViewModel.getHottestProduct[index];
                           return ProductCardItem(productModel: product);
-                        }, childCount: listCars.length),
+                        }, childCount:  productViewModel.getHottestProduct.length),
                       )),
                 ],
               ),
@@ -393,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //   );
   // }
 
-  Widget _buildFeaturedProducts(
+  Widget _buildNewProducts(
       BuildContext context, ProductViewModel productViewModel) {
     return SliverToBoxAdapter(
       child: SizedBox(
@@ -412,20 +433,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: const ProductCardShimmer());
                     },
                   )
-                : (viewModel.products?.isNotEmpty == true)
+                : (viewModel.getNewestProduct.isNotEmpty == true)
                     ? ListView(
                         controller: featuredProductScrollController,
                         padding: const EdgeInsets.symmetric(
                             horizontal: horizontalPadding),
                         scrollDirection: Axis.horizontal,
                         children: [
-                          ...List.generate(viewModel.products?.length ?? 0,
-                                  (index) {
-                            var _featuredProducts = viewModel.products![index];
+                          ...List.generate(viewModel.getNewestProduct.length ?? 0,
+                              (index) {
+                            var _newProduct = viewModel.getNewestProduct[index];
                             return Container(
                                 margin: const EdgeInsets.only(right: 16),
                                 child: ProductCardItem(
-                                  productModel: _featuredProducts,
+                                  productModel: _newProduct,
                                 ));
                           }),
                           if (viewModel.isLoadingProductMore == true)
@@ -461,13 +482,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold),
           ),
-          TextButton(
+        /*  TextButton(
               onPressed: onTapViewMore,
               child: Text(
                 locale.language.HOME_SCREEN_SEE_ALL,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColor.greenMain, fontWeight: FontWeight.w600),
-              )),
+              )),*/
         ],
       ),
     );

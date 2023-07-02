@@ -170,7 +170,7 @@ class _ProductCardItemState extends State<ProductCardItem> {
               ),
             ),
           ),
-          Positioned(
+         /* Positioned(
             right: 20,
             top: 16,
             child: InkWell(
@@ -186,7 +186,7 @@ class _ProductCardItemState extends State<ProductCardItem> {
                         Icons.favorite_outlined,
                         color: Theme.of(context).colorScheme.secondary,
                       )),
-          ),
+          ),*/
         ],
       ),
     );

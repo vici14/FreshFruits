@@ -210,4 +210,9 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get PRODUCT_DETAIL_ADD_TO_CART =>"Thêm vào giỏ";
+
+  @override
+  String HOME_SCREEN_HELLO(String? userName) {
+    return userName != null ? "Xin chào, $userName" : "Xin chào";
+  }
 }

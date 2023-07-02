@@ -205,8 +205,13 @@ class EnLangBuilder extends LangBuilder {
   String get CHECKOUT_SUGGEST_DESTINATION => 'Suggest :';
 
   @override
-  String get PRODUCT_DETAIL_DESCRIPTION =>"Description";
+  String get PRODUCT_DETAIL_DESCRIPTION => "Description";
 
   @override
-  String get PRODUCT_DETAIL_ADD_TO_CART =>"Add to Cart";
+  String get PRODUCT_DETAIL_ADD_TO_CART => "Add to Cart";
+
+  @override
+  String HOME_SCREEN_HELLO(String? userName) {
+    return userName != null ? "Hello, $userName" : "Hello";
+  }
 }

@@ -63,18 +63,19 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
     return Stack(
       children: [
         ListView(
+          padding: const EdgeInsets.only(bottom: 100),
           children: [
             _buildProductImagesBanner(localState),
             _buildNameAndPriceBox(localState),
             _buildDivider(),
-            SizedBox(
+            const SizedBox(
               height: AppDimen.space18,
             ),
             _buildDescription(localState),
           ],
         ),
         Align(
-          alignment: Alignment(0, 0.95),
+          alignment: const Alignment(0, 0.95),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: PrimaryButton(

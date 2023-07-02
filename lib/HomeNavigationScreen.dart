@@ -37,10 +37,12 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
   late CurvedAnimation fabCurve;
   late CurvedAnimation borderRadiusCurve;
   late AnimationController _hideBottomBarAnimationController;
+
+  ValueNotifier<bool> shouldCartFloat = ValueNotifier(false);
   final iconList = [
     AppImageAsset.bottomHomeIcon,
-    AppImageAsset.bottomSearchIcon,
-    AppImageAsset.bottomFavouriteIcon,
+    // AppImageAsset.bottomSearchIcon,
+    // AppImageAsset.bottomFavouriteIcon,
     AppImageAsset.bottomUserIcon,
   ];
 
@@ -74,18 +76,18 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
     );
 
     Future.delayed(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 200),
       () => _fabAnimationController.forward(),
     );
     Future.delayed(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 200),
       () => _borderRadiusAnimationController.forward(),
     );
     super.initState();
     listTab = [
       HomeScreen(),
-      StoreScreen(),
-      FavoriteProductsScreen(),
+      // StoreScreen(),
+      // FavoriteProductsScreen(),
       Consumer<UserViewModel>(
         builder: (_, userVM, __) {
           if (userVM.isLoggedIn) {
@@ -103,10 +105,12 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
         notification.metrics.axis == Axis.vertical) {
       switch (notification.direction) {
         case ScrollDirection.forward:
+          shouldCartFloat.value = false;
           _hideBottomBarAnimationController.reverse();
           _fabAnimationController.forward(from: 0);
           break;
         case ScrollDirection.reverse:
+          shouldCartFloat.value = true;
           _hideBottomBarAnimationController.forward();
           _fabAnimationController.reverse(from: 1);
           break;
@@ -119,61 +123,69 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-
-      floatingActionButton: FloatingActionButton(
-         key: Key('btnBack'),
-        clipBehavior: Clip.antiAlias,
-        shape: const CircleBorder(),
-        onPressed: () {
-          Navigator.pushNamed(context, AppRoute.cartScreen);
-        },
-        child: SvgPicture.asset(
-          AppImageAsset.bottomCartIcon,
-          width: 32,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: NotificationListener<ScrollNotification>(
-        onNotification: onScrollNotification,
-        child: listTab![_bottomNavIndex],
-      ),
-      bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        itemCount: iconList.length,
-        tabBuilder: (int index, bool isActive) {
-          final color = Theme.of(context).colorScheme.primary;
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset(
-                iconList[index],
-                width: 24,
-                color: color,
-              ),
-            ],
-          );
-        },
-        backgroundColor: Theme.of(context).colorScheme.background,
-        activeIndex: _bottomNavIndex,
-        splashColor: Theme.of(context).colorScheme.surface,
-        notchAndCornersAnimation: borderRadiusAnimation,
-        splashSpeedInMilliseconds: 300,
-        notchSmoothness: NotchSmoothness.defaultEdge,
-        gapLocation: GapLocation.center,
-        leftCornerRadius: 32,
-        rightCornerRadius: 32,
-        onTap: onTabTap,
-        hideAnimationController: _hideBottomBarAnimationController,
-        shadow: BoxShadow(
-          offset: const Offset(0, 1),
-          blurRadius: 12,
-          spreadRadius: 0.5,
-          color: Theme.of(context).colorScheme.surface,
-        ),
-      ),
+    print(
+        '_hideBottomBarAnimationController.value:${_hideBottomBarAnimationController.value}');
+    return ValueListenableBuilder(
+      valueListenable: shouldCartFloat,
+      builder: (context, shouldFloat, child) {
+        return Scaffold(
+          extendBody: true,
+          floatingActionButton: FloatingActionButton(
+            key: Key('btnBack'),
+            clipBehavior: Clip.antiAlias,
+            shape: const CircleBorder(),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoute.cartScreen);
+            },
+            child: SvgPicture.asset(
+              AppImageAsset.bottomCartIcon,
+              width: 32,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+          floatingActionButtonLocation: shouldFloat
+              ? FloatingActionButtonLocation.centerFloat
+              : FloatingActionButtonLocation.centerDocked,
+          body: NotificationListener<ScrollNotification>(
+            onNotification: onScrollNotification,
+            child: listTab![_bottomNavIndex],
+          ),
+          bottomNavigationBar: AnimatedBottomNavigationBar.builder(
+            itemCount: iconList.length,
+            tabBuilder: (int index, bool isActive) {
+              final color = Theme.of(context).colorScheme.primary;
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    iconList[index],
+                    width: 24,
+                    color: color,
+                  ),
+                ],
+              );
+            },
+            backgroundColor: Theme.of(context).colorScheme.background,
+            activeIndex: _bottomNavIndex,
+            splashColor: Theme.of(context).colorScheme.surface,
+            notchAndCornersAnimation: borderRadiusAnimation,
+            splashSpeedInMilliseconds: 300,
+            notchSmoothness: NotchSmoothness.defaultEdge,
+            gapLocation: GapLocation.center,
+            leftCornerRadius: 32,
+            rightCornerRadius: 32,
+            onTap: onTabTap,
+            hideAnimationController: _hideBottomBarAnimationController,
+            shadow: BoxShadow(
+              offset: const Offset(0, 1),
+              blurRadius: 12,
+              spreadRadius: 0.5,
+              color: Theme.of(context).colorScheme.surface,
+            ),
+          ),
+        );
+      },
     );
   }
 
