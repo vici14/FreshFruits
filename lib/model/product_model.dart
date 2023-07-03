@@ -1,3 +1,5 @@
+import 'package:fresh_fruit/model/ordered_product_model.dart';
+
 enum ProductCategory {
   FOOD_AND_VEGE,
   MEATS,
@@ -115,6 +117,19 @@ class ProductModel {
               (index) => snapshot['popular'][index] as String).toList()
           : [],
     );
+  }
+  factory ProductModel.fromOrderedProductModel(
+      {required OrderedProductModel product, }) {
+    return ProductModel(
+        id: product.id ,isLiked:false,popular:[] ,
+        category: product.category,
+        avatar: product.avatar,
+        description: product.description,
+        cost: product.cost ?? 0,
+        name: product.name,
+        unit: product.unit,
+        imageUrls:product.imageUrls,
+         );
   }
 
   Map<String, Object?> toJson() {

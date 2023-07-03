@@ -403,9 +403,10 @@ class ServiceManager {
           await getProductExistedInCart(cart: _cart, productId: product.id);
       if (productInCart.docs.isNotEmpty) {
         ///if product existed,update quantity
-        var _prod = await productInCart.docs.first.reference.get();
-        productInCart.docs.first.reference
-            .update({"quantity": (product.quantity)});
+        var _prod = productInCart.docs
+            .where((element) => product.id == element.data().id)
+            .first;
+        _prod.reference.update({"quantity": (product.quantity)});
 
         AppLogger.i('updateQuantity success');
       }
@@ -436,6 +437,23 @@ class ServiceManager {
       AppLogger.i('addToCart success');
     } catch (e) {
       AppLogger.e(e.toString());
+    }
+  }
+
+  Future<bool> deleteFromCart(
+      {required OrderedProductModel productModel, required String uid}) async {
+    try {
+      var _cart = await getUserCurrentCart(uid);
+      var productInCart = await getProductExistedInCart(
+          cart: _cart, productId: productModel.id ?? "");
+      if (productInCart.docs.isNotEmpty) {
+        await productInCart.docs.first.reference.delete();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      AppLogger.e(e.toString(), extraMessage: 'delete From Cart');
+      return false;
     }
   }
 

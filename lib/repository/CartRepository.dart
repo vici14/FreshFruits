@@ -17,10 +17,8 @@ abstract class CartRepository {
     required String uid,
   });
 
-  Future<void> removeFromCart(
-      {required String productId, required int quantity});
-
-  Future<void> deleteProductFromCart({required String productId});
+  Future<bool> deleteProductFromCart(
+      {required OrderedProductModel productModel, required String uid});
 
   Future<bool> checkOutCart({
     required CartModel cartModel,

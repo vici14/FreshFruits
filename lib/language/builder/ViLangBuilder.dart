@@ -206,13 +206,32 @@ class ViLangBuilder extends LangBuilder {
   String get CHECKOUT_SUGGEST_DESTINATION => 'Gợi ý :';
 
   @override
-  String get PRODUCT_DETAIL_DESCRIPTION =>"Thông tin sản phẩm";
+  String get PRODUCT_DETAIL_DESCRIPTION => "Thông tin sản phẩm";
 
   @override
-  String get PRODUCT_DETAIL_ADD_TO_CART =>"Thêm vào giỏ";
+  String get PRODUCT_DETAIL_ADD_TO_CART => "Thêm vào giỏ";
 
   @override
   String HOME_SCREEN_HELLO(String? userName) {
     return userName != null ? "Xin chào, $userName" : "Xin chào";
   }
+
+  @override
+  String get CART_EMPTY_TEXT => "Giỏ hàng đang trống";
+
+  @override
+  String get ADD_TO_CART_SUCCESS => "Thêm vào giỏ thành công!";
+
+  @override
+  String get ADD_TO_CART_FAILED => "Thêm vào giỏ thất bại!";
+
+  @override
+  String DELETE_FROM_CART_TITLE(String name) => "Bạn có muốn xoá sản phẩm"
+      " ${name} khỏi giỏ hàng?";
+
+  @override
+  String get BUTTON_CANCEL => "Huỷ";
+
+  @override
+  String get BUTTON_CONTINUE => "Tiếp tục";
 }

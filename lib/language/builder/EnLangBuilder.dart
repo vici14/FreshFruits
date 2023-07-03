@@ -214,4 +214,23 @@ class EnLangBuilder extends LangBuilder {
   String HOME_SCREEN_HELLO(String? userName) {
     return userName != null ? "Hello, $userName" : "Hello";
   }
+
+  @override
+  String get CART_EMPTY_TEXT => "Cart is empty";
+
+  @override
+  String get ADD_TO_CART_SUCCESS => "Add to Cart success!";
+
+  @override
+  String get ADD_TO_CART_FAILED => "Add to Cart failed!";
+
+  @override
+  String get BUTTON_CANCEL => "Cancel";
+
+  @override
+  String get BUTTON_CONTINUE => "Continue";
+
+  @override
+  String DELETE_FROM_CART_TITLE(String name) => "Do you want to delete "
+      " ${name} from cart";
 }

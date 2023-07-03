@@ -25,6 +25,14 @@ class CartViewModel extends BaseViewModel {
   CartModel? currentCart;
   bool isGetCart = false;
   bool _isAddingToCart = false;
+  bool _isDeletingFromCart = false;
+
+  bool get isDeletingFromCart => _isDeletingFromCart;
+
+  set isDeletingFromCart(bool value) {
+    _isDeletingFromCart = value;
+    notifyListeners();
+  }
 
   bool get isAddingToCart => _isAddingToCart;
 
@@ -68,15 +76,29 @@ class CartViewModel extends BaseViewModel {
       required String uid}) async {
     try {
       isAddingToCart = true;
-      notifyListeners();
       await _repository.addToCart(
           quantity: quantity, uid: uid, productModel: productModel);
       isAddingToCart = false;
-      notifyListeners();
     } catch (e) {
       isAddingToCart = false;
-      notifyListeners();
       AppLogger.e(e.toString(), extraMessage: 'add To cart error');
+    }
+  }
+
+  Future<bool> deleteFromCart(
+      {required OrderedProductModel productModel, required String uid}) async {
+    try {
+      isDeletingFromCart = true;
+
+      await _repository.deleteProductFromCart(
+          uid: uid, productModel: productModel);
+      isDeletingFromCart = false;
+      return true;
+    } catch (e) {
+      isDeletingFromCart = false;
+
+      AppLogger.e(e.toString(), extraMessage: 'add To cart error');
+      return false;
     }
   }
 

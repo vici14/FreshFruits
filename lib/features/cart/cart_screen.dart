@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fresh_fruit/base/BaseProviderScreenState.dart';
 import 'package:fresh_fruit/features/cart/CartController.dart';
+import 'package:fresh_fruit/features/product_detail/ProductDetailScreen.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
+import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
@@ -16,6 +18,7 @@ import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
 import 'package:fresh_fruit/widgets/image/ImageCachedNetwork.dart';
+import 'package:fresh_fruit/widgets/modal/DeleteCartItemModalSheet.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
@@ -99,6 +102,11 @@ class _CartScreenState
             if (!snap.hasData) {
               return const Center(child: Text("Empty Cart"));
             }
+            if (list.isEmpty) {
+              return Center(
+                child: Text(locale.language.CART_EMPTY_TEXT),
+              );
+            }
             return Stack(
               children: [
                 Container(
@@ -171,8 +179,10 @@ class _CartScreenState
             child: SecondaryButton(
                 text: locale.language.BUTTON_NEXT,
                 onTap: () {
-                  cartViewModel.updateOrderedProducts(items);
-                  Navigator.of(context).pushNamed(AppRoute.checkoutScreen);
+                  if (items.isNotEmpty) {
+                    cartViewModel.updateOrderedProducts(items);
+                    Navigator.of(context).pushNamed(AppRoute.checkoutScreen);
+                  }
                 }),
           )
         ],
@@ -258,56 +268,77 @@ class _CartScreenState
                       ),
                     ),
                     Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              if (item.quantity > 1) {
-                                cartVM.updateQuantity(
-                                    productModel:
-                                        item.updateQuantity(--item.quantity),
-                                    uid: _userViewModel.currentUser?.uid ?? '');
-                              }
-                            },
-                            child: Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(17),
-                                  border: Border.all(color: AppColor.grey)),
-                              child: const Center(
-                                child: Icon(Icons.remove),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: Text(item.quantity.toString()),
-                          ),
-                          InkWell(
-                            onTap: () {
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            if (item.quantity > 1) {
                               cartVM.updateQuantity(
                                   productModel:
-                                      item.updateQuantity(++item.quantity),
+                                      item.updateQuantity(--item.quantity),
                                   uid: _userViewModel.currentUser?.uid ?? '');
-                            },
-                            child: Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(17),
-                                  border: Border.all(color: AppColor.grey)),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.add,
-                                  color: AppColor.greenMain,
-                                ),
+                            } else {
+                              await showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return DeleteCartItemModalSheet(
+                                    product: item,
+                                    onNegativeButtonPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    onPositiveButtonPressed: () {
+                                      _cartViewModel.deleteFromCart(
+                                          productModel: item,
+                                          uid:
+                                              _userViewModel.currentUser?.uid ??
+                                                  "");
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          child: Container(
+                            height: 45,
+                            width: 45,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(17),
+                                border: Border.all(color: AppColor.grey)),
+                            child: const Center(
+                              child: Icon(Icons.remove),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                          child: Text(item.quantity.toString()),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            cartVM.updateQuantity(
+                                productModel:
+                                    item.updateQuantity(++item.quantity),
+                                uid: _userViewModel.currentUser?.uid ?? '');
+                          },
+                          child: Container(
+                            height: 45,
+                            width: 45,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(17),
+                                border: Border.all(color: AppColor.grey)),
+                            child: const Center(
+                              child: Icon(
+                                Icons.add,
+                                color: AppColor.greenMain,
                               ),
                             ),
                           ),
-                        ]),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -317,7 +348,35 @@ class _CartScreenState
         Positioned(
             top: 14,
             right: 23,
-            child: CommonIconButton.buildCartItemDeleteButton(context, () {}))
+            child: IconButton(
+              icon: const Icon(
+                Icons.info_outlined,
+                size: 25,
+                color: AppColor.secondary,
+              ),
+              onPressed: () async {
+                await showModalBottomSheet(
+                  isScrollControlled: true,isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DraggableScrollableSheet(
+                        initialChildSize: 0.5,
+                        maxChildSize: 0.8, // full screen on scroll
+                         builder: (BuildContext context,
+                            ScrollController scrollController) {
+                          return ProductDetailScreen(
+                            args: ProductDetailScreenArgs(
+                                ProductModel.fromOrderedProductModel(
+                                    product: item),
+                                scrollController: scrollController,
+                                asModal: true),
+                          );
+                        });
+                  },
+                );
+              },
+            ))
       ],
     );
   }
