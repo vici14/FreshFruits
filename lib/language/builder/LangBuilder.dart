@@ -132,4 +132,12 @@ abstract class LangBuilder {
   String get PRODUCT_DETAIL_DESCRIPTION;
 
   String get PRODUCT_DETAIL_ADD_TO_CART;
+
+  String get SEND_OTP;
+
+  String get OTP_CODE;
+
+  String get OTP_CODE_SENT;
+
+  String get OTP_CODE_SENT_FAIL;
 }

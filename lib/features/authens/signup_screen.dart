@@ -1,5 +1,7 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -28,8 +30,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController? signUpNameCtl;
   TextEditingController? signUpUserNameCtl;
   TextEditingController? signUpPasswordCtl;
+  TextEditingController? signUpOTPCtl;
 
-  bool isEmailValid = false;
+  bool isPhoneNumberValid = false;
+  bool showOTPField = false;
 
   @override
   void initState() {
@@ -65,45 +69,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
           const SizedBox(height: 21),
           CommonTextField(
             controller: signUpUserNameCtl ?? TextEditingController(),
-            labelText: 'Email',
-            suffixIcon: isEmailValid
+            labelText: 'Số điện thoại',
+            suffixIcon: isPhoneNumberValid
                 ? Padding(
-                    padding: const EdgeInsets.only(left: 28.0),
-                    child: SvgPicture.asset(
-                      AppImageAsset.iconGreenCheck,
-                      fit: BoxFit.scaleDown,
-                    ),
-                  )
+              padding: const EdgeInsets.only(left: 28.0),
+              child: SvgPicture.asset(
+                AppImageAsset.iconGreenCheck,
+                fit: BoxFit.scaleDown,
+              ),
+            )
                 : const SizedBox(),
             onChange: (value) {
-              if (RegExp(
-                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+              // if (RegExp(
+              //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+              if (RegExp(r"(84|0[3|5|7|8|9])+([0-9]{8})\b")
                   .hasMatch(value ?? '')) {
                 setState(() {
-                  isEmailValid = true;
+                  isPhoneNumberValid = true;
                 });
               } else {
                 setState(() {
-                  isEmailValid = false;
+                  isPhoneNumberValid = false;
                 });
               }
             },
+            keyboardType: TextInputType.phone,
           ),
+          if (showOTPField) const SizedBox(height: 21),
+          if (showOTPField)
+            CommonTextField(
+              controller: signUpOTPCtl ?? TextEditingController(),
+              labelText: locale.language.OTP_CODE,
+              maxLength: 6,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              keyboardType: TextInputType.phone,
+              suffixIcon: const SizedBox(
+                height: 0.0,
+                width: 0.0,
+                child: Center(
+                    child: CircularProgressIndicator()
+                ),
+              ),
+            ),
           const SizedBox(height: 21),
           CommonTextField(
             controller: signUpPasswordCtl ?? TextEditingController(),
             labelText: locale.language.PASSWORD,
             password: true,
           ),
-          const SizedBox(height: 16),
-          Text(
-            locale.language.FORGOT_PASSWORD,
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              height: 108.1 / 100,
-              wordSpacing: 0.05,
-              color: tertiarySeedColor,
+          TextButton(
+            onPressed: () {
+              if (!showOTPField) {
+                setState(() {
+                  showOTPField = true;
+                });
+              }
+              onSendOTPPress(context);
+            },
+            child: Text(
+              locale.language.SEND_OTP,
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                height: 108.1 / 100,
+                wordSpacing: 0.05,
+                color: isPhoneNumberValid ? tertiarySeedColor : Colors.grey,
+              ),
             ),
           ),
           const SizedBox(height: 51),
@@ -143,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               patternList: [
                 EasyRichTextPattern(
                   targetString:
-                      locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
+                  locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
                   style: const TextStyle(
                     fontSize: 12,
                     height: 12.97 / 12,
@@ -155,6 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -179,5 +211,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
         widget.onSignUpSuccess();
       }
     }
+  }
+
+  void onSendOTPPress(BuildContext context) async {
+    if (!isPhoneNumberValid) return;
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+84${(signUpUserNameCtl?.text.trim() ?? '').substring(
+          1, 10)}',
+      verificationCompleted: (_) {},
+      timeout: const Duration(seconds: 120),
+      verificationFailed: (FirebaseAuthException e) {},
+      codeSent: (String verificationId, int? resendToken) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(locale.language.OTP_CODE_SENT),
+          ),
+        );
+      },
+      codeAutoRetrievalTimeout: (_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(locale.language.OTP_CODE_SENT_FAIL),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<bool> verifyOTP(
+      {required String verificationId, required String smsCode}) async {
+    UserCredential auth = await FirebaseAuth.instance.signInWithCredential(
+        PhoneAuthProvider.credential(
+            verificationId: verificationId, smsCode: smsCode));
+    return auth.user != null;
   }
 }

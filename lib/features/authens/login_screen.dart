@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 32),
           CommonTextField(
             controller: loginUserNameCtl ?? TextEditingController(),
-            labelText: 'Email',
+            labelText: 'Số điện thoại',
             suffixIcon: isEmailValid
                 ? Padding(
                     padding: const EdgeInsets.only(left: 28.0),

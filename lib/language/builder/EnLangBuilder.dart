@@ -209,4 +209,16 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get PRODUCT_DETAIL_ADD_TO_CART =>"Add to Cart";
+
+  @override
+  String get SEND_OTP => 'Send OTP';
+
+  @override
+  String get OTP_CODE => 'OTP Code';
+
+  @override
+  String get OTP_CODE_SENT => 'OTP has been sent to your phone number, please enter OTP in the box below to complete the verification';
+
+  @override
+  String get OTP_CODE_SENT_FAIL => 'Sent OTP error, please try again';
 }

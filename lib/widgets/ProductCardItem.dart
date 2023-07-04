@@ -44,32 +44,32 @@ class _ProductCardItemState extends State<ProductCardItem> {
       builder: (BuildContext context, UserViewModel userVM, Widget? child) {
         return GestureDetector(
           onTap: () async{
-            Navigator.of(context).pushNamed(AppRoute.productDetailScreen,
-                arguments: ProductDetailScreenArgs(widget.productModel));
-            // await showGeneralDialog(
-            // barrierColor: Colors.black.withOpacity(0.5),
-            // transitionBuilder: (context, a1, a2, widget) {
-            //   return Transform.scale(
-            //     scale: a1.value,
-            //     child: Opacity(
-            //       opacity: a1.value,
-            //       child: ProductSelectDialog(
-            //         productModel: product,
-            //       ),
-            //     ),
-            //   );
-            // },
-            // transitionDuration: const Duration(milliseconds: 500),
-            // barrierDismissible: true,
-            // barrierLabel: '',
-            // context: context,
-            // pageBuilder: (BuildContext context, Animation<double> animation,
-            //     Animation<double> secondaryAnimation) {
-            //   return ProductSelectDialog(
-            //     productModel: product,
-            //   );
-            // },
-            // );
+            // Navigator.of(context).pushNamed(AppRoute.productDetailScreen,
+            //     arguments: ProductDetailScreenArgs(widget.productModel));
+            await showGeneralDialog(
+            barrierColor: Colors.black.withOpacity(0.5),
+            transitionBuilder: (context, a1, a2, widget) {
+              return Transform.scale(
+                scale: a1.value,
+                child: Opacity(
+                  opacity: a1.value,
+                  child: ProductSelectDialog(
+                    productModel: product,
+                  ),
+                ),
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 500),
+            barrierDismissible: true,
+            barrierLabel: '',
+            context: context,
+            pageBuilder: (BuildContext context, Animation<double> animation,
+                Animation<double> secondaryAnimation) {
+              return ProductSelectDialog(
+                productModel: product,
+              );
+            },
+            );
           },
           child: Container(
             width: 175,

@@ -210,4 +210,16 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get PRODUCT_DETAIL_ADD_TO_CART =>"Thêm vào giỏ";
+
+  @override
+  String get SEND_OTP => 'Gửi mã OTP';
+
+  @override
+  String get OTP_CODE => 'Mã OTP';
+
+  @override
+  String get OTP_CODE_SENT => 'Mã OTP đã được gửi tới số điện thoại của bạn, vui lòng nhập OTP vào ô bên dưới để hoàn tất xác minh';
+
+  @override
+  String get OTP_CODE_SENT_FAIL => 'Gửi mã OTP lỗi, vui lòng thử lại';
 }
