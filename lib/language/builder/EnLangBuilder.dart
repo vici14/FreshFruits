@@ -221,4 +221,10 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get OTP_CODE_SENT_FAIL => 'Sent OTP error, please try again';
+
+  @override
+  String get VERIFY_OTP_FIRST => 'Please verify OTP first before continue sign up';
+
+  @override
+  String get INPUT_FULL_SIGNUP_INFO => 'Please input full sign up fields';
 }

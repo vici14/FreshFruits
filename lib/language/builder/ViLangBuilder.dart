@@ -222,4 +222,10 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get OTP_CODE_SENT_FAIL => 'Gửi mã OTP lỗi, vui lòng thử lại';
+
+  @override
+  String get VERIFY_OTP_FIRST => 'Vui lòng xác thực OTP trước khi tiếp tục đăng ký';
+
+  @override
+  String get INPUT_FULL_SIGNUP_INFO => 'Vui lòng điền đầy đủ thông tin trước';
 }

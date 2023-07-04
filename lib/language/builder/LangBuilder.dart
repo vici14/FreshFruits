@@ -140,4 +140,8 @@ abstract class LangBuilder {
   String get OTP_CODE_SENT;
 
   String get OTP_CODE_SENT_FAIL;
+
+  String get VERIFY_OTP_FIRST;
+
+  String get INPUT_FULL_SIGNUP_INFO;
 }

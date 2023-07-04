@@ -1,5 +1,6 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -149,13 +150,19 @@ class _LoginScreenState extends State<LoginScreen> {
   void onLoginClick(BuildContext context) async {
     if ((loginUserNameCtl?.text.isNotNullAndEmpty() ?? false) &&
         (loginPasswordCtl?.text.isNotNullAndEmpty() ?? false)) {
+      EasyLoading.showProgress(
+        .3,
+        status: 'Login...',
+        maskType: EasyLoadingMaskType.clear,
+      );
       bool? isSuccess = await userViewModel?.signInWithEmailAndPassword(
         context,
-        email: loginUserNameCtl?.text ?? '',
+        email: '${loginUserNameCtl?.text ?? ' '}@freshfruit.com',
         password: loginPasswordCtl?.text ?? '',
       );
+      EasyLoading.dismiss();
       if (isSuccess ?? false) {
-        if ( mounted) {
+        if (mounted) {
           Navigator.pop(context);
         }
       }
