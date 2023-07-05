@@ -1,17 +1,22 @@
+import 'package:fresh_fruit/db/DatabaseManager.dart';
+import 'package:fresh_fruit/extension/IterableExtension.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
+import 'package:fresh_fruit/model/address/AddressDistricts.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/model/address/AdressWards.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
 import 'package:fresh_fruit/repository/UserRepositoryImpl.dart';
 import 'package:fresh_fruit/repository/UserRepository.dart';
 import 'package:fresh_fruit/service/storage_service.dart';
 import 'package:fresh_fruit/view_model/BaseViewModel.dart';
+import 'package:google_geocoding_api/google_geocoding_api.dart';
 
 class UserViewModel extends BaseViewModel {
   final UserRepository _repository = UserRepositoryImpl();
   static final UserViewModel _instance = UserViewModel._internal();
-
+  final DatabaseManager _databaseManager = DatabaseManager.instance;
   UserViewModel._internal();
 
   factory UserViewModel() {
@@ -73,10 +78,10 @@ class UserViewModel extends BaseViewModel {
   }) async {
     try {
       isSigningUp = true;
-       var _resp = await _repository.signUpWithEmailAndPassword(
+      var _resp = await _repository.signUpWithEmailAndPassword(
           email: email, password: password, name: name);
       isSigningUp = false;
-       return _resp;
+      return _resp;
     } catch (e) {
       print('signUpWithEmailAndPassword: ${e.toString()}');
     }
@@ -97,10 +102,9 @@ class UserViewModel extends BaseViewModel {
 
   Future<bool> signInWithEmailAndPassword(BuildContext context,
       {required String email, required String password}) async {
-
     try {
       isLoggingIn = true;
-       var _resp = await _repository.signInWithEmailAndPassword(
+      var _resp = await _repository.signInWithEmailAndPassword(
           email: email, password: password);
       if (_resp) {
         currentUser = await _repository.getCurrentUser();
@@ -110,7 +114,7 @@ class UserViewModel extends BaseViewModel {
         isLoggedIn = true;
       }
       isLoggingIn = false;
-       return _resp;
+      return _resp;
     } catch (e) {
       print('signInWithEmailAndPassword:${e.toString()}');
     }
@@ -164,6 +168,7 @@ class UserViewModel extends BaseViewModel {
       refreshCurrentUser();
       isAddingAddress = false;
       notifyListeners();
+      print('add location success');
     } catch (e) {
       isAddingAddress = false;
       AppLogger.e('addShippingDetail' + e.toString());
@@ -187,5 +192,61 @@ class UserViewModel extends BaseViewModel {
       isAddingAddress = false;
       AppLogger.e('addShippingDetail' + e.toString());
     }
+  }
+
+  Future<AddressModel> getCurrentLocation(
+      GoogleGeocodingResponse response) async {
+    List<String> addressParts =
+        response.results.first.formattedAddress.split(',');
+
+    String ward = '';
+    String district = '';
+    String city = '';
+    String street = '';
+    String country = '';
+
+    List<District> districts = [];
+    List<Ward> wards = [];
+
+    districts = await _databaseManager.queryDistrict();
+    for (int i = addressParts.length - 1; i >= 0; i--) {
+      String part = addressParts[i].trim();
+      switch (i) {
+        case 0:
+          street = addressParts[0];
+          break;
+        case 1:
+          ward = addressParts[1].trim().toLowerCase().replaceAll('phường', '');
+          break;
+        case 2:
+          district =
+              addressParts[2].trim().toLowerCase().replaceAll('quận', '');
+          break;
+        case 3:
+          city = addressParts[3];
+          break;
+        default:
+          country = addressParts[4];
+      }
+    }
+
+    District? districtFromList = districts.firstWhereOrNull((item) {
+      return item.name?.trim().toLowerCase() == district.trim().toLowerCase();
+    });
+    wards =
+        await _databaseManager.queryWard(districtFromList?.id.toString() ?? '');
+    Ward? wardFromList = wards.firstWhereOrNull((item) {
+      if (item.name?.trim().contains('0') == true) {
+        return item.name?.trim().replaceAll('0', '').toLowerCase() ==
+            ward.trim().toLowerCase();
+      }
+      return item.name?.trim().toLowerCase() == ward.trim().toLowerCase();
+    });
+
+    return AddressModel(
+      district: districtFromList,
+      ward: wardFromList,
+      currentAddress: street,
+    );
   }
 }

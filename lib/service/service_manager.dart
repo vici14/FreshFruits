@@ -51,6 +51,12 @@ class ServiceManager {
     return await GoogleMapService.instance().searchAddress(address);
   }
 
+  Future<dynamic> getCurrentLocation(
+      {required double latitude, required double longitude}) async {
+    return await GoogleMapService.instance()
+        .getCurrentLocation(latitude: latitude, longitude: longitude);
+  }
+
 //==================GOOGLE MAP==================//
 
   Future<DocumentReference<CartModel>> getUserCurrentCart(String uid) async {

@@ -19,6 +19,8 @@ class GoogleMapService {
   static GoogleMapService instance() => GoogleMapService.internal();
   static const distanceMatrixUrl = 'https://maps.googleapis'
       '.com/maps/api/distancematrix/json';
+  static const googleGeoCodeURL =
+      'https://maps.googleapis.com/maps/api/geocode/json';
 
   static void init(AppFlavor flavor) {
     _instance = GoogleMapService.internal();
@@ -61,6 +63,21 @@ class GoogleMapService {
       return a;
     } catch (e) {
       AppLogger.e("calculateDistance:${e.toString()}", extraMessage: LOG);
+    }
+  }
+
+  Future<dynamic> getCurrentLocation(
+      {required double latitude, required double longitude}) async {
+    String latlng = '${latitude}, ${longitude}';
+
+    try {
+      final response = await api.reverse(
+        latlng,
+        language: 'vi',
+      );
+      return response;
+    } catch (e) {
+      AppLogger.e("getCurrentLocation: ${e.toString()}", extraMessage: LOG);
     }
   }
 }

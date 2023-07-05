@@ -9,13 +9,19 @@ class GoogleMapServiceRepositoryImp extends GoogleMapServiceRepository {
   Future<dynamic> calculateDistance(
       {required List<String> origins,
       required List<String> destinations}) async {
-  return await _serviceManager.calculateDistance(
+    return await _serviceManager.calculateDistance(
         origins: origins, destinations: destinations);
-
   }
 
   @override
   Future<GoogleGeocodingResponse> searchAddress(String address) async {
     return await _serviceManager.searchAddress(address);
+  }
+
+  @override
+  Future<dynamic> getCurrentLocation(
+      {required double latitude, required double longitude}) async {
+    return await _serviceManager.getCurrentLocation(
+        latitude: latitude, longitude: longitude);
   }
 }

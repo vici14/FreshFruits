@@ -44,4 +44,13 @@ class AddDeliveryAddressController extends ChangeNotifier {
     _currWard = value;
     notifyListeners();
   }
+
+  String? _currStreet;
+
+  String? get currStreet => _currStreet;
+
+  set currStreet(String? value) {
+    _currStreet = value;
+    notifyListeners();
+  }
 }
