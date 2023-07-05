@@ -21,7 +21,8 @@ class ProductDetailScreenArgs {
   final ProductModel productModel;
   final bool asModal;
   final ScrollController? scrollController;
-  ProductDetailScreenArgs(this.productModel, {this.asModal = false,this.scrollController});
+  ProductDetailScreenArgs(this.productModel,
+      {this.asModal = false, this.scrollController});
 }
 
 class ProductDetailScreen extends StatefulWidget {
@@ -40,11 +41,12 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
   final double horizontalPadding = 25;
   late CartViewModel cartVM;
   late UserViewModel _userViewModel;
-    ScrollController? _screenScrollController;
+  ScrollController? _screenScrollController;
 
-  bool get asModal =>widget.args.asModal;
+  bool get asModal => widget.args.asModal;
 
-  ScrollController get screenScrollController => widget.args.scrollController ?? ScrollController();
+  ScrollController get screenScrollController =>
+      widget.args.scrollController ?? ScrollController();
 
   @override
   void initState() {
@@ -86,29 +88,36 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
             _buildDescription(localState),
           ],
         ),
-        (asModal == false)?Align(
-          alignment: const Alignment(0, 0.95),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: PrimaryButton(
-              isLoading: cartVM.isAddingToCart,
-              text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
-              onTap: () async {
-                try {
-                  await cartVM.addToCart(
-                      productModel: localState.productModel,
-                      quantity: localState.quantity,
-                      uid: _userViewModel.currentUser?.uid ?? "");
-                  showSnackBar(locale.language.ADD_TO_CART_SUCCESS);
-                  Navigator.of(context).pop();
-                } catch (e) {
-                  showSnackBar(locale.language.ADD_TO_CART_FAILED);
-                  // Navigator.of(context).pop();
-                }
-              },
-            ),
-          ),
-        ):const SizedBox.shrink(),
+        (asModal == false)
+            ? Align(
+                alignment: const Alignment(0, 0.95),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: PrimaryButton(
+                    isLoading: cartVM.isAddingToCart,
+                    text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
+                    onTap: () async {
+                      if (_userViewModel.isLoggingIn) {
+                        try {
+                          await cartVM.addToCart(
+                              productModel: localState.productModel,
+                              quantity: localState.quantity,
+                              uid: _userViewModel.currentUser?.uid ?? "");
+                          showSnackBar(locale.language.ADD_TO_CART_SUCCESS);
+                          Navigator.of(context).pop();
+                        } catch (e) {
+                          showSnackBar(locale.language.ADD_TO_CART_FAILED);
+                          // Navigator.of(context).pop();
+                        }
+                        // showSnackBar([true]);
+                        Navigator.of(context).pop();
+                      }
+                      showSnackBar('Vui lòng đăng nhập!');
+                    },
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -178,14 +187,15 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                   ),
                 ],
               ),
-              if(!asModal)_buildQuantityUpdate(localState),
+              if (!asModal) _buildQuantityUpdate(localState),
             ],
           ),
         ],
       ),
     );
   }
-  Widget _buildQuantityUpdate(ProductDetailController localState){
+
+  Widget _buildQuantityUpdate(ProductDetailController localState) {
     return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
