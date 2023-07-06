@@ -1,6 +1,8 @@
 abstract class LangBuilder {
   String get HOME_SCREEN_SEE_ALL;
 
+  String HOME_SCREEN_HELLO(String? userName);
+
   String get HOME_SCREEN_BEST_SELLING;
 
   String get HOME_SCREEN_NEW_PRODUCTS;
@@ -132,6 +134,18 @@ abstract class LangBuilder {
   String get PRODUCT_DETAIL_DESCRIPTION;
 
   String get PRODUCT_DETAIL_ADD_TO_CART;
+
+  String get CART_EMPTY_TEXT;
+
+  String get ADD_TO_CART_SUCCESS;
+
+  String get ADD_TO_CART_FAILED;
+
+  String   DELETE_FROM_CART_TITLE(String name);
+
+  String get BUTTON_CANCEL;
+
+  String get BUTTON_CONTINUE;
 
   String get SEND_OTP;
 

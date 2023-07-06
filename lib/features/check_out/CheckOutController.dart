@@ -15,7 +15,7 @@ import 'dart:ui' as ui;
 
 const QUAN_10_ID = 771;
 const QUAN_5_ID = 774;
-const List<String> hieuDestination = ['10.76175541122259, 106.67423759775012'];
+const List<String> hieuDestination = ['10.75834271277676, 106.67647292473883'];
 
 class CheckOutController extends ChangeNotifier {
   bool isCalculatingAddress = false;

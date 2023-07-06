@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
+import 'package:fresh_fruit/model/OrderModel.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
@@ -48,6 +49,12 @@ class ServiceManager {
 
   Future<GoogleGeocodingResponse> searchAddress(String address) async {
     return await GoogleMapService.instance().searchAddress(address);
+  }
+
+  Future<dynamic> getCurrentLocation(
+      {required double latitude, required double longitude}) async {
+    return await GoogleMapService.instance()
+        .getCurrentLocation(latitude: latitude, longitude: longitude);
   }
 
 //==================GOOGLE MAP==================//
@@ -402,9 +409,10 @@ class ServiceManager {
           await getProductExistedInCart(cart: _cart, productId: product.id);
       if (productInCart.docs.isNotEmpty) {
         ///if product existed,update quantity
-        var _prod = await productInCart.docs.first.reference.get();
-        productInCart.docs.first.reference
-            .update({"quantity": (product.quantity)});
+        var _prod = productInCart.docs
+            .where((element) => product.id == element.data().id)
+            .first;
+        _prod.reference.update({"quantity": (product.quantity)});
 
         AppLogger.i('updateQuantity success');
       }
@@ -413,7 +421,7 @@ class ServiceManager {
     }
   }
 
-  void addToCart(
+  Future<void> addToCart(
       {required ProductModel productModel,
       required int quantity,
       required String uid}) async {
@@ -422,7 +430,7 @@ class ServiceManager {
           product: productModel, quantity: quantity);
       var _cart = await getUserCurrentCart(uid);
       var productInCart = await getProductExistedInCart(
-          cart: _cart, productId: productModel.id!);
+          cart: _cart, productId: productModel.id ?? "");
       if (productInCart.docs.isNotEmpty) {
         ///if product existed,update quantity
         var _prod = await productInCart.docs.first.reference.get();
@@ -435,6 +443,23 @@ class ServiceManager {
       AppLogger.i('addToCart success');
     } catch (e) {
       AppLogger.e(e.toString());
+    }
+  }
+
+  Future<bool> deleteFromCart(
+      {required OrderedProductModel productModel, required String uid}) async {
+    try {
+      var _cart = await getUserCurrentCart(uid);
+      var productInCart = await getProductExistedInCart(
+          cart: _cart, productId: productModel.id ?? "");
+      if (productInCart.docs.isNotEmpty) {
+        await productInCart.docs.first.reference.delete();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      AppLogger.e(e.toString(), extraMessage: 'delete From Cart');
+      return false;
     }
   }
 
@@ -455,7 +480,11 @@ class ServiceManager {
         uid: uid,
         cartModel: cartModel,
       ).onError((error, stackTrace) => false);
-      await addOrderToCollection(cartModel);
+      cartModel = cartModel.copyWith(
+          uid: uid, shippingDetail: cartModel.shippingDetail);
+      OrderModel orderModel = OrderModel.fromCart(cartModel);
+
+      await addOrderToCollection(orderModel);
       AppLogger.i('checkOutCart success');
       var _cart = await getUserCurrentCart(uid);
       _cart
@@ -490,9 +519,9 @@ class ServiceManager {
     }
   }
 
-  Future<bool> addOrderToCollection(CartModel cart) async {
+  Future<bool> addOrderToCollection(OrderModel order) async {
     try {
-      await ordersCollection.add(cart.toJson());
+      await ordersCollection.add(order.toJson());
       return true;
     } catch (e) {
       AppLogger.e(e.toString(), extraMessage: "addOrderToCollection");

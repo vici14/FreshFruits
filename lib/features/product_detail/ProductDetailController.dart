@@ -3,7 +3,7 @@ import 'package:fresh_fruit/model/ordered_product_model.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 
 class ProductDetailController extends ChangeNotifier{
-  final OrderedProductModel productModel;
+  final ProductModel productModel;
 
 
   ProductDetailController(this.productModel);

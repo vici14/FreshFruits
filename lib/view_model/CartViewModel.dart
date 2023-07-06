@@ -24,6 +24,23 @@ class CartViewModel extends BaseViewModel {
 //=======================FIELD VALUE=========================
   CartModel? currentCart;
   bool isGetCart = false;
+  bool _isAddingToCart = false;
+  bool _isDeletingFromCart = false;
+
+  bool get isDeletingFromCart => _isDeletingFromCart;
+
+  set isDeletingFromCart(bool value) {
+    _isDeletingFromCart = value;
+    notifyListeners();
+  }
+
+  bool get isAddingToCart => _isAddingToCart;
+
+  set isAddingToCart(bool value) {
+    _isAddingToCart = value;
+    notifyListeners();
+  }
+
   double _totalCost = 0;
 
   double? _shippingFee;
@@ -53,12 +70,36 @@ class CartViewModel extends BaseViewModel {
 
   bool isUpdatingProductQuantity = false;
 
-  void addToCart(
+  Future<void> addToCart(
       {required ProductModel productModel,
       required int quantity,
-      required String uid}) {
-    _repository.addToCart(
-        quantity: quantity, uid: uid, productModel: productModel);
+      required String uid}) async {
+    try {
+      isAddingToCart = true;
+      await _repository.addToCart(
+          quantity: quantity, uid: uid, productModel: productModel);
+      isAddingToCart = false;
+    } catch (e) {
+      isAddingToCart = false;
+      AppLogger.e(e.toString(), extraMessage: 'add To cart error');
+    }
+  }
+
+  Future<bool> deleteFromCart(
+      {required OrderedProductModel productModel, required String uid}) async {
+    try {
+      isDeletingFromCart = true;
+
+      await _repository.deleteProductFromCart(
+          uid: uid, productModel: productModel);
+      isDeletingFromCart = false;
+      return true;
+    } catch (e) {
+      isDeletingFromCart = false;
+
+      AppLogger.e(e.toString(), extraMessage: 'add To cart error');
+      return false;
+    }
   }
 
   void getCart(String uid) async {

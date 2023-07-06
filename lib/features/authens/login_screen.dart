@@ -8,6 +8,7 @@ import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
+import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
 import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<UserViewModel>(
+        builder: (context,userViewModel,child){
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -65,85 +68,71 @@ class _LoginScreenState extends State<LoginScreen> {
             onChange: (value) {
               if (RegExp(
                       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                  .hasMatch(value ?? '')) {
-                setState(() {
-                  isEmailValid = true;
-                });
-              } else {
-                setState(() {
-                  isEmailValid = false;
-                });
-              }
-            },
-          ),
-          const SizedBox(height: 21),
-          CommonTextField(
-            controller: loginPasswordCtl ?? TextEditingController(),
-            labelText: locale.language.PASSWORD,
-            password: true,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            locale.language.FORGOT_PASSWORD,
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              height: 108.1 / 100,
-              wordSpacing: 0.05,
-              color: tertiarySeedColor,
-            ),
-          ),
-          const SizedBox(height: 51),
-          InkWell(
-            onTap: () => onLoginClick(context),
-            child: Container(
-              height: 67,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: primarySeedColor,
-                borderRadius: BorderRadius.circular(12),
+                      .hasMatch(value ?? '')) {
+                    setState(() {
+                      isEmailValid = true;
+                    });
+                  } else {
+                    setState(() {
+                      isEmailValid = false;
+                    });
+                  }
+                },
               ),
-              child: Center(
-                child: Text(
-                  locale.language.LOGIN,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 22,
-                    wordSpacing: 1,
-                    color: hexToColor('#FFF9FF'),
-                  ),
+              const SizedBox(height: 21),
+              CommonTextField(
+                controller: loginPasswordCtl ?? TextEditingController(),
+                labelText: locale.language.PASSWORD,
+                password: true,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                locale.language.FORGOT_PASSWORD,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  height: 108.1 / 100,
+                  wordSpacing: 0.05,
+                  color: tertiarySeedColor,
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 25),
-          Center(
-            child: EasyRichText(
-              locale.language.DONT_HAVE_ACCOUNT_LOGIN,
-              defaultStyle: const TextStyle(
-                fontSize: 12,
-                height: 12.97 / 12,
-                fontWeight: FontWeight.w400,
-                letterSpacing: .05,
-                color: tertiarySeedColor,
+              const SizedBox(height: 51),
+              PrimaryButton(
+                text: locale.language.LOGIN,
+                onTap: () => onLoginClick(context),
+                isLoading: userViewModel.isLoggingIn,
               ),
-              patternList: [
-                EasyRichTextPattern(
-                  targetString:
-                      locale.language.DONT_HAVE_ACCOUNT_LOGIN_PATTERN_1,
-                  style: const TextStyle(
+              const SizedBox(height: 25),
+              Center(
+                child: EasyRichText(
+                  locale.language.DONT_HAVE_ACCOUNT_LOGIN,
+                  defaultStyle: const TextStyle(
                     fontSize: 12,
                     height: 12.97 / 12,
                     fontWeight: FontWeight.w400,
                     letterSpacing: .05,
-                    color: surfaceSeedColor,
+                    color: tertiarySeedColor,
                   ),
+                  patternList: [
+                    EasyRichTextPattern(
+                      targetString:
+                      locale.language.DONT_HAVE_ACCOUNT_LOGIN_PATTERN_1,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        height: 12.97 / 12,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: .05,
+                        color: surfaceSeedColor,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
+
     );
   }
 

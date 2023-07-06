@@ -19,8 +19,10 @@ import '../../model/ordered_product_model.dart';
 
 class ProductDetailScreenArgs {
   final ProductModel productModel;
-
-  ProductDetailScreenArgs(this.productModel);
+  final bool asModal;
+  final ScrollController? scrollController;
+  ProductDetailScreenArgs(this.productModel,
+      {this.asModal = false, this.scrollController});
 }
 
 class ProductDetailScreen extends StatefulWidget {
@@ -39,6 +41,12 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
   final double horizontalPadding = 25;
   late CartViewModel cartVM;
   late UserViewModel _userViewModel;
+  ScrollController? _screenScrollController;
+
+  bool get asModal => widget.args.asModal;
+
+  ScrollController get screenScrollController =>
+      widget.args.scrollController ?? ScrollController();
 
   @override
   void initState() {
@@ -49,8 +57,7 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
 
   @override
   ProductDetailController initLocalController() {
-    return ProductDetailController(OrderedProductModel.fromProductModel(
-        product: widget.args.productModel, quantity: 1));
+    return ProductDetailController(widget.args.productModel);
   }
 
   @override
@@ -59,31 +66,58 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
   }
 
   @override
+  bool enableHeader() {
+    return !asModal;
+  }
+
+  @override
   Widget buildContent(
       BuildContext context, ProductDetailController localState) {
     return Stack(
       children: [
         ListView(
+          controller: screenScrollController,
+          padding: const EdgeInsets.only(bottom: 100),
           children: [
             _buildProductImagesBanner(localState),
             _buildNameAndPriceBox(localState),
             _buildDivider(),
-            SizedBox(
+            const SizedBox(
               height: AppDimen.space18,
             ),
             _buildDescription(localState),
           ],
         ),
-        Align(
-          alignment: Alignment(0, 0.95),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: PrimaryButton(
-              text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
-              onTap: () {},
-            ),
-          ),
-        )
+        (asModal == false)
+            ? Align(
+                alignment: const Alignment(0, 0.95),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: PrimaryButton(
+                    isLoading: cartVM.isAddingToCart,
+                    text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
+                    onTap: () async {
+                      if (_userViewModel.isLoggingIn) {
+                        try {
+                          await cartVM.addToCart(
+                              productModel: localState.productModel,
+                              quantity: localState.quantity,
+                              uid: _userViewModel.currentUser?.uid ?? "");
+                          showSnackBar(locale.language.ADD_TO_CART_SUCCESS);
+                          Navigator.of(context).pop();
+                        } catch (e) {
+                          showSnackBar(locale.language.ADD_TO_CART_FAILED);
+                          // Navigator.of(context).pop();
+                        }
+                        // showSnackBar([true]);
+                        Navigator.of(context).pop();
+                      }
+                      showSnackBar('Vui lòng đăng nhập!');
+                    },
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -153,61 +187,59 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                   ),
                 ],
               ),
-              Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (localState.quantity > 1) {
-                          cartVM.updateQuantity(
-                              productModel: localState.productModel
-                                  .updateQuantity(--localState.quantity),
-                              uid: _userViewModel.currentUser?.uid ?? '');
-                        }
-                      },
-                      child: Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(17),
-                            border: Border.all(color: AppColor.grey)),
-                        child: const Center(
-                          child: Icon(Icons.remove),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Text(localState.quantity.toString()),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        cartVM.updateQuantity(
-                            productModel: localState.productModel
-                                .updateQuantity(++localState.quantity),
-                            uid: _userViewModel.currentUser?.uid ?? '');
-                      },
-                      child: Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(17),
-                            border: Border.all(color: AppColor.grey)),
-                        child: const Center(
-                          child: Icon(
-                            Icons.add,
-                            color: AppColor.greenMain,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ]),
+              if (!asModal) _buildQuantityUpdate(localState),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildQuantityUpdate(ProductDetailController localState) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          InkWell(
+            onTap: () {
+              if (localState.quantity > 1) {
+                localState.quantity--;
+              }
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  border: Border.all(color: AppColor.grey)),
+              child: const Center(
+                child: Icon(Icons.remove),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Text(localState.quantity.toString()),
+          ),
+          InkWell(
+            onTap: () {
+              localState.quantity++;
+            },
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  border: Border.all(color: AppColor.grey)),
+              child: const Center(
+                child: Icon(
+                  Icons.add,
+                  color: AppColor.greenMain,
+                ),
+              ),
+            ),
+          ),
+        ]);
   }
 
   Widget _buildProductImagesBanner(ProductDetailController localState) {
@@ -250,11 +282,10 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
             alignment: Alignment(0, 0.4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ...widget.args.productModel.imageUrls ?? []
-              ].map(
+              children: [...widget.args.productModel.imageUrls ?? []].map(
                 (media) {
-                  var index = widget.args.productModel.imageUrls ?? [].indexOf(media);
+                  var index =
+                      widget.args.productModel.imageUrls ?? [].indexOf(media);
                   return Container(
                     width: 8.0,
                     height: 8.0,

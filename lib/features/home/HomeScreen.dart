@@ -1,4 +1,7 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:fresh_fruit/const.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/mock_data.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -31,11 +34,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<String> listBanners = [AppImageAsset.appBanner1];
 
+  TextEditingController? searchController;
+  FocusNode? searchNode;
+  bool isAnimatedText = true;
+
   @override
   void initState() {
     productViewModel = Provider.of<ProductViewModel>(context, listen: false);
     userViewModel = Provider.of<UserViewModel>(context, listen: false);
     productViewModel.getProducts();
+    searchController = TextEditingController();
+    searchNode = FocusNode();
     super.initState();
   }
 
@@ -169,72 +178,134 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               );
             },
-            child: CustomScrollView(
-              controller: _customScrollController,
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  centerTitle: false,
-                  title: Text('Hello'),actions: [],
-                ),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 10,
-                  ),
-                ),
-                SliverToBoxAdapter(child: _buildHeaderBanner(context)),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 5,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: horizontalPadding),
-                    child: _buildHeaderTitle(
-                      title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
-                      onTapViewMore: () {},
+            child: GestureDetector(
+              onTap: () => searchNode?.unfocus(),
+              child: CustomScrollView(
+                controller: _customScrollController,
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    centerTitle: false,
+                    title: EasyRichText(
+                      locale.language
+                          .HOME_SCREEN_HELLO(userViewModel.currentUser?.name),
+                      patternList: [
+                        EasyRichTextPattern(
+                            targetString: locale.language.HOME_SCREEN_HELLO(
+                                userViewModel.currentUser?.name),
+                            style: Theme.of(context).textTheme.bodyLarge),
+                      ],
                     ),
+                    actions: const [],
                   ),
-                ),
-                _buildFeaturedProducts(context, productViewModel),
-                const SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 22,
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: horizontalPadding),
-                    child: _buildHeaderTitle(
-                      title: locale.language.HOME_SCREEN_BEST_SELLING,
-                      onTapViewMore: () {},
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: horizontalPadding),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 285.0,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        childAspectRatio: 0.6,
+                  SliverToBoxAdapter(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColor.greenMain,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
                       ),
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        ProductModel product;
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      child: TextField(
+                        controller: searchController,
+                        focusNode: searchNode,
+                        decoration: InputDecoration(
+                          label: DefaultTextStyle(
+                              style: const TextStyle(
+                                  fontSize: 14.0, color: Colors.black),
+                              textAlign: TextAlign.start,
+                              textWidthBasis: TextWidthBasis.longestLine,
+                              child: AnimatedTextKit(
+                                pause: const Duration(microseconds: 700),
+                                repeatForever: true,
+                                animatedTexts: [
+                                  RotateAnimatedText(HIEU_ADDRESS,
+                                      duration: const Duration(seconds: 2),
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(color: Colors.white)),
+                                  RotateAnimatedText(DISCOUNT_530PM,
+                                      duration: const Duration(seconds: 2),
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(color: Colors.white)),
+                                ],
+                              )),
+                          prefixIcon: const Icon(
+                            Icons.store,
+                            color: AppColor.primary,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                        // height: 10,
+                        ),
+                  ),
+                  SliverToBoxAdapter(child: _buildHeaderBanner(context)),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 5,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      child: _buildHeaderTitle(
+                        title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
+                        onTapViewMore: () {},
+                      ),
+                    ),
+                  ),
+                  _buildNewProducts(context, productViewModel),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 22,
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      child: _buildHeaderTitle(
+                        title: locale.language.HOME_SCREEN_BEST_SELLING,
+                        onTapViewMore: () {},
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: horizontalPadding),
+                      sliver: SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 285.0,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 0.6,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          ProductModel product;
 
-                        product = listCars[index];
-                        return ProductCardItem(productModel: product);
-                      }, childCount: listCars.length),
-                    )),
-              ],
+                          product = productViewModel.getHottestProduct[index];
+                          return ProductCardItem(productModel: product);
+                        }, childCount:  productViewModel.getHottestProduct.length),
+                      )),
+                ],
+              ),
             ),
           );
         },
@@ -343,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //   );
   // }
 
-  Widget _buildFeaturedProducts(
+  Widget _buildNewProducts(
       BuildContext context, ProductViewModel productViewModel) {
     return SliverToBoxAdapter(
       child: SizedBox(
@@ -362,20 +433,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: const ProductCardShimmer());
                     },
                   )
-                : (viewModel.products?.isNotEmpty == true)
+                : (viewModel.getNewestProduct.isNotEmpty == true)
                     ? ListView(
                         controller: featuredProductScrollController,
                         padding: const EdgeInsets.symmetric(
                             horizontal: horizontalPadding),
                         scrollDirection: Axis.horizontal,
                         children: [
-                          ...List.generate(viewModel.products?.length ?? 0,
-                                  (index) {
-                            var _featuredProducts = viewModel.products![index];
+                          ...List.generate(viewModel.getNewestProduct.length ?? 0,
+                              (index) {
+                            var _newProduct = viewModel.getNewestProduct[index];
                             return Container(
                                 margin: const EdgeInsets.only(right: 16),
                                 child: ProductCardItem(
-                                  productModel: _featuredProducts,
+                                  productModel: _newProduct,
                                 ));
                           }),
                           if (viewModel.isLoadingProductMore == true)
@@ -411,13 +482,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold),
           ),
-          TextButton(
+        /*  TextButton(
               onPressed: onTapViewMore,
               child: Text(
                 locale.language.HOME_SCREEN_SEE_ALL,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColor.greenMain, fontWeight: FontWeight.w600),
-              )),
+              )),*/
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:fresh_fruit/extension/IterableExtension.dart';
 import 'package:fresh_fruit/mock_data.dart';
 
 import '../model/product_model.dart';
@@ -20,7 +21,7 @@ class ProductViewModel extends BaseViewModel {
 
   //=======================FIELD VALUE=========================
   bool isLoadingProduct = false;
-  List<ProductModel>? products = listCars;
+  List<ProductModel> products = [];
   List<ProductModel>? productsAfterLoggedIn;
 
   bool isLoadingVegetable = false;
@@ -39,110 +40,24 @@ class ProductViewModel extends BaseViewModel {
 
   //=======================FIELD VALUE=========================
 
-  void updateLikeStatus(ProductModel productModel) {
-    ///use when like product at home
-    productsAfterLoggedIn
-        ?.firstWhere((element) => element.id == productModel.id)
-        .isLiked = true;
-    _updateLikeStatusInCategory(productModel: productModel);
-    notifyListeners();
+  List<ProductModel> get getNewestProduct {
+    if (products.isEmpty) return [];
+    return products
+        .where((element) =>
+            element.popular
+                .firstWhereOrNull((p) => p == Popular.LIKED.toName()) !=
+            null)
+        .toList();
   }
 
-  void _updateLikeStatusInCategory({required ProductModel productModel}) {
-    switch (productModel.category) {
-      case "meat":
-        meatProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = true;
-        break;
-      case "vegetable":
-        vegetableProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = true;
-        break;
-      case "house_ware":
-        houseWareProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = true;
-        break;
-    }
-  }
-
-  void updateLikeStatusInCategory(ProductModel productModel) {
-    ///use for like product at category
-    switch (productModel.category) {
-      case "meat":
-        meatProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = true;
-        break;
-      case "vegetable":
-        vegetableProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = true;
-        break;
-      case "house_ware":
-        houseWareProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = true;
-        break;
-    }
-    productsAfterLoggedIn
-        ?.firstWhere((element) => element.id == productModel.id)
-        .isLiked = true;
-  }
-
-  void updateUnLikeStatus(ProductModel productModel) {
-    ///use when unlike product at home
-    _updateUnLikeStatusInCategory(productModel: productModel);
-    productsAfterLoggedIn
-        ?.firstWhere((element) => element.id == productModel.id)
-        .isLiked = false;
-    notifyListeners();
-  }
-
-  void _updateUnLikeStatusInCategory({required ProductModel productModel}) {
-    switch (productModel.category) {
-      case "meat":
-        meatProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = false;
-        break;
-      case "vegetable":
-        vegetableProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = false;
-        break;
-      case "house_ware":
-        houseWareProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = false;
-        break;
-    }
-  }
-
-  void updateUnLikeStatusInCategory(ProductModel productModel) {
-    ///use for unlike product at category
-    switch (productModel.category) {
-      case "meat":
-        meatProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = false;
-        break;
-      case "vegetable":
-        vegetableProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = false;
-        break;
-      case "house_ware":
-        houseWareProductsAfterLoggedIn
-            .firstWhere((element) => element.id == productModel.id)
-            .isLiked = false;
-        break;
-    }
-    productsAfterLoggedIn
-        ?.firstWhere((element) => element.id == productModel.id)
-        .isLiked = false;
+  List<ProductModel> get getHottestProduct {
+    if (products.isEmpty) return [];
+    return products
+        .where((element) =>
+    element.popular
+        .firstWhereOrNull((p) => p == Popular.HOT.toName()) !=
+        null)
+        .toList();
   }
 
   Future<bool> getProducts() async {
@@ -225,45 +140,45 @@ class ProductViewModel extends BaseViewModel {
   Future<List<ProductModel>> _updateProductByCategoryAfterUserLoggedIn(
       {required String category,
       required List<ProductModel> favoriteProducts}) async {
-    List<ProductModel> _products = [];
-    List<ProductModel> _result = [];
+    List<ProductModel> products = [];
+    List<ProductModel> result = [];
     switch (category) {
       case "meat":
         await getMeatProducts();
-        _products = meatProducts;
+        products = meatProducts;
         break;
       case "vegetable":
         await getVegetableProducts();
-        _products = vegetableProducts;
+        products = vegetableProducts;
         break;
       case "house_ware":
         await getHouseWareProducts();
-        _products = houseWareProducts;
+        products = houseWareProducts;
         break;
     }
-    _products.forEach((prod) {
-      var _needUpdatedProd = favoriteProducts
+    products.forEach((prod) {
+      var needUpdatedProd = favoriteProducts
           .firstWhere((element) => element.id == prod.id, orElse: () => prod);
-      prod.isLiked = _needUpdatedProd.isLiked;
-      _result.add(prod);
+      prod.isLiked = needUpdatedProd.isLiked;
+      result.add(prod);
     });
-    return _result;
+    return result;
   }
 
   Future<bool> getProductsAfterUserLoggedIn(
       List<ProductModel> favoriteProducts) async {
-    List<ProductModel> _products = [];
+    List<ProductModel> products = [];
     try {
-      var _resp = await getProducts();
-      if (products != null && products!.isNotEmpty) {
-        products?.forEach((prod) {
-          var _needUpdatedProd = favoriteProducts.firstWhere(
+      var resp = await getProducts();
+      if (products.isNotEmpty) {
+        products.forEach((prod) {
+          var needUpdatedProd = favoriteProducts.firstWhere(
               (element) => element.id == prod.id,
               orElse: () => prod);
-          prod.isLiked = _needUpdatedProd.isLiked;
-          _products.add(prod);
+          prod.isLiked = needUpdatedProd.isLiked;
+          products.add(prod);
         });
-        productsAfterLoggedIn = _products;
+        productsAfterLoggedIn = products;
         notifyListeners();
         return true;
       }

@@ -14,22 +14,17 @@ class CartRepositoryImplement extends CartRepository {
       {required ProductModel productModel,
       required int quantity,
       required String uid}) async {
-    return serviceManager.addToCart(
+    return await serviceManager.addToCart(
         productModel: productModel, uid: uid, quantity: quantity);
   }
 
   @override
-  Future<void> deleteProductFromCart({required String productId}) {
-    // TODO: implement deleteProductFromCart
-    throw UnimplementedError();
+  Future<bool> deleteProductFromCart(
+      {required OrderedProductModel productModel, required String uid}) async {
+    return await serviceManager.deleteFromCart(
+        productModel: productModel, uid: uid);
   }
 
-  @override
-  Future<void> removeFromCart(
-      {required String productId, required int quantity}) {
-    // TODO: implement removeFromCart
-    throw UnimplementedError();
-  }
 
   @override
   Future<bool> checkOutCart({

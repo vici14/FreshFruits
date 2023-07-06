@@ -10,6 +10,7 @@ import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
+import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
 import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
 
@@ -72,6 +73,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<UserViewModel>(
+        builder: (context, userViewModel, child){
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -147,42 +150,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
           const SizedBox(height: 51),
-          InkWell(
-            onTap: () => onSignupClick(context),
-            child: Container(
-              height: 67,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: primarySeedColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  locale.language.SIGNUP,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 22,
-                    wordSpacing: 1,
-                    color: hexToColor('#FFF9FF'),
-                  ),
-                ),
-              ),
-            ),
+          PrimaryButton(
+            text:locale.language.SIGNUP ,onTap:()=> onSignupClick(context),
+            isLoading: userViewModel.isSigningUp,
           ),
-          const SizedBox(height: 25),
-          Center(
-            child: EasyRichText(
-              locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN,
-              defaultStyle: const TextStyle(
-                fontSize: 12,
-                height: 12.97 / 12,
-                fontWeight: FontWeight.w400,
-                letterSpacing: .05,
-                color: tertiarySeedColor,
-              ),
-              patternList: [
-                EasyRichTextPattern(
-                  targetString:
+              const SizedBox(height: 25),
+              Center(
+                child: EasyRichText(
+                  locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN,
+                  defaultStyle: const TextStyle(
+                    fontSize: 12,
+                    height: 12.97 / 12,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: .05,
+                    color: tertiarySeedColor,
+                  ),
+                  patternList: [
+                    EasyRichTextPattern(
+                      targetString:
                       locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
                   style: const TextStyle(
                     fontSize: 12,

@@ -123,6 +123,7 @@ class _AuthenScreenState extends State<AuthenScreen>
                 color: Colors.red,
               ),
               dividerColor: Colors.transparent,
+              labelColor: surfaceSeedColor,
               tabs: [
                 Tab(text: locale.language.LOGIN),
                 Tab(text: locale.language.SIGNUP),

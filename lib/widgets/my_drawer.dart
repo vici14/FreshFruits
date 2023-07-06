@@ -5,7 +5,7 @@ import 'package:fresh_fruit/utils/ToastUtil.dart';
 
 import 'package:provider/provider.dart';
 import '../features/account/UserScreen.dart';
-import '../features/account/order_history_screen.dart';
+import '../features/order/OrderHistoryScreen.dart';
 import '../view_model/product_view_model.dart';
 import '../view_model/UserViewModel.dart';
 
