@@ -233,7 +233,6 @@ class EnLangBuilder extends LangBuilder {
   @override
   String DELETE_FROM_CART_TITLE(String name) => "Do you want to delete "
       " ${name} from cart";
-  String get PRODUCT_DETAIL_ADD_TO_CART =>"Add to Cart";
 
   @override
   String get SEND_OTP => 'Send OTP';

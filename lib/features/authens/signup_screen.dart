@@ -74,86 +74,87 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserViewModel>(
-        builder: (context, userViewModel, child){
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const SizedBox(height: 32),
-          CommonTextField(
-            controller: signUpNameCtl ?? TextEditingController(),
-            labelText: locale.language.USERNAME,
-          ),
-          const SizedBox(height: 21),
-          CommonTextField(
-            controller: signUpUserNameCtl ?? TextEditingController(),
-            labelText: 'Số điện thoại',
-            suffixIcon: isPhoneNumberValid
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 28.0),
-                    child: SvgPicture.asset(
-                      AppImageAsset.iconGreenCheck,
-                      fit: BoxFit.scaleDown,
-                    ),
-                  )
-                : const SizedBox(),
-            onChange: (value) {
-              // if (RegExp(
-              //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-              if (RegExp(r"(84|0[3|5|7|8|9])+([0-9]{8})\b")
-                  .hasMatch(value ?? '')) {
-                setState(() {
-                  isPhoneNumberValid = true;
-                });
-              } else {
-                setState(() {
-                  isPhoneNumberValid = false;
-                });
-              }
-            },
-            keyboardType: TextInputType.phone,
-          ),
-          if (showOTPField) const SizedBox(height: 21),
-          if (showOTPField)
-            CommonTextField(
-              controller: signUpOTPCtl ?? TextEditingController(),
-              labelText: locale.language.OTP_CODE,
-              maxLength: 6,
-              focusNode: signUpOTPFC,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              keyboardType: TextInputType.phone,
-            ),
-          const SizedBox(height: 21),
-          CommonTextField(
-            controller: signUpPasswordCtl ?? TextEditingController(),
-            labelText: locale.language.PASSWORD,
-            password: true,
-          ),
-          TextButton(
-            onPressed: () {
-              if (!showOTPField) {
-                setState(() {
-                  showOTPField = true;
-                });
-              }
-              onSendOTPPress(context);
-            },
-            child: Text(
-              locale.language.SEND_OTP,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 12,
-                height: 108.1 / 100,
-                wordSpacing: 0.05,
-                color: isPhoneNumberValid ? tertiarySeedColor : Colors.grey,
+      builder: (context, userViewModel, child) {
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              const SizedBox(height: 32),
+              CommonTextField(
+                controller: signUpNameCtl ?? TextEditingController(),
+                labelText: locale.language.USERNAME,
               ),
-            ),
-          ),
-          const SizedBox(height: 51),
-          PrimaryButton(
-            text:locale.language.SIGNUP ,onTap:()=> onSignupClick(context),
-            isLoading: userViewModel.isSigningUp,
-          ),
+              const SizedBox(height: 21),
+              CommonTextField(
+                controller: signUpUserNameCtl ?? TextEditingController(),
+                labelText: 'Số điện thoại',
+                suffixIcon: isPhoneNumberValid
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 28.0),
+                        child: SvgPicture.asset(
+                          AppImageAsset.iconGreenCheck,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      )
+                    : const SizedBox(),
+                onChange: (value) {
+                  // if (RegExp(
+                  //         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                  if (RegExp(r"(84|0[3|5|7|8|9])+([0-9]{8})\b")
+                      .hasMatch(value ?? '')) {
+                    setState(() {
+                      isPhoneNumberValid = true;
+                    });
+                  } else {
+                    setState(() {
+                      isPhoneNumberValid = false;
+                    });
+                  }
+                },
+                keyboardType: TextInputType.phone,
+              ),
+              if (showOTPField) const SizedBox(height: 21),
+              if (showOTPField)
+                CommonTextField(
+                  controller: signUpOTPCtl ?? TextEditingController(),
+                  labelText: locale.language.OTP_CODE,
+                  maxLength: 6,
+                  focusNode: signUpOTPFC,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.phone,
+                ),
+              const SizedBox(height: 21),
+              CommonTextField(
+                controller: signUpPasswordCtl ?? TextEditingController(),
+                labelText: locale.language.PASSWORD,
+                password: true,
+              ),
+              TextButton(
+                onPressed: () {
+                  if (!showOTPField) {
+                    setState(() {
+                      showOTPField = true;
+                    });
+                  }
+                  onSendOTPPress(context);
+                },
+                child: Text(
+                  locale.language.SEND_OTP,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    height: 108.1 / 100,
+                    wordSpacing: 0.05,
+                    color: isPhoneNumberValid ? tertiarySeedColor : Colors.grey,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 51),
+              PrimaryButton(
+                text: locale.language.SIGNUP,
+                onTap: () => onSignupClick(context),
+                isLoading: userViewModel.isSigningUp,
+              ),
               const SizedBox(height: 25),
               Center(
                 child: EasyRichText(
@@ -168,21 +169,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   patternList: [
                     EasyRichTextPattern(
                       targetString:
-                      locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    height: 12.97 / 12,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: .05,
-                    color: surfaceSeedColor,
-                  ),
+                          locale.language.ALREADY_HAVE_ACCOUNT_SIGNIN_PATTERN_1,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        height: 12.97 / 12,
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: .05,
+                        color: surfaceSeedColor,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 40),
+            ],
           ),
-          const SizedBox(height: 40),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -235,7 +238,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       },
       codeAutoRetrievalTimeout: (_) {
-        if(isOTPVerified) return;
+        if (isOTPVerified) return;
         EasyLoading.showToast(
           locale.language.OTP_CODE_SENT_FAIL,
           toastPosition: EasyLoadingToastPosition.bottom,
