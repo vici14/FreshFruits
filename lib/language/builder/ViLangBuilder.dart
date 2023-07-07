@@ -234,4 +234,22 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get BUTTON_CONTINUE => "Tiếp tục";
+
+  @override
+  String get SEND_OTP => 'Gửi mã OTP';
+
+  @override
+  String get OTP_CODE => 'Mã OTP';
+
+  @override
+  String get OTP_CODE_SENT => 'Mã OTP đã được gửi tới số điện thoại của bạn, vui lòng nhập OTP vào ô bên dưới để hoàn tất xác minh';
+
+  @override
+  String get OTP_CODE_SENT_FAIL => 'Gửi mã OTP lỗi, vui lòng thử lại';
+
+  @override
+  String get VERIFY_OTP_FIRST => 'Vui lòng xác thực OTP trước khi tiếp tục đăng ký';
+
+  @override
+  String get INPUT_FULL_SIGNUP_INFO => 'Vui lòng điền đầy đủ thông tin trước';
 }

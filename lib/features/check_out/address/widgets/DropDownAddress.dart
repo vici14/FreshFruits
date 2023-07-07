@@ -32,7 +32,7 @@ class DropDownDistrictsState extends State<DropDownDistricts> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimen.space8 ),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimen.space8),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -105,7 +105,7 @@ class DropDownWardsState extends State<DropDownWards> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimen.space8 ),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimen.space8),
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),

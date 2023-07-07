@@ -7,4 +7,6 @@ abstract class GoogleMapServiceRepository {
   });
   Future<GoogleGeocodingResponse> searchAddress(String address);
 
+  Future<dynamic> getCurrentLocation(
+      {required double latitude, required double longitude});
 }

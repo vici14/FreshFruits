@@ -1,6 +1,7 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/HomeNavigationScreen.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
@@ -61,6 +62,7 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
         home: Scaffold(
           body: HomeNavigationScreen(),
         ),
+        builder: EasyLoading.init(),
       ),
     );
   }

@@ -163,15 +163,20 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
 
                   isScrollable: false,
                   indicator: UnderlineTabIndicator(
-                    // borderRadius: BorderRadius.circular(5.0),
+                    borderRadius: BorderRadius.circular(5.0),
                     borderSide: BorderSide(
                       width: 2.0,
                       color: hexToColor('#A6CE3B'),
                     ),
                   ),
                   indicatorPadding: const EdgeInsets.symmetric(horizontal: 45),
-
-                  // dividerColor: Colors.transparent,
+                  labelStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    height: 29 / 14,
+                    color: Colors.red,
+                  ),
+                  dividerColor: Colors.transparent,
                   tabs: [
                     Tab(text: locale.language.ACCOUNT),
                      Tab(text: locale.language.HISTORY),

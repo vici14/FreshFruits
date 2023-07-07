@@ -140,45 +140,45 @@ class ProductViewModel extends BaseViewModel {
   Future<List<ProductModel>> _updateProductByCategoryAfterUserLoggedIn(
       {required String category,
       required List<ProductModel> favoriteProducts}) async {
-    List<ProductModel> _products = [];
-    List<ProductModel> _result = [];
+    List<ProductModel> products = [];
+    List<ProductModel> result = [];
     switch (category) {
       case "meat":
         await getMeatProducts();
-        _products = meatProducts;
+        products = meatProducts;
         break;
       case "vegetable":
         await getVegetableProducts();
-        _products = vegetableProducts;
+        products = vegetableProducts;
         break;
       case "house_ware":
         await getHouseWareProducts();
-        _products = houseWareProducts;
+        products = houseWareProducts;
         break;
     }
-    _products.forEach((prod) {
-      var _needUpdatedProd = favoriteProducts
+    products.forEach((prod) {
+      var needUpdatedProd = favoriteProducts
           .firstWhere((element) => element.id == prod.id, orElse: () => prod);
-      prod.isLiked = _needUpdatedProd.isLiked;
-      _result.add(prod);
+      prod.isLiked = needUpdatedProd.isLiked;
+      result.add(prod);
     });
-    return _result;
+    return result;
   }
 
   Future<bool> getProductsAfterUserLoggedIn(
       List<ProductModel> favoriteProducts) async {
-    List<ProductModel> _products = [];
+    List<ProductModel> products = [];
     try {
-      var _resp = await getProducts();
-      if (products != null && products!.isNotEmpty) {
-        products?.forEach((prod) {
-          var _needUpdatedProd = favoriteProducts.firstWhere(
+      var resp = await getProducts();
+      if (products.isNotEmpty) {
+        products.forEach((prod) {
+          var needUpdatedProd = favoriteProducts.firstWhere(
               (element) => element.id == prod.id,
               orElse: () => prod);
-          prod.isLiked = _needUpdatedProd.isLiked;
-          _products.add(prod);
+          prod.isLiked = needUpdatedProd.isLiked;
+          products.add(prod);
         });
-        productsAfterLoggedIn = _products;
+        productsAfterLoggedIn = products;
         notifyListeners();
         return true;
       }

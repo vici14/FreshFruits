@@ -1,5 +1,6 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -46,26 +47,26 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserViewModel>(
-      builder: (context,userViewModel,child){
-        return SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const SizedBox(height: 32),
-              CommonTextField(
-                controller: loginUserNameCtl ?? TextEditingController(),
-                labelText: 'Email',
-                suffixIcon: isEmailValid
-                    ? Padding(
-                  padding: const EdgeInsets.only(left: 28.0),
-                  child: SvgPicture.asset(
-                    AppImageAsset.iconGreenCheck,
-                    fit: BoxFit.scaleDown,
-                  ),
-                )
-                    : const SizedBox(),
-                onChange: (value) {
-                  if (RegExp(
+        builder: (context,userViewModel,child){
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          const SizedBox(height: 32),
+          CommonTextField(
+            controller: loginUserNameCtl ?? TextEditingController(),
+            labelText: 'Số điện thoại',
+            suffixIcon: isEmailValid
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 28.0),
+                    child: SvgPicture.asset(
+                      AppImageAsset.iconGreenCheck,
+                      fit: BoxFit.scaleDown,
+                    ),
+                  )
+                : const SizedBox(),
+            onChange: (value) {
+              if (RegExp(
                       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                       .hasMatch(value ?? '')) {
                     setState(() {
@@ -138,11 +139,17 @@ class _LoginScreenState extends State<LoginScreen> {
   void onLoginClick(BuildContext context) async {
     if ((loginUserNameCtl?.text.isNotNullAndEmpty() ?? false) &&
         (loginPasswordCtl?.text.isNotNullAndEmpty() ?? false)) {
+      EasyLoading.showProgress(
+        .3,
+        status: 'Login...',
+        maskType: EasyLoadingMaskType.clear,
+      );
       bool? isSuccess = await userViewModel?.signInWithEmailAndPassword(
         context,
-        email: loginUserNameCtl?.text ?? '',
+        email: '${loginUserNameCtl?.text ?? ' '}@freshfruit.com',
         password: loginPasswordCtl?.text ?? '',
       );
+      EasyLoading.dismiss();
       if (isSuccess ?? false) {
         if (mounted) {
           Navigator.pop(context);

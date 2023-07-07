@@ -8,7 +8,6 @@ import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppDimen.dart';
-import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonCircularLoading.dart';
@@ -156,11 +155,14 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
       child: GestureDetector(
         onTap: () {
           if (!isCurrent) {
-            userViewModel.updateCurrentShippingDetail(addressModel,() {
-              widget.params.onChangedAddressCallback(addressModel!);
+            userViewModel.updateCurrentShippingDetail(
+              addressModel,
+              () {
+                widget.params.onChangedAddressCallback(addressModel!);
 
-              Navigator.of(context).pop();
-            },);
+                Navigator.of(context).pop();
+              },
+            );
             // Navigator.of(context).pop();
           }
         },
@@ -174,7 +176,7 @@ class _DeliveryAddressScreenState extends BaseProviderScreenState<
                     .textTheme
                     .bodyMedium
                     ?.copyWith(color: AppColor.textGrey),
-                patternList: [],
+                patternList: const [],
               ),
             ).addWhiteBoxShadow(),
           ],

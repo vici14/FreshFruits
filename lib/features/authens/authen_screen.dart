@@ -109,7 +109,7 @@ class _AuthenScreenState extends State<AuthenScreen>
               controller: tabController,
               indicatorSize: TabBarIndicatorSize.tab,
               indicator: UnderlineTabIndicator(
-                // borderRadius: BorderRadius.circular(5.0),
+                borderRadius: BorderRadius.circular(5.0),
                 borderSide: BorderSide(
                   width: 2.0,
                   color: hexToColor('#A6CE3B'),
@@ -122,7 +122,8 @@ class _AuthenScreenState extends State<AuthenScreen>
                 height: 29 / 14,
                 color: Colors.red,
               ),
-              // dividerColor: Colors.transparent,
+              dividerColor: Colors.transparent,
+              labelColor: surfaceSeedColor,
               tabs: [
                 Tab(text: locale.language.LOGIN),
                 Tab(text: locale.language.SIGNUP),
@@ -147,7 +148,7 @@ class _AuthenScreenState extends State<AuthenScreen>
               onSignUpSuccess: () {
                 tabController?.animateTo(
                   0,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                 );
               },
             ),
