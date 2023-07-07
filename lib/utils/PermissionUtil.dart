@@ -1,7 +1,25 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 class PermissionUtil{
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  Future<void> requestNotificationPermission() async {
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      announcement: true,  // Optional: Enable announcement notifications on iOS 15+
+      criticalAlert: true, // Optional: Enable critical alerts on iOS
+      provisional: false,  // Optional: Request provisional authorization on iOS 15+
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      // User has granted permission
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      // User has granted provisional permission (iOS 15+ only)
+    } else {
+      // User has denied or is restricted from permission
+    }
+  }
   Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;

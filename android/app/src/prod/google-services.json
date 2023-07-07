@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "772597836618-h4c8qv1dk3mn0f4mupfrhnrci0tkotmq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fresh_fruits.app",
+            "certificate_hash": "dc36acebd4c0ce1aa9922d12f1e2d89cb0256971"
+          }
+        },
+        {
           "client_id": "772597836618-e2dsqlk3h0o289t9o91ksr0391fgtvca.apps.googleusercontent.com",
           "client_type": 3
         }
