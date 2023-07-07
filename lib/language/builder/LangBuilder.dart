@@ -146,4 +146,16 @@ abstract class LangBuilder {
   String get BUTTON_CANCEL;
 
   String get BUTTON_CONTINUE;
+
+  String get SEND_OTP;
+
+  String get OTP_CODE;
+
+  String get OTP_CODE_SENT;
+
+  String get OTP_CODE_SENT_FAIL;
+
+  String get VERIFY_OTP_FIRST;
+
+  String get INPUT_FULL_SIGNUP_INFO;
 }

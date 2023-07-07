@@ -233,4 +233,22 @@ class EnLangBuilder extends LangBuilder {
   @override
   String DELETE_FROM_CART_TITLE(String name) => "Do you want to delete "
       " ${name} from cart";
+
+  @override
+  String get SEND_OTP => 'Send OTP';
+
+  @override
+  String get OTP_CODE => 'OTP Code';
+
+  @override
+  String get OTP_CODE_SENT => 'OTP has been sent to your phone number, please enter OTP in the box below to complete the verification';
+
+  @override
+  String get OTP_CODE_SENT_FAIL => 'Sent OTP error, please try again';
+
+  @override
+  String get VERIFY_OTP_FIRST => 'Please verify OTP first before continue sign up';
+
+  @override
+  String get INPUT_FULL_SIGNUP_INFO => 'Please input full sign up fields';
 }

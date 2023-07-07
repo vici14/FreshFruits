@@ -3,6 +3,7 @@ class AppImageAsset {
 
   static const imgMomo = '${_assetFolder}img_momo.jpg';
   static const imgTechcombank = '${_assetFolder}img_techcombank.jpg';
+  static const splashBackground = '${_assetFolder}splash_background.jpg';
 
 
   static const _bottomBarFolder = '${_assetFolder}bottom_bar/';
