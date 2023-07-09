@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/features/account/account_tab.dart';
- import 'package:fresh_fruit/language/LanguagesManager.dart';
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/ValidationUtil.dart';
+import 'package:fresh_fruit/widgets/common/LanguageSwitch.dart';
 
 import '../../view_model/product_view_model.dart';
 import '../../view_model/UserViewModel.dart';
@@ -30,6 +32,7 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
   ProductViewModel? _productViewModel;
   bool canUpdateProfile = false;
   late UserViewModel _userViewModel;
+  late AppViewModel _appViewModel;
 
   TabController? tabController;
 
@@ -37,13 +40,13 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
   void initState() {
     tabController = TabController(length: 2, vsync: this);
     _userViewModel = Provider.of<UserViewModel>(context, listen: false);
+    _appViewModel = Provider.of<AppViewModel>(context, listen: false);
     if (_userViewModel.currentUser != null) {
       canUpdateProfile = true;
     }
 
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +56,6 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-
         body: Column(
           children: [
             _buildCusInfo(),
@@ -62,7 +64,7 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: TabBarView(
                   controller: tabController,
-                  children:  [
+                  children: [
                     const AccountTab(),
                     OrderHistoryScreen(),
                   ],
@@ -122,17 +124,36 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
           child: Column(
             children: [
               const SizedBox(height: 36),
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: hexToColor('#FBF4E4'),
-                    width: 3.3,
-                  ),
-                  borderRadius: BorderRadius.circular(13.2),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(),
+                    Container(
+                      margin: const EdgeInsets.only(left: 40),
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: hexToColor('#FBF4E4'),
+                          width: 3.3,
+                        ),
+                        borderRadius: BorderRadius.circular(13.2),
+                      ),
+                      child: SvgPicture.asset(AppImageAsset.defaultAvatar),
+                    ),
+                    SizedBox(
+                      height: 24,
+                      width: 40,
+                      child: LanguageSwitch(
+                        onChange: _appViewModel.changeLanguage,
+                        isVietnamese: _appViewModel.isVietnamese ?? true,
+                      ),
+                    ),
+                  ],
                 ),
-                child: SvgPicture.asset(AppImageAsset.defaultAvatar),
               ),
               const SizedBox(height: 25),
               userVM.isLoggedIn
@@ -146,21 +167,23 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
                     )
                   : const SizedBox(),
               const SizedBox(height: 5),
-              userVM.isLoggedIn ? Text(
-                 userVM.currentUser?.email ?? '',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: hexToColor('#FCFCFC'),
-                ),
-              ) : const SizedBox(),
+              userVM.isLoggedIn
+                  ? Text(
+                      userVM.currentUser?.email ?? '',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: tertiarySeedColor,
+                      ),
+                    )
+                  : const SizedBox(),
               const SizedBox(height: 24),
               SizedBox(
                 height: 42,
                 child: TabBar(
                   controller: tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,            labelColor: Colors.black,
-
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelColor: Colors.black,
                   isScrollable: false,
                   indicator: UnderlineTabIndicator(
                     borderRadius: BorderRadius.circular(5.0),
@@ -179,7 +202,7 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
                   dividerColor: Colors.transparent,
                   tabs: [
                     Tab(text: locale.language.ACCOUNT),
-                     Tab(text: locale.language.HISTORY),
+                    Tab(text: locale.language.HISTORY),
                   ],
                 ),
               ),
@@ -220,7 +243,6 @@ class _UserScreenState extends State<UserScreen> with TickerProviderStateMixin {
       ],
     );
   }
-
 
   bool isValidate() {
     return _formKey.currentState!.validate();
