@@ -22,10 +22,10 @@ class AnalyticsPlugin {
     _analytics.logEvent(name: "open_cart", parameters: data);
   }
 
-  void trackAddtoCart0({Map<String, dynamic>? data}) {
+  void trackAddtoCart({Map<String, dynamic>? data}) {
     data?["time"] = DateTime.now().millisecondsSinceEpoch;
 
-    _analytics.logEvent(name: "add_to_cart0", parameters: data);
+    _analytics.logEvent(name: "add_to_cart", parameters: data);
   }
 
   void trackAddtoCart1({Map<String, dynamic>? data}) {
