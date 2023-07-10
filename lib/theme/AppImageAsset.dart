@@ -30,5 +30,7 @@ class AppImageAsset {
   static const imgOrderSuccess = '${_assetFolder}img_order_success.png';
   static const imgOrderFailed = '${_assetFolder}img_order_failed.png';
   static const imgBlurring = '${_assetFolder}img_blurring.png';
+  static const icUKToggle = '${_assetFolder}ic_UK_toggle.png';
+  static const icVIToggle = '${_assetFolder}ic_VI_toggle.png';
 
 }

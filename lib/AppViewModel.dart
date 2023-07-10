@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:fresh_fruit/base/BaseProvider.dart';
+import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class AppViewModel extends ChangeNotifier implements BaseProvider {
   late AppFlavor _appFlavor;
   late String _systemVersion;
   PackageInfo? _packageInfo;
+  bool? isVietnamese;
 
   PackageInfo? get packageInfo => _packageInfo;
 
@@ -33,6 +35,23 @@ class AppViewModel extends ChangeNotifier implements BaseProvider {
 
   set packageInfo(PackageInfo? value) {
     _packageInfo = value;
+    notifyListeners();
+  }
+
+  WidgetsBinding get engine {
+    return WidgetsFlutterBinding.ensureInitialized();
+  }
+
+  void getCurrentLanguage() async {
+   isVietnamese = await locale.init();
+    await engine.performReassemble();
+    notifyListeners();
+  }
+
+  void changeLanguage(bool value) async {
+    isVietnamese = value;
+    locale.changeLanguage(value);
+    await engine.performReassemble();
     notifyListeners();
   }
 
