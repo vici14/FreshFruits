@@ -118,7 +118,11 @@ class FreshFruitsMain {
 
     runApp(
       MultiProvider(
-        providers: [ChangeNotifierProvider.value(value: appViewModel)],
+        providers: [
+          ChangeNotifierProvider.value(
+            value: appViewModel..getCurrentLanguage(),
+          ),
+        ],
         child: FreshFruitApp(),
       ),
     );
