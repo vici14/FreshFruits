@@ -34,3 +34,4 @@ class AnalyticsPlugin {
     _analytics.logEvent(name: "add_to_cart1", parameters: data);
   }
 }
+
