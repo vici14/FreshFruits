@@ -194,30 +194,7 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
     );
   }
 
-  CupertinoTabBar _buildBottomBar() {
-    return CupertinoTabBar(
-        activeColor: Colors.green,
-        onTap: onTabTap,
-        backgroundColor: Colors.grey.withOpacity(0.5),
-        items: <BottomNavigationBarItem>[
-          _buildBottomBarItem(
-            icon: const Icon(Icons.home),
-            label: "home",
-            activeIcon: const Icon(
-              Icons.home,
-              color: Colors.green,
-            ),
-          ),
-          _buildBottomBarItem(
-            icon: const Icon(Icons.store),
-            label: "Store",
-            activeIcon: const Icon(
-              Icons.store,
-              color: Colors.green,
-            ),
-          ),
-        ]);
-  }
+
 
   BottomNavigationBarItem _buildBottomBarItem(
       {required Widget icon,

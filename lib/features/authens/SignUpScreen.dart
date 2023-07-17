@@ -5,14 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
+import 'package:fresh_fruit/logger/AppLogger.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
+import 'package:fresh_fruit/utils/ValidationUtil.dart';
 import 'package:fresh_fruit/view_model/UserViewModel.dart';
 import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
 import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
+
+import 'OTPVerifyScreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   final Function onSignUpSuccess;
@@ -29,18 +33,14 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   UserViewModel? userViewModel;
 
-  String? verId;
-
   TextEditingController? signUpNameCtl;
-  TextEditingController? signUpUserNameCtl;
-  TextEditingController? signUpPasswordCtl;
-  TextEditingController? signUpOTPCtl;
-
-  FocusNode signUpOTPFC = FocusNode();
+  TextEditingController? phoneController;
 
   bool isPhoneNumberValid = false;
   bool showOTPField = false;
   bool isOTPVerified = false;
+
+  String? _phoneError;
 
   @override
   void initState() {
@@ -49,25 +49,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       userViewModel = Provider.of<UserViewModel>(context, listen: false);
     });
 
-    signUpUserNameCtl = TextEditingController();
-    signUpPasswordCtl = TextEditingController();
+    phoneController = TextEditingController();
     signUpNameCtl = TextEditingController();
-    signUpOTPCtl = TextEditingController();
-    signUpOTPFC.addListener(() {
-      if (!signUpOTPFC.hasFocus) {
-        if (signUpOTPCtl?.text.length != 6 || verId == null) return;
-        verifyOTP(
-            verificationId: verId ?? '', smsCode: signUpOTPCtl?.text ?? '');
-      }
-    });
   }
 
   @override
   void dispose() {
-    signUpUserNameCtl?.dispose();
-    signUpPasswordCtl?.dispose();
+    phoneController?.dispose();
     signUpNameCtl?.dispose();
-    signUpOTPFC.dispose();
     super.dispose();
   }
 
@@ -86,7 +75,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 21),
               CommonTextField(
-                controller: signUpUserNameCtl ?? TextEditingController(),
+                controller: phoneController ?? TextEditingController(),
                 labelText: 'Số điện thoại',
                 suffixIcon: isPhoneNumberValid
                     ? Padding(
@@ -113,42 +102,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 },
                 keyboardType: TextInputType.phone,
               ),
-              if (showOTPField) const SizedBox(height: 21),
-              if (showOTPField)
-                CommonTextField(
-                  controller: signUpOTPCtl ?? TextEditingController(),
-                  labelText: locale.language.OTP_CODE,
-                  maxLength: 6,
-                  focusNode: signUpOTPFC,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  keyboardType: TextInputType.phone,
+              if (_phoneError != null)
+                Text(
+                  _phoneError ?? "",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: Colors.red),
                 ),
-              const SizedBox(height: 21),
-              CommonTextField(
-                controller: signUpPasswordCtl ?? TextEditingController(),
-                labelText: locale.language.PASSWORD,
-                password: true,
-              ),
-              TextButton(
-                onPressed: () {
-                  if (!showOTPField) {
-                    setState(() {
-                      showOTPField = true;
-                    });
-                  }
-                  onSendOTPPress(context);
-                },
-                child: Text(
-                  locale.language.SEND_OTP,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    height: 108.1 / 100,
-                    wordSpacing: 0.05,
-                    color: isPhoneNumberValid ? tertiarySeedColor : Colors.grey,
-                  ),
-                ),
-              ),
               const SizedBox(height: 51),
               PrimaryButton(
                 text: locale.language.SIGNUP,
@@ -190,7 +151,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void onSignupClick(BuildContext context) async {
-    if (!isOTPVerified) {
+    _phoneError = ValidationUtil.isValidPhone(phoneController?.text ?? "");
+    if (ValidationUtil.isValidPhone(phoneController?.text ?? "") == null) {
+      var _userLoggedIn = await showModalBottomSheet(
+        isScrollControlled: true,
+        isDismissible: true,
+        backgroundColor: Colors.transparent,
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(15), topLeft: Radius.circular(15)),
+        ),
+        builder: (BuildContext context) {
+          return DraggableScrollableSheet(
+              initialChildSize: 0.5,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return ChangeNotifierProvider.value(
+                  value: userViewModel,
+                  child: OTPVerifyScreen(
+                    phoneNumber: phoneController!.text.trim(),
+                  ),
+                );
+              });
+        },
+      );
+      if (_userLoggedIn != null) {
+        Navigator.of(context).pop();
+      }
+    }
+
+    /* if (!isOTPVerified) {
       EasyLoading.showToast(
         locale.language.VERIFY_OTP_FIRST,
         toastPosition: EasyLoadingToastPosition.bottom,
@@ -217,60 +208,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         locale.language.INPUT_FULL_SIGNUP_INFO,
         toastPosition: EasyLoadingToastPosition.bottom,
       );
-    }
-  }
-
-  void onSendOTPPress(BuildContext context) async {
-    if (!isPhoneNumberValid) return;
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber:
-          '+84${(signUpUserNameCtl?.text.trim() ?? '').substring(1, 10)}',
-      verificationCompleted: (_) {},
-      timeout: const Duration(seconds: 120),
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {
-        setState(() {
-          verId = verificationId;
-        });
-        EasyLoading.showToast(
-          locale.language.OTP_CODE_SENT,
-          toastPosition: EasyLoadingToastPosition.bottom,
-        );
-      },
-      codeAutoRetrievalTimeout: (_) {
-        if (isOTPVerified) return;
-        EasyLoading.showToast(
-          locale.language.OTP_CODE_SENT_FAIL,
-          toastPosition: EasyLoadingToastPosition.bottom,
-        );
-      },
-    );
-  }
-
-  Future verifyOTP(
-      {required String verificationId, required String smsCode}) async {
-    EasyLoading.showProgress(
-      .3,
-      status: 'Verifying...',
-      maskType: EasyLoadingMaskType.clear,
-    );
-    UserCredential auth = await FirebaseAuth.instance.signInWithCredential(
-        PhoneAuthProvider.credential(
-            verificationId: verificationId, smsCode: smsCode));
-    EasyLoading.dismiss();
-    setState(() {
-      isOTPVerified = auth.user != null;
-    });
-    if (isOTPVerified) {
-      EasyLoading.showSuccess(
-        'Verify success',
-        maskType: EasyLoadingMaskType.clear,
-      );
-    } else {
-      EasyLoading.showError(
-        'Verify fail',
-        maskType: EasyLoadingMaskType.clear,
-      );
-    }
+    }*/
   }
 }

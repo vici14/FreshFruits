@@ -252,4 +252,12 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get INPUT_FULL_SIGNUP_INFO => 'Vui lòng điền đầy đủ thông tin trước';
+
+  @override
+  String get OTP_VERIFYING => "Xác minh số điện thoại";
+
+  @override
+  String OTP_VERIFYING_INFO(String phoneNumber) {
+    return "Mã xác minh đã được gửi đến ${phoneNumber}";
+  }
 }

@@ -99,7 +99,7 @@ class ServiceManager {
     }
   }
 
-  Future<DocumentReference<UserModel>> getCurrentUserDocument(
+  Future<DocumentReference<UserModel>?> getCurrentUserDocument(
       String uid) async {
     try {
       var _user = await usersCollection
@@ -112,7 +112,7 @@ class ServiceManager {
           .get();
       AppLogger.i('getCurrentUserDocument ${uid} success');
 
-      return _user.docs.first.reference;
+      return (_user.docs.isEmpty) ? null : _user.docs.first.reference;
     } catch (e) {
       AppLogger.e(e.toString());
       rethrow;
@@ -198,7 +198,7 @@ class ServiceManager {
         var _currentUser = await getCurrentUserDocument(currentUser.uid);
         AppLogger.i('getCurrentUser ${currentUser.uid} success');
 
-        return _currentUser.get().then((value) => value.data());
+        return _currentUser?.get().then((value) => value.data());
       }
       return null;
     } catch (e) {
@@ -214,12 +214,12 @@ class ServiceManager {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      var isCreated = createUser(
+      var isCreated = await createUser(
         uid: userCredential.user!.uid,
-        email: email,
+        phone: email,
         name: name,
       );
-      if (isCreated) {
+      if (isCreated != null) {
         createCollectionCart(userCredential.user!.uid);
       }
       AppLogger.i(
@@ -235,13 +235,44 @@ class ServiceManager {
     return false;
   }
 
-  bool createUser({
+  Future<UserModel?> signInWithPhoneCredential(
+      {required String verificationId,
+      required String smsCode,
+      String? name}) async {
+    try {
+      UserCredential auth = await FirebaseAuth.instance.signInWithCredential(
+          PhoneAuthProvider.credential(
+              verificationId: verificationId, smsCode: smsCode));
+      return await createUser(
+          uid: auth.user!.uid,
+          phone: auth.user?.phoneNumber ?? "",
+          name: name ?? auth.user?.phoneNumber ?? "");
+    } catch (e) {
+      AppLogger.e(e.toString(),
+          extraMessage: 'sign in phone credential failed');
+      return null;
+    }
+  }
+
+  Future<UserModel?> createUser({
     required String uid,
-    required String email,
+    required String phone,
     required String name,
-  }) {
-    userRef.add(UserModel.initial(uid: uid, email: email, name: name));
-    return true;
+  }) async {
+    try {
+      var _existUser = await getCurrentUserDocument(uid);
+      if (_existUser == null) {
+        var _user = await userRef
+            .add(UserModel.initial(uid: uid, phone: phone, name: name))
+            .then((value) => value.get().then((v) => v.data()));
+        // createCollectionCart(uid);
+        return _user;
+      }
+      return _existUser.get().then((value) => value.data());
+    } catch (e) {
+      AppLogger.e(e.toString(), extraMessage: 'create User failed');
+      return null;
+    }
   }
 
   Future<bool> signInWithEmailAndPassword(
@@ -249,7 +280,6 @@ class ServiceManager {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-
       AppLogger.i(
           'signUpWithEmailAndPassword ${userCredential.additionalUserInfo} success');
       return true;
@@ -265,7 +295,7 @@ class ServiceManager {
   void likeProduct(
       {required String uid, required ProductModel productModel}) async {
     var _currentUser = await getCurrentUserDocument(uid);
-    _currentUser.update({
+    _currentUser?.update({
       'favoriteProducts': FieldValue.arrayUnion([productModel.toJson()])
     });
     //     .then((value) {
@@ -288,7 +318,7 @@ class ServiceManager {
   void unlikeProduct(
       {required String uid, required ProductModel productModel}) async {
     var _currentUser = await getCurrentUserDocument(uid);
-    _currentUser.update({
+    _currentUser?.update({
       'favoriteProducts': FieldValue.arrayRemove([productModel.toJson()])
     });
     // .then((value) {
@@ -306,7 +336,7 @@ class ServiceManager {
     try {
       var _currentUser = await getCurrentUserDocument(uid);
       _currentUser
-          .update({'name': name, 'phone': phone, 'address': address}).onError(
+          ?.update({'name': name, 'phone': phone, 'address': address}).onError(
               (error, stackTrace) => false);
       AppLogger.i('updateProfile success');
 
@@ -321,7 +351,7 @@ class ServiceManager {
     try {
       CartModel cartModel = CartModel.initial();
       var _currentUser = await getCurrentUserDocument(uid);
-      await _currentUser.collection('cart').add(cartModel.toJson());
+      await _currentUser?.collection('cart').add(cartModel.toJson());
       AppLogger.i('createCollectionCart success');
     } catch (e) {
       AppLogger.e(e.toString());
@@ -332,7 +362,7 @@ class ServiceManager {
       {required CartModel cartModel, required String uid}) async {
     var _currentUser = await getCurrentUserDocument(uid);
     _currentUser
-        .update({
+        ?.update({
           'orderHistory': FieldValue.arrayUnion([cartModel.toJson()])
         })
         .then((value) => AppLogger.i('updateHistory success'))
@@ -346,7 +376,7 @@ class ServiceManager {
 
       var _currentUser = await getCurrentUserDocument(uid);
       _currentUser
-          .update({
+          ?.update({
             'addresses': FieldValue.arrayUnion([address.toJson()])
           })
           .then((value) => AppLogger.i('add shipping Address success'))
@@ -363,7 +393,7 @@ class ServiceManager {
       await delay();
       var _currentUser = await getCurrentUserDocument(uid);
       _currentUser
-          .update({'currentAddress': address.toJson()})
+          ?.update({'currentAddress': address.toJson()})
           .then((value) => AppLogger.i('updateCurrentShippingAddress success'))
           .catchError((onError) => AppLogger.e(onError.toString()));
       return true;
@@ -508,7 +538,7 @@ class ServiceManager {
     try {
       if (cartModel.canCheckOut) {
         var _currentUser = await getCurrentUserDocument(uid);
-        _currentUser.update({
+        _currentUser?.update({
           'orderHistory': FieldValue.arrayUnion([cartModel.toJson()])
         });
       } else {

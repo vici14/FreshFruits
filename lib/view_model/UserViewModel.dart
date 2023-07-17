@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fresh_fruit/db/DatabaseManager.dart';
 import 'package:fresh_fruit/extension/IterableExtension.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
@@ -10,13 +12,18 @@ import 'package:fresh_fruit/model/user_model.dart';
 import 'package:fresh_fruit/repository/UserRepositoryImpl.dart';
 import 'package:fresh_fruit/repository/UserRepository.dart';
 import 'package:fresh_fruit/service/storage_service.dart';
+import 'package:fresh_fruit/utils/StringUtils.dart';
 import 'package:fresh_fruit/view_model/BaseViewModel.dart';
 import 'package:google_geocoding_api/google_geocoding_api.dart';
+
+import '../language/LanguagesManager.dart';
 
 class UserViewModel extends BaseViewModel {
   final UserRepository _repository = UserRepositoryImpl();
   static final UserViewModel _instance = UserViewModel._internal();
   final DatabaseManager _databaseManager = DatabaseManager.instance;
+  final _auth = FirebaseAuth.instance;
+
   UserViewModel._internal();
 
   factory UserViewModel() {
@@ -26,16 +33,19 @@ class UserViewModel extends BaseViewModel {
   static UserViewModel instance() => _instance;
 
   //=======================FIELD VALUE=========================
+  bool _isVerifyingPhoneNumber = false;
+
+  String? _verificationId;
 
   UserModel? currentUser;
+
   bool _isSigningUp = false;
 
   bool get isSigningUp => _isSigningUp;
 
-  set isSigningUp(bool value) {
-    _isSigningUp = value;
-    notifyListeners();
-  }
+  bool get isVerifyingPhoneNumber => _isVerifyingPhoneNumber;
+
+  String? get verificationId => _verificationId;
 
   bool _isLoggingIn = false;
 
@@ -43,6 +53,21 @@ class UserViewModel extends BaseViewModel {
 
   set isLoggingIn(bool value) {
     _isLoggingIn = value;
+    notifyListeners();
+  }
+
+  set isVerifyingPhoneNumber(bool value) {
+    _isVerifyingPhoneNumber = value;
+    notifyListeners();
+  }
+
+  set verificationId(String? value) {
+    _verificationId = value;
+    notifyListeners();
+  }
+
+  set isSigningUp(bool value) {
+    _isSigningUp = value;
     notifyListeners();
   }
 
@@ -65,7 +90,7 @@ class UserViewModel extends BaseViewModel {
       isLoggedIn = true;
       currentUser = UserModel.initial(
         uid: uid ?? '',
-        email: email ?? '',
+        phone: email ?? '',
         name: name ?? '',
       );
     }
@@ -191,6 +216,75 @@ class UserViewModel extends BaseViewModel {
     } catch (e) {
       isAddingAddress = false;
       AppLogger.e('addShippingDetail' + e.toString());
+    }
+  }
+
+  Future<void> verifyPhoneNumber(String phoneNumber) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: StringUtils().getVietnamesePhoneNumber(phoneNumber),
+      verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
+        AppLogger.i('phoneAuthCredential:${phoneAuthCredential.toString()}');
+        try {
+          var _user = await FirebaseAuth.instance
+              .signInWithCredential(phoneAuthCredential);
+          await _repository.createUser(
+              uid: _user.user!.uid,
+              phone: _user.user?.phoneNumber ?? "",
+              name: _user.user?.phoneNumber ?? "");
+        } catch (e) {
+          AppLogger.e(e.toString(),
+              extraMessage: 'verificationComplete '
+                  'create user failed');
+        }
+      },
+      timeout: const Duration(seconds: 120),
+      verificationFailed: (FirebaseAuthException e) {
+        AppLogger.e('verificationFailed:${e.toString()}');
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        _verificationId = verificationId;
+
+        AppLogger.i('codeSent:${verificationId} -- resendToken:${resendToken}');
+        EasyLoading.showToast(
+          locale.language.OTP_CODE_SENT,
+          toastPosition: EasyLoadingToastPosition.bottom,
+        );
+      },
+      codeAutoRetrievalTimeout: (_) {
+        // if (isOTPVerified) return;
+        // EasyLoading.showToast(
+        //   locale.language.OTP_CODE_SENT_FAIL,
+        //   toastPosition: EasyLoadingToastPosition.bottom,
+        // );
+      },
+    );
+  }
+
+  Future<UserModel?> verifyOTP(String code) async {
+    try {
+      EasyLoading.showProgress(
+        .3,
+        status: 'Verifying...',
+        maskType: EasyLoadingMaskType.clear,
+      );
+
+      var _resp = await _repository.signInWithPhoneCredential(
+          verificationId: verificationId ?? "", smsCode: code);
+      EasyLoading.dismiss();
+      EasyLoading.showSuccess(
+        'Verify success',
+        maskType: EasyLoadingMaskType.clear,
+      );
+      return _resp;
+    } catch (e) {
+
+      EasyLoading.showError(
+        'Verify fail',
+        maskType: EasyLoadingMaskType.clear,
+      );
+      AppLogger.e(e.toString(), extraMessage: 'verify otp error');
+      EasyLoading.dismiss();
+      return null;
     }
   }
 

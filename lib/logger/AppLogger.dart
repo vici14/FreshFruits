@@ -35,6 +35,6 @@ class AppLogger {
 class Filter extends LogFilter {
   @override
   bool shouldLog(LogEvent event) {
-    return !kReleaseMode;
+    return true;
   }
 }

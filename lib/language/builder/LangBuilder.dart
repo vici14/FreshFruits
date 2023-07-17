@@ -158,4 +158,8 @@ abstract class LangBuilder {
   String get VERIFY_OTP_FIRST;
 
   String get INPUT_FULL_SIGNUP_INFO;
+
+  String get OTP_VERIFYING;
+
+  String OTP_VERIFYING_INFO(String phoneNumber);
 }

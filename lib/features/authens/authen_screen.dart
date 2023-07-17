@@ -1,7 +1,7 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_fruit/features/authens/login_screen.dart';
-import 'package:fresh_fruit/features/authens/signup_screen.dart';
+import 'package:fresh_fruit/features/authens/SignUpScreen.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';

@@ -27,17 +27,16 @@ class UserModel extends Equatable {
 
   factory UserModel.initial({
     required String uid,
-    required String email,
-    required String name,
+     required String name,
+    required String phone,
   }) {
     return UserModel(
         name: name,
-        phone: '',
+        phone: phone,
         currentAddress: null,
         favoriteProducts: [],
         orderHistory: [],
         addresses: [],
-        email: email,
         uid: uid);
   }
 

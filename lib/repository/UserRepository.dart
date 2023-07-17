@@ -11,6 +11,15 @@ abstract class UserRepository {
 
   Future<bool> changePassword();
 
+  Future<UserModel?> createUser({
+    required String uid,
+    required String phone,
+    required String name,
+  });
+
+  Future<UserModel?> signInWithPhoneCredential(
+      {required String verificationId, required String smsCode, String? name});
+
   Future<bool> signInWithEmailAndPassword(
       {required String email, required String password});
 

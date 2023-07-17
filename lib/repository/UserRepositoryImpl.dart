@@ -77,4 +77,21 @@ class UserRepositoryImpl extends UserRepository {
     return await serviceManager.updateCurrentShippingAddress(
         address: address, uid: uid);
   }
+
+  @override
+  Future<UserModel?> signInWithPhoneCredential(
+      {required String verificationId,
+      required String smsCode,
+      String? name}) async {
+    return await serviceManager.signInWithPhoneCredential(
+        verificationId: verificationId, smsCode: smsCode);
+  }
+
+  @override
+  Future<UserModel?> createUser(
+      {required String uid,
+      required String phone,
+      required String name}) async {
+    return await serviceManager.createUser(uid: uid, phone: phone, name: name);
+  }
 }

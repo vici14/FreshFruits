@@ -3,6 +3,10 @@ import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 
 class StringUtils {
+  String getVietnamesePhoneNumber(String phoneNumber) {
+    return '+84${(phoneNumber.trim()).substring(1, 10)}';
+  }
+
   String displayDateTime(DateTime? dateTime) {
     return '${dateTime?.hour.toString().padLeft(2, '0')}:${dateTime?.minute.toString().padLeft(2, '0')}';
   }
