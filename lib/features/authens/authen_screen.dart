@@ -1,6 +1,6 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
-import 'package:fresh_fruit/features/authens/login_screen.dart';
+import 'package:fresh_fruit/features/authens/LoginScreen.dart';
 import 'package:fresh_fruit/features/authens/SignUpScreen.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -35,6 +35,8 @@ class _AuthenScreenState extends State<AuthenScreen>
   Widget build(BuildContext context) {
     return KeyboardDismisser(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
+
         body: _buildContent(),
       ),
     );

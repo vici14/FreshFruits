@@ -41,6 +41,11 @@ class UserViewModel extends BaseViewModel {
 
   bool _isSigningUp = false;
 
+  bool _isVerifyingPhone = false;
+
+  bool get isVerifyingPhone => _isVerifyingPhone;
+
+
   bool get isSigningUp => _isSigningUp;
 
   bool get isVerifyingPhoneNumber => _isVerifyingPhoneNumber;
@@ -61,6 +66,10 @@ class UserViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  set isVerifyingPhone(bool value) {
+    _isVerifyingPhone = value;
+    notifyListeners();
+  }
   set verificationId(String? value) {
     _verificationId = value;
     notifyListeners();
@@ -80,37 +89,16 @@ class UserViewModel extends BaseViewModel {
   //=======================FIELD VALUE=========================
 
   void checkIsLoggedIn() async {
-    String? email = StorageService.shared.getString('email');
-    String? name = StorageService.shared.getString('name');
-    String? uid = await StorageService.shared.readSecureData('uid');
-
-    if ((email?.isNotEmpty ?? false) &&
-        (name?.isNotEmpty ?? false) &&
-        (uid?.isNotEmpty ?? false)) {
-      isLoggedIn = true;
-      currentUser = UserModel.initial(
-        uid: uid ?? '',
-        phone: email ?? '',
-        name: name ?? '',
-      );
-    }
-  }
-
-  Future<bool> signUpWithEmailAndPassword({
-    required String email,
-    required String password,
-    required String name,
-  }) async {
     try {
-      isSigningUp = true;
-      var _resp = await _repository.signUpWithEmailAndPassword(
-          email: email, password: password, name: name);
-      isSigningUp = false;
-      return _resp;
+      isLoggingIn = true;
+      currentUser = await _repository.getCurrentUser();
+      isLoggedIn = currentUser != null;
+      isLoggingIn = false;
+      notifyListeners();
     } catch (e) {
-      print('signUpWithEmailAndPassword: ${e.toString()}');
+      isLoggingIn = false;
+      AppLogger.e(e.toString(), extraMessage: 'checkIsLoggedIn Failed');
     }
-    return false;
   }
 
   Future<void> likeProduct(ProductModel productModel) async {
@@ -123,27 +111,6 @@ class UserViewModel extends BaseViewModel {
     await _repository.unlikeProduct(
         uid: currentUser?.uid ?? '', productModel: productModel);
     refreshCurrentUser();
-  }
-
-  Future<bool> signInWithEmailAndPassword(BuildContext context,
-      {required String email, required String password}) async {
-    try {
-      isLoggingIn = true;
-      var _resp = await _repository.signInWithEmailAndPassword(
-          email: email, password: password);
-      if (_resp) {
-        currentUser = await _repository.getCurrentUser();
-        StorageService.shared.setString('name', currentUser?.name ?? '');
-        StorageService.shared.setString('email', currentUser?.email ?? '');
-        StorageService.shared.setSecureData('uid', currentUser?.uid ?? '');
-        isLoggedIn = true;
-      }
-      isLoggingIn = false;
-      return _resp;
-    } catch (e) {
-      print('signInWithEmailAndPassword:${e.toString()}');
-    }
-    return false;
   }
 
   void refreshCurrentUser() async {
@@ -219,23 +186,27 @@ class UserViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> verifyPhoneNumber(String phoneNumber) async {
+  Future<void> verifyPhoneNumber(
+      {required String phoneNumber,
+      String? name,
+      required Function codeSentCallback}) async {
+    isVerifyingPhone=true;
     await _auth.verifyPhoneNumber(
       phoneNumber: StringUtils().getVietnamesePhoneNumber(phoneNumber),
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
         AppLogger.i('phoneAuthCredential:${phoneAuthCredential.toString()}');
-        try {
+        /* try {
           var _user = await FirebaseAuth.instance
               .signInWithCredential(phoneAuthCredential);
           await _repository.createUser(
               uid: _user.user!.uid,
               phone: _user.user?.phoneNumber ?? "",
-              name: _user.user?.phoneNumber ?? "");
+              name: name ?? phoneNumber);
         } catch (e) {
           AppLogger.e(e.toString(),
               extraMessage: 'verificationComplete '
                   'create user failed');
-        }
+        }*/
       },
       timeout: const Duration(seconds: 120),
       verificationFailed: (FirebaseAuthException e) {
@@ -243,14 +214,16 @@ class UserViewModel extends BaseViewModel {
       },
       codeSent: (String verificationId, int? resendToken) async {
         _verificationId = verificationId;
-
+        isVerifyingPhone=false;
         AppLogger.i('codeSent:${verificationId} -- resendToken:${resendToken}');
         EasyLoading.showToast(
           locale.language.OTP_CODE_SENT,
           toastPosition: EasyLoadingToastPosition.bottom,
         );
+        codeSentCallback();
       },
-      codeAutoRetrievalTimeout: (_) {
+      codeAutoRetrievalTimeout: (e) {
+        AppLogger.e(e.toString(), extraMessage: 'codeAutoRetrievalTimeout');
         // if (isOTPVerified) return;
         // EasyLoading.showToast(
         //   locale.language.OTP_CODE_SENT_FAIL,
@@ -258,6 +231,8 @@ class UserViewModel extends BaseViewModel {
         // );
       },
     );
+    // isVerifyingPhone=false;
+
   }
 
   Future<UserModel?> verifyOTP(String code) async {
@@ -270,14 +245,22 @@ class UserViewModel extends BaseViewModel {
 
       var _resp = await _repository.signInWithPhoneCredential(
           verificationId: verificationId ?? "", smsCode: code);
+      if (_resp != null) {
+        isLoggedIn = true;
+        EasyLoading.dismiss();
+        EasyLoading.showSuccess(
+          'Verify success',
+          maskType: EasyLoadingMaskType.clear,
+        );
+        return _resp;
+      }
       EasyLoading.dismiss();
-      EasyLoading.showSuccess(
-        'Verify success',
+      EasyLoading.showError(
+        'Verify fail',
         maskType: EasyLoadingMaskType.clear,
       );
-      return _resp;
+      return null;
     } catch (e) {
-
       EasyLoading.showError(
         'Verify fail',
         maskType: EasyLoadingMaskType.clear,

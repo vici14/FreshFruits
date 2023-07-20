@@ -1,12 +1,9 @@
 import 'package:easy_rich_text/easy_rich_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
-import 'package:fresh_fruit/logger/AppLogger.dart';
-import 'package:fresh_fruit/theme/AppColor.dart';
+import 'package:fresh_fruit/theme/AppDimen.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
 import 'package:fresh_fruit/utils/StringUtils.dart';
@@ -41,6 +38,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isOTPVerified = false;
 
   String? _phoneError;
+  String? _nameError;
 
   @override
   void initState() {
@@ -66,13 +64,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       builder: (context, userViewModel, child) {
         return SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 32),
               CommonTextField(
                 controller: signUpNameCtl ?? TextEditingController(),
                 labelText: locale.language.USERNAME,
               ),
+              if (_nameError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top:AppDimen.space16),
+
+                  child: Text(
+                    _nameError ?? "",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.red),
+                  ),
+                ),
               const SizedBox(height: 21),
               CommonTextField(
                 controller: phoneController ?? TextEditingController(),
@@ -103,12 +113,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 keyboardType: TextInputType.phone,
               ),
               if (_phoneError != null)
-                Text(
-                  _phoneError ?? "",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Colors.red),
+                Padding(
+                  padding: const EdgeInsets.only(top:AppDimen.space16),
+                  child: Text(
+                    _phoneError ?? "",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.red),
+                  ),
                 ),
               const SizedBox(height: 51),
               PrimaryButton(
@@ -151,8 +164,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void onSignupClick(BuildContext context) async {
+
     _phoneError = ValidationUtil.isValidPhone(phoneController?.text ?? "");
-    if (ValidationUtil.isValidPhone(phoneController?.text ?? "") == null) {
+    _nameError = ValidationUtil.validateFullName(signUpNameCtl?.text ?? "");
+    if (!StringUtils.isNotNullAndEmpty(_phoneError) &&
+        !StringUtils.isNotNullAndEmpty(_nameError)) {
       var _userLoggedIn = await showModalBottomSheet(
         isScrollControlled: true,
         isDismissible: true,
@@ -171,15 +187,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   value: userViewModel,
                   child: OTPVerifyScreen(
                     phoneNumber: phoneController!.text.trim(),
+                    name: signUpNameCtl?.text.trim(),
                   ),
                 );
               });
         },
       );
       if (_userLoggedIn != null) {
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       }
     }
+    setState((){
+
+    });
 
     /* if (!isOTPVerified) {
       EasyLoading.showToast(

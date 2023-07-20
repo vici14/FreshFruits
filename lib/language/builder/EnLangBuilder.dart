@@ -261,4 +261,32 @@ class EnLangBuilder extends LangBuilder {
   String OTP_VERIFYING_INFO(String phoneNumber) {
     return "OTP code sent to ${phoneNumber}";
   }
+
+  @override
+  String get AUTH_FULLNAME_HINT => "Full Name";
+
+  @override
+  String FIELD_EMPTY_ERROR(String field) {
+    return '$field is empty.';
+  }
+
+  @override
+  String FIELD_INVALID_ERROR(String field) {
+    return '$field is invalid.';
+  }
+
+  @override
+  String get FIELD_NOT_ALLOW_SPECIAL =>
+      "This field is not allow special characters.";
+
+  @override
+  String get EMPTY_FIELD => "Empty";
+
+  @override
+  String get PLEASE_LOGIN => "Please login to place order!";
+
+  @override
+  String TIME_PICKER_INFORMATION(String time) => "Please choose delivery time"
+      " today "
+      "after ${time}";
 }

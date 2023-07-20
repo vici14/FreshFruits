@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fresh_fruit/features/account/UserScreen.dart';
 import 'package:fresh_fruit/features/authens/authen_intro.dart';
+import 'package:fresh_fruit/features/authens/authen_screen.dart';
 import 'package:fresh_fruit/features/favourite/favorite_products_screen.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -94,7 +95,7 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
           if (userVM.isLoggedIn) {
             return UserScreen();
           } else {
-            return const AuthenIntroScreen();
+            return const AuthenScreen();
           }
         },
       ),
@@ -133,6 +134,7 @@ class _HomeNavigationScreenState extends State<HomeNavigationScreen>
       valueListenable: shouldCartFloat,
       builder: (context, shouldFloat, child) {
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           extendBody: true,
           floatingActionButton: FloatingActionButton(
             key: Key('btnBack'),

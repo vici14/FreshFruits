@@ -141,7 +141,7 @@ abstract class LangBuilder {
 
   String get ADD_TO_CART_FAILED;
 
-  String   DELETE_FROM_CART_TITLE(String name);
+  String DELETE_FROM_CART_TITLE(String name);
 
   String get BUTTON_CANCEL;
 
@@ -162,4 +162,18 @@ abstract class LangBuilder {
   String get OTP_VERIFYING;
 
   String OTP_VERIFYING_INFO(String phoneNumber);
+
+  String FIELD_EMPTY_ERROR(String field);
+
+  String FIELD_INVALID_ERROR(String field);
+
+  String get AUTH_FULLNAME_HINT;
+
+  String get FIELD_NOT_ALLOW_SPECIAL;
+
+  String get EMPTY_FIELD;
+
+  String get PLEASE_LOGIN;
+
+  String   TIME_PICKER_INFORMATION(String time);
 }

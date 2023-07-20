@@ -13,13 +13,6 @@ class UserRepositoryImpl extends UserRepository {
   }
 
   @override
-  Future<bool> signInWithEmailAndPassword(
-      {required String email, required String password}) {
-    return serviceManager.signInWithEmailAndPassword(
-        email: email, password: password);
-  }
-
-  @override
   Future<bool> updateProfile(
       {required String name,
       required String phone,
@@ -31,16 +24,6 @@ class UserRepositoryImpl extends UserRepository {
       address: address,
       uid: uid,
     );
-  }
-
-  @override
-  Future<bool> signUpWithEmailAndPassword({
-    required String email,
-    required String password,
-    required String name,
-  }) async {
-    return await serviceManager.signUpWithEmailAndPassword(
-        email: email, password: password, name: name);
   }
 
   @override
@@ -94,4 +77,6 @@ class UserRepositoryImpl extends UserRepository {
       required String name}) async {
     return await serviceManager.createUser(uid: uid, phone: phone, name: name);
   }
+
+
 }

@@ -21,6 +21,7 @@ class ProductDetailScreenArgs {
   final ProductModel productModel;
   final bool asModal;
   final ScrollController? scrollController;
+
   ProductDetailScreenArgs(this.productModel,
       {this.asModal = false, this.scrollController});
 }
@@ -97,7 +98,7 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                     isLoading: cartVM.isAddingToCart,
                     text: locale.language.PRODUCT_DETAIL_ADD_TO_CART,
                     onTap: () async {
-                      if (_userViewModel.isLoggingIn) {
+                      if (_userViewModel.isLoggedIn) {
                         try {
                           await cartVM.addToCart(
                               productModel: localState.productModel,
@@ -109,10 +110,9 @@ class _ProductDetailScreenState extends BaseProviderScreenState<
                           showSnackBar(locale.language.ADD_TO_CART_FAILED);
                           // Navigator.of(context).pop();
                         }
-                        // showSnackBar([true]);
-                        Navigator.of(context).pop();
+                      } else {
+                        showSnackBar(locale.language.PLEASE_LOGIN);
                       }
-                      showSnackBar('Vui lòng đăng nhập!');
                     },
                   ),
                 ),

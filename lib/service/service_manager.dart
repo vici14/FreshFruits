@@ -9,6 +9,7 @@ import 'package:fresh_fruit/model/ordered_product_model.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
 import 'package:fresh_fruit/service/GoogleMapService.dart';
+import 'package:fresh_fruit/service/storage_service.dart';
 import 'package:google_geocoding_api/google_geocoding_api.dart';
 
 class ServiceManager {
@@ -243,10 +244,12 @@ class ServiceManager {
       UserCredential auth = await FirebaseAuth.instance.signInWithCredential(
           PhoneAuthProvider.credential(
               verificationId: verificationId, smsCode: smsCode));
-      return await createUser(
+      var _resp = await createUser(
           uid: auth.user!.uid,
           phone: auth.user?.phoneNumber ?? "",
           name: name ?? auth.user?.phoneNumber ?? "");
+      createCollectionCart(auth.user!.uid);
+      return _resp;
     } catch (e) {
       AppLogger.e(e.toString(),
           extraMessage: 'sign in phone credential failed');
@@ -351,10 +354,15 @@ class ServiceManager {
     try {
       CartModel cartModel = CartModel.initial();
       var _currentUser = await getCurrentUserDocument(uid);
-      await _currentUser?.collection('cart').add(cartModel.toJson());
+      var _cart = await _currentUser?.collection('cart').get();
+      AppLogger.i('cart:${_cart}');
+      if (_cart != null && _cart.size < 1) {
+        await _currentUser?.collection('cart').add(cartModel.toJson());
+      }
+
       AppLogger.i('createCollectionCart success');
     } catch (e) {
-      AppLogger.e(e.toString());
+      AppLogger.e(e.toString(),extraMessage: 'createCollectionCart failed ');
     }
   }
 

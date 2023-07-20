@@ -180,131 +180,135 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: GestureDetector(
               onTap: () => searchNode?.unfocus(),
-              child: CustomScrollView(
-                controller: _customScrollController,
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverAppBar(
-                    backgroundColor: Theme.of(context).colorScheme.background,
-                    centerTitle: false,
-                    title: EasyRichText(
-                      locale.language
-                          .HOME_SCREEN_HELLO(userViewModel.currentUser?.name),
-                      patternList: [
-                        EasyRichTextPattern(
-                            targetString: locale.language.HOME_SCREEN_HELLO(
-                                userViewModel.currentUser?.name),
-                            style: Theme.of(context).textTheme.bodyLarge),
-                      ],
-                    ),
-                    actions: const [],
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: AppColor.greenMain,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
+              child: Consumer<UserViewModel>(
+                builder: (context,userVM,child){
+                  return CustomScrollView(
+                    controller: _customScrollController,
+                    physics: const BouncingScrollPhysics(),
+                    slivers: [
+                      SliverAppBar(
+                        backgroundColor: Theme.of(context).colorScheme.background,
+                        centerTitle: false,
+                        title: EasyRichText(
+                          locale.language
+                              .HOME_SCREEN_HELLO(userVM.currentUser?.name),
+                          patternList: [
+                            EasyRichTextPattern(
+                                targetString: locale.language.HOME_SCREEN_HELLO(
+                                    userVM.currentUser?.name),
+                                style: Theme.of(context).textTheme.bodyLarge),
+                          ],
                         ),
+                        actions: const [],
                       ),
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      child: TextField(
-                        controller: searchController,
-                        focusNode: searchNode,
-                        decoration: InputDecoration(
-                          label: DefaultTextStyle(
-                              style: const TextStyle(
-                                  fontSize: 14.0, color: Colors.black),
-                              textAlign: TextAlign.start,
-                              textWidthBasis: TextWidthBasis.longestLine,
-                              child: AnimatedTextKit(
-                                pause: const Duration(microseconds: 700),
-                                repeatForever: true,
-                                animatedTexts: [
-                                  RotateAnimatedText(HIEU_ADDRESS,
-                                      duration: const Duration(seconds: 2),
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(color: Colors.white)),
-                                  RotateAnimatedText(DISCOUNT_530PM,
-                                      duration: const Duration(seconds: 2),
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(color: Colors.white)),
-                                ],
-                              )),
-                          prefixIcon: const Icon(
-                            Icons.store,
-                            color: AppColor.primary,
+                      SliverToBoxAdapter(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColor.greenMain,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12),
+                            ),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide.none,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: horizontalPadding),
+                          child: TextField(
+                            controller: searchController,
+                            focusNode: searchNode,
+                            decoration: InputDecoration(
+                              label: DefaultTextStyle(
+                                  style: const TextStyle(
+                                      fontSize: 14.0, color: Colors.black),
+                                  textAlign: TextAlign.start,
+                                  textWidthBasis: TextWidthBasis.longestLine,
+                                  child: AnimatedTextKit(
+                                    pause: const Duration(microseconds: 700),
+                                    repeatForever: true,
+                                    animatedTexts: [
+                                      RotateAnimatedText(HIEU_ADDRESS,
+                                          duration: const Duration(seconds: 2),
+                                          textStyle: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(color: Colors.white)),
+                                      RotateAnimatedText(DISCOUNT_530PM,
+                                          duration: const Duration(seconds: 2),
+                                          textStyle: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium
+                                              ?.copyWith(color: Colors.white)),
+                                    ],
+                                  )),
+                              prefixIcon: const Icon(
+                                Icons.store,
+                                color: AppColor.primary,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                        // height: 10,
+                      const SliverToBoxAdapter(
+                        child: SizedBox(
+                          // height: 10,
                         ),
-                  ),
-                  SliverToBoxAdapter(child: _buildHeaderBanner(context)),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 5,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      child: _buildHeaderTitle(
-                        title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
-                        onTapViewMore: () {},
                       ),
-                    ),
-                  ),
-                  _buildNewProducts(context, productViewModel),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 22,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      child: _buildHeaderTitle(
-                        title: locale.language.HOME_SCREEN_BEST_SELLING,
-                        onTapViewMore: () {},
+                      SliverToBoxAdapter(child: _buildHeaderBanner(context)),
+                      const SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 5,
+                        ),
                       ),
-                    ),
-                  ),
-                  SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: horizontalPadding),
-                      sliver: SliverGrid(
-                        gridDelegate:
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: horizontalPadding),
+                          child: _buildHeaderTitle(
+                            title: locale.language.HOME_SCREEN_NEW_PRODUCTS,
+                            onTapViewMore: () {},
+                          ),
+                        ),
+                      ),
+                      _buildNewProducts(context, productViewModel),
+                      const SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 22,
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: horizontalPadding),
+                          child: _buildHeaderTitle(
+                            title: locale.language.HOME_SCREEN_BEST_SELLING,
+                            onTapViewMore: () {},
+                          ),
+                        ),
+                      ),
+                      SliverPadding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: horizontalPadding),
+                          sliver: SliverGrid(
+                            gridDelegate:
                             const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 285.0,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
-                          childAspectRatio: 0.6,
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          ProductModel product;
+                              maxCrossAxisExtent: 285.0,
+                              mainAxisSpacing: 10.0,
+                              crossAxisSpacing: 10.0,
+                              childAspectRatio: 0.6,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                                    (BuildContext context, int index) {
+                                  ProductModel product;
 
-                          product = productViewModel.getHottestProduct[index];
-                          return ProductCardItem(productModel: product);
-                        }, childCount:  productViewModel.getHottestProduct.length),
-                      )),
-                ],
+                                  product = productViewModel.getHottestProduct[index];
+                                  return ProductCardItem(productModel: product);
+                                }, childCount:  productViewModel.getHottestProduct.length),
+                          )),
+                    ],
+                  ) ;
+                },
               ),
             ),
           );

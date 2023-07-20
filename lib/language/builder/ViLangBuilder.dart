@@ -84,10 +84,10 @@ class ViLangBuilder extends LangBuilder {
   String get FAQS_TITLE => 'FAQs';
 
   @override
-  String get LOG_OUT_SUBTITLE => 'Log out account in application';
+  String get LOG_OUT_SUBTITLE => "Đăng xuất khỏi thiết bị";
 
   @override
-  String get LOG_OUT_TITLE => 'Log Out';
+  String get LOG_OUT_TITLE => "Đăng xuất";
 
   @override
   String get PUSH_NOTIFICATION_SUBTITLE => 'Set up push notifications';
@@ -242,13 +242,15 @@ class ViLangBuilder extends LangBuilder {
   String get OTP_CODE => 'Mã OTP';
 
   @override
-  String get OTP_CODE_SENT => 'Mã OTP đã được gửi tới số điện thoại của bạn, vui lòng nhập OTP vào ô bên dưới để hoàn tất xác minh';
+  String get OTP_CODE_SENT =>
+      'Mã OTP đã được gửi tới số điện thoại của bạn, vui lòng nhập OTP vào ô bên dưới để hoàn tất xác minh';
 
   @override
   String get OTP_CODE_SENT_FAIL => 'Gửi mã OTP lỗi, vui lòng thử lại';
 
   @override
-  String get VERIFY_OTP_FIRST => 'Vui lòng xác thực OTP trước khi tiếp tục đăng ký';
+  String get VERIFY_OTP_FIRST =>
+      'Vui lòng xác thực OTP trước khi tiếp tục đăng ký';
 
   @override
   String get INPUT_FULL_SIGNUP_INFO => 'Vui lòng điền đầy đủ thông tin trước';
@@ -260,4 +262,30 @@ class ViLangBuilder extends LangBuilder {
   String OTP_VERIFYING_INFO(String phoneNumber) {
     return "Mã xác minh đã được gửi đến ${phoneNumber}";
   }
+
+  @override
+  String get AUTH_FULLNAME_HINT => " Họ & Tên ";
+
+  @override
+  String FIELD_EMPTY_ERROR(String field) {
+    return '$field không được trống';
+  }
+
+  @override
+  String FIELD_INVALID_ERROR(String field) {
+    return '$field không hợp lệ.';
+  }
+
+  @override
+  String get FIELD_NOT_ALLOW_SPECIAL => "Không cho phép kí tự đặc biệt.";
+
+  @override
+  String get EMPTY_FIELD => "Chưa có";
+
+  @override
+  String get PLEASE_LOGIN => "Vui lòng đăng nhập để đặt hàng!";
+
+  @override
+  String TIME_PICKER_INFORMATION(String time) => "Vui lòng chọn thời gian "
+      "nhận hàng trong ngày và sau ${time}";
 }

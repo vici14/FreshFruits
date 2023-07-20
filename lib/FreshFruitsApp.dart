@@ -60,6 +60,7 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
         theme: AppTheme().lightTheme(),
         darkTheme: AppTheme().lightTheme(),
         home: Scaffold(
+          resizeToAvoidBottomInset: false,
           body: HomeNavigationScreen(),
         ),
         builder: EasyLoading.init(),

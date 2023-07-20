@@ -42,17 +42,19 @@ class _AccountTabState extends State<AccountTab> {
                 title: locale.language.CHECK_OUT_SCREEN_DELIVERY_ADDRESS,
                 subTitle: userViewModel
                         .currentUser?.currentAddress?.getDisplayAddress ??
-                    "chưa có",
+                    locale.language.EMPTY_FIELD,
                 icon: Icons.location_on,
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               _buildItem(
                 onTap: () {
                   userViewModel.logOut();
                 },
                 title: locale.language.LOG_OUT_TITLE,
                 subTitle: locale.language.LOG_OUT_SUBTITLE,
-                  icon: Icons.exit_to_app,
+                icon: Icons.exit_to_app,
               ),
             ],
           ),
@@ -70,7 +72,6 @@ class _AccountTabState extends State<AccountTab> {
     return InkWell(
       onTap: () => onTap(),
       child: Container(
-
         padding: const EdgeInsets.all(AppDimen.space16),
         child: Row(
           children: [
@@ -86,9 +87,13 @@ class _AccountTabState extends State<AccountTab> {
                 children: [
                   Text(title),
                   const SizedBox(width: 3),
-                  Text(subTitle,style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: AppColor.textGrey),),
-
+                  Text(
+                    subTitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColor.textGrey),
+                  ),
                 ],
               ),
             ),
