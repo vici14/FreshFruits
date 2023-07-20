@@ -77,9 +77,6 @@ class _CheckOutScreenState
     return AppColor.greyScaffoldBackground;
   }
 
-
-
-
   @override
   Widget buildContent(BuildContext context, CheckOutController localState) {
     return Consumer2<UserViewModel, CartViewModel>(
@@ -303,33 +300,48 @@ class _CheckOutScreenState
         backgroundColor: Colors.white,
         context: context,
         builder: (context) {
+          var now = DateTime.now();
           return Container(
+            padding: const EdgeInsets.all(AppDimen.space16),
             height: MediaQuery.of(context).size.height * 0.4,
-            child: TimePickerSpinner(
-              time: localState.deliveryTime,
-              is24HourMode: true,
-              onTimeChange: (time) async {
-                var now = DateTime.now();
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  locale.language.TIME_PICKER_INFORMATION(
+                      StringUtils().displayDateTime(now)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: AppColor.textGrey,fontStyle: FontStyle.italic, fontSize: 15),
+                ),
+                TimePickerSpinner(
+                  time: localState.deliveryTime,
+                  is24HourMode: true,
+                  onTimeChange: (time) async {
+                    var now = DateTime.now();
 
-                if (time.isAfter(now)) {
-                  localState.deliveryTime = time;
+                    if (time.isAfter(now)) {
+                      localState.deliveryTime = time;
 
-                  if (userVM.currentUser?.currentAddress != null &&
-                      localState.deliveryTime != null &&
-                      !localState.isCalculatingAddress &&
-                      localState.shippingDetail?.distance == null) {
-                    await localState.calculateShippingDistance(
-                        userVM.currentUser!.currentAddress!);
-                  }
-                  if (localState.shippingDetail != null) {
-                    var _shipping = localState.shippingDetail!.copyWith(
-                        shippingDiscount: localState.getShippingDiscount(
-                            userViewModel.currentUser?.currentAddress,
-                            localState.deliveryTime));
-                    cartViewModel.updateCartShippingDetail(_shipping);
-                  }
-                }
-              },
+                      if (userVM.currentUser?.currentAddress != null &&
+                          localState.deliveryTime != null &&
+                          !localState.isCalculatingAddress &&
+                          localState.shippingDetail?.distance == null) {
+                        await localState.calculateShippingDistance(
+                            userVM.currentUser!.currentAddress!);
+                      }
+                      if (localState.shippingDetail != null) {
+                        var _shipping = localState.shippingDetail!.copyWith(
+                            shippingDiscount: localState.getShippingDiscount(
+                                userViewModel.currentUser?.currentAddress,
+                                localState.deliveryTime));
+                        cartViewModel.updateCartShippingDetail(_shipping);
+                      }
+                    }
+                  },
+                ),
+              ],
             ),
           );
         });
@@ -435,18 +447,16 @@ class _CheckOutScreenState
               '${locale.language.CHECKOUT_SUGGEST_DESTINATION}${localState.originDestination ?? ""}',
               patternList: [
                 EasyRichTextPattern(
-                  targetString:
-                  '${localState.originDestination ?? ""}',
+                  targetString: '${localState.originDestination ?? ""}',
                   style: Theme.of(context)
                       .textTheme
                       .bodySmall
                       ?.copyWith(color: AppColor.secondary),
-                ),  EasyRichTextPattern(
+                ),
+                EasyRichTextPattern(
                   targetString:
-                  '${locale.language.CHECKOUT_SUGGEST_DESTINATION}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall,
+                      '${locale.language.CHECKOUT_SUGGEST_DESTINATION}',
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
