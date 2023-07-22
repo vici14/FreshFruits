@@ -32,5 +32,8 @@ class AppImageAsset {
   static const imgBlurring = '${_assetFolder}img_blurring.png';
   static const icUKToggle = '${_assetFolder}ic_UK_toggle.png';
   static const icVIToggle = '${_assetFolder}ic_VI_toggle.png';
-
+  static const icUserEdit = '${_assetFolder}user-edit.svg';
+  static const icResetPassword = '${_assetFolder}reset_password.svg';
+  static const topbarBackground = '${_assetFolder}topbar_background.png';
+  static const manager = '${_assetFolder}manager.jpg';
 }

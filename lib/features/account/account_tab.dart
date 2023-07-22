@@ -22,8 +22,6 @@ class AccountTab extends StatefulWidget {
 class _AccountTabState extends State<AccountTab> {
   @override
   Widget build(BuildContext context) {
-    UserViewModel userViewModel = Provider.of<UserViewModel>(context);
-
     return Consumer<UserViewModel>(
       builder: (context, userViewModel, child) {
         return SingleChildScrollView(
@@ -45,14 +43,30 @@ class _AccountTabState extends State<AccountTab> {
                     "chưa có",
                 icon: Icons.location_on,
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(height: 10),
+              _buildItem(
+                onTap: () {
+                  Navigator.of(context).pushNamed(AppRoute.updateProfileScreen);
+                },
+                title: locale.language.UPDATE_PROFILE_TITLE,
+                subTitle: locale.language.UPDATE_PROFILE_SUBTITLE,
+                assetPath: AppImageAsset.icUserEdit,
+              ),
+              const SizedBox(height: 10),
+              _buildItem(
+                onTap: () {},
+                title: locale.language.RESET_PASSWORD_TITLE,
+                subTitle: locale.language.RESET_PASSWORD_SUBTITLE,
+                assetPath: AppImageAsset.icResetPassword,
+              ),
+              const SizedBox(height: 10),
               _buildItem(
                 onTap: () {
                   userViewModel.logOut();
                 },
                 title: locale.language.LOG_OUT_TITLE,
                 subTitle: locale.language.LOG_OUT_SUBTITLE,
-                  icon: Icons.exit_to_app,
+                icon: Icons.exit_to_app,
               ),
             ],
           ),
@@ -65,20 +79,32 @@ class _AccountTabState extends State<AccountTab> {
     required Function onTap,
     required String title,
     required String subTitle,
-    required IconData icon,
+    IconData? icon,
+    String? assetPath,
   }) {
     return InkWell(
       onTap: () => onTap(),
       child: Container(
-
         padding: const EdgeInsets.all(AppDimen.space16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColor.grey, width: 1),
+        ),
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 25,
-              color: AppColor.primary,
-            ),
+            icon != null
+                ? Icon(
+                    icon,
+                    size: 25,
+                    color: AppColor.primary,
+                  )
+                : SvgPicture.asset(
+                    assetPath ?? '',
+                    width: 25,
+                    height: 25,
+                    color: AppColor.primary,
+                  ),
             const SizedBox(width: 24.5),
             Expanded(
               child: Column(
@@ -86,15 +112,19 @@ class _AccountTabState extends State<AccountTab> {
                 children: [
                   Text(title),
                   const SizedBox(width: 3),
-                  Text(subTitle,style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: AppColor.textGrey),),
-
+                  Text(
+                    subTitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColor.textGrey),
+                  ),
                 ],
               ),
             ),
           ],
         ),
-      ).addWhiteBoxShadow(),
+      ),
     );
   }
 }

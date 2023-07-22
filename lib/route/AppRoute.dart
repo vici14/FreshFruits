@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fresh_fruit/HomeNavigationScreen.dart';
 import 'package:fresh_fruit/error/ErrorScreen.dart';
 import 'package:fresh_fruit/features/account/UserScreen.dart';
+import 'package:fresh_fruit/features/account/update_profile/update_profile_screen.dart';
 import 'package:fresh_fruit/features/authens/authen_screen.dart';
 import 'package:fresh_fruit/features/cart/cart_screen.dart';
 import 'package:fresh_fruit/features/check_out/CheckOutScreen.dart';
@@ -27,6 +28,7 @@ class AppRoute {
   static const deliveryAddressScreen = '/deliveryAddress';
   static const addDeliveryAddressScreen = '/addDeliveryAddress';
   static const productDetailScreen = '/productDetail';
+  static const updateProfileScreen = '/updateProfile';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     print('settings.name:${settings.name}');
@@ -84,6 +86,10 @@ class AppRoute {
 
         return MaterialPageRoute(
           builder: (context) => ProductDetailScreen(args: args),
+        );
+      case AppRoute.updateProfileScreen:
+        return MaterialPageRoute(
+          builder: (context) => const UpdateProfileScreen(),
         );
       default:
         return MaterialPageRoute(

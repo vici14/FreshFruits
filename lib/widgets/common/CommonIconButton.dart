@@ -4,8 +4,6 @@ import 'package:fresh_fruit/theme/AppColor.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fresh_fruit/theme/AppImageAsset.dart';
 
-
-
 class CommonIconButton {
   final Function? onTap;
 
@@ -15,27 +13,34 @@ class CommonIconButton {
 
   static Widget buildBackButton(BuildContext context) {
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onTap: () => Navigator.of(context).pop(),
       child: Container(
-        height: 36,
-        width: 36,
+        height: 40,
+        width: 40,
+        decoration: BoxDecoration(
+          color: AppColor.seashell,
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: Center(
           child: SvgPicture.asset(
             AppImageAsset.iconBack,
-            color: AppColor.primary,
+            color: AppColor.metallicOrange,
           ),
         ),
-      ).addWhiteBoxShadow(),
+      ),
     );
   }
-  static Widget buildLocationButton(BuildContext context,Function() onTap) {
+
+  static Widget buildLocationButton(BuildContext context, Function() onTap) {
     return InkWell(
       onTap: () => onTap(),
       child: Container(
         height: 36,
         width: 36,
         child: const Center(
-          child: Icon(Icons.location_on,
+          child: Icon(
+            Icons.location_on,
             color: AppColor.primary,
           ),
         ),
@@ -71,7 +76,8 @@ class CommonIconButton {
     );
   }
 
-  static Widget buildCartItemDeleteButton(BuildContext context,Function onTap) {
+  static Widget buildCartItemDeleteButton(
+      BuildContext context, Function onTap) {
     return InkWell(
       onTap: () => onTap,
       child: Container(

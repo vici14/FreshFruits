@@ -158,4 +158,12 @@ abstract class LangBuilder {
   String get VERIFY_OTP_FIRST;
 
   String get INPUT_FULL_SIGNUP_INFO;
+
+  String get RESET_PASSWORD_SUBTITLE;
+
+  String get RESET_PASSWORD_TITLE;
+
+  String get UPDATE_PROFILE_SUBTITLE;
+
+  String get UPDATE_PROFILE_TITLE;
 }

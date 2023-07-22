@@ -32,5 +32,6 @@ class AppColor {
   static const Color redExpired = Color(0xffFF0000);
   static const Color lightRedChip = Color(0xffE8706C);
   static const Color golden = Color(0xffFFDC67);
-  static const Color green_swipe_cart = Color(0xff6EE0A7);
+  static const Color seashell = Color(0xffFCF5EE);
+  static const Color metallicOrange = Color(0xffDA6317);
 }

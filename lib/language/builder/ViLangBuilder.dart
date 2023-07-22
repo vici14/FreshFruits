@@ -84,10 +84,16 @@ class ViLangBuilder extends LangBuilder {
   String get FAQS_TITLE => 'FAQs';
 
   @override
-  String get LOG_OUT_SUBTITLE => 'Log out account in application';
+  String get LOG_OUT_SUBTITLE => 'Thoát tài khoản của bạn khỏi ứng dụng';
 
   @override
-  String get LOG_OUT_TITLE => 'Log Out';
+  String get LOG_OUT_TITLE => 'Đăng xuất';
+
+  @override
+  String get RESET_PASSWORD_SUBTITLE => 'Đặt lại mật khẩu của bạn';
+
+  @override
+  String get RESET_PASSWORD_TITLE => 'Đặt lại mật khẩu';
 
   @override
   String get PUSH_NOTIFICATION_SUBTITLE => 'Set up push notifications';
@@ -252,4 +258,10 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get INPUT_FULL_SIGNUP_INFO => 'Vui lòng điền đầy đủ thông tin trước';
+
+  @override
+  String get UPDATE_PROFILE_TITLE => 'Cập nhật tài khoản';
+
+  @override
+  String get UPDATE_PROFILE_SUBTITLE => 'Chỉnh sửa thông tin tài khoản của bạn';
 }

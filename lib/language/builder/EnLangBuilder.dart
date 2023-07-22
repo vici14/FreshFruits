@@ -251,4 +251,16 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get INPUT_FULL_SIGNUP_INFO => 'Please input full sign up fields';
+
+  @override
+  String get RESET_PASSWORD_SUBTITLE => 'Reset account\'s password';
+
+  @override
+  String get RESET_PASSWORD_TITLE => 'Reset password';
+
+  @override
+  String get UPDATE_PROFILE_TITLE => 'Cập nhật tài khoản';
+
+  @override
+  String get UPDATE_PROFILE_SUBTITLE => 'Chỉnh sửa thông tin tài khoản của bạn';
 }
