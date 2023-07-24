@@ -8,7 +8,7 @@ import 'package:fresh_fruit/utils/StringUtils.dart';
 
 enum PaymentMethod { COD, MOMO, BANKING }
 
-enum OrderStatus { PROCESSING, CANCEL, DONE }
+enum OrderStatus { INITIAL,PROCESSING, CANCEL, DONE }
 
 extension StringMapping on String {
   PaymentMethod toPaymentMethod() {
@@ -26,6 +26,8 @@ extension StringMapping on String {
 
   OrderStatus toOrderStatus() {
     switch (this) {
+      case 'INITIAL':
+        return OrderStatus.INITIAL;
       case 'PROCESSING':
         return OrderStatus.PROCESSING;
       case 'CANCEL':
@@ -41,6 +43,8 @@ extension StringMapping on String {
 extension OrderStatusExt on OrderStatus {
   String toJson() {
     switch (this) {
+      case OrderStatus.INITIAL:
+        return 'INITIAL';
       case OrderStatus.PROCESSING:
         return 'PROCESSING';
       case OrderStatus.DONE:
@@ -48,7 +52,7 @@ extension OrderStatusExt on OrderStatus {
       case OrderStatus.CANCEL:
         return 'CANCEL';
       default:
-        return "PROCESSING";
+        return "INITIAL";
     }
   }
 
@@ -159,7 +163,7 @@ class CartModel {
         deliveryTime: null,
         paymentMethod: null,
         shippingDetail: null,
-        orderStatus: OrderStatus.PROCESSING);
+        orderStatus: OrderStatus.INITIAL);
   }
 
   factory CartModel.fromQuerySnapshot(Map<String, dynamic> snapshot) {

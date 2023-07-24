@@ -557,7 +557,7 @@ class ServiceManager {
     }
     return false;
   }
-
+  //////// ORDER ////////
   Future<OrderModel?> addToHistory({
     required CartModel cartModel,
     required String uid,
@@ -582,6 +582,26 @@ class ServiceManager {
     } catch (e) {
       AppLogger.e(e.toString());
       return null;
+    }
+  }
+
+
+  Future<List<OrderModel>> getListOrder(String uid) async {
+    try {
+      var _user = await usersCollection.where('uid', isEqualTo: uid).get();
+      var _order = await _user.docs.first.reference
+          .collection('orderHistory')
+          .withConverter<OrderModel>(
+          fromFirestore: (snapshot, _) =>
+              OrderModel.fromQuerySnapshot(snapshot.data()!),
+          toFirestore: (cart, _) => cart.toJson())
+          .get();
+      AppLogger.i('getUserCurrentCart ${uid} success');
+
+      return _order.docs.map((e) => e.data()).toList();
+    } catch (e) {
+      AppLogger.e(e.toString());
+      rethrow;
     }
   }
 

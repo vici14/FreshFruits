@@ -1,3 +1,4 @@
+import 'package:fresh_fruit/model/OrderModel.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/product_model.dart';
 import 'package:fresh_fruit/model/user_model.dart';
@@ -39,4 +40,6 @@ abstract class UserRepository {
   });
 
   Future<UserModel?> logOut();
+
+  Future<List<OrderModel>> getOrders(String uid);
 }

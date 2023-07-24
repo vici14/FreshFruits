@@ -11,7 +11,7 @@ class EnLangBuilder extends LangBuilder {
   String get HOME_SCREEN_NEW_PRODUCTS => "Newest";
 
   @override
-  String get AUTHEN_TITLE => 'ECO GROCERY';
+  String get AUTHEN_TITLE => '530PM FRUITS';
 
   @override
   String get LOGIN => 'Login';
@@ -292,4 +292,19 @@ class EnLangBuilder extends LangBuilder {
 
   @override
   String get CHECKOUT_NOTE => "Note: ";
+
+  @override
+  String get ORDER_DETAIL_HEADER=> "Order Detail";
+
+  @override
+  String get ORDER_DELIVERY_ON => "Delivery on";
+
+  @override
+  String get ORDER_CREATE_AT => "Create at";
+
+  @override
+  String get ORDER_PAYMENT_METHOD => "Payment method";
+
+  @override
+  String get ORDER_TOTAL_PAID => "Total Paid";
 }

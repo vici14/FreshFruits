@@ -79,7 +79,7 @@ class OrderModel {
         deliveryTime: null,
         paymentMethod: null,
         shippingDetail: null,
-        orderStatus: OrderStatus.PROCESSING);
+        orderStatus: OrderStatus.INITIAL);
   }
 
   factory OrderModel.fromCart(CartModel cartModel) {

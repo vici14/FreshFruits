@@ -141,7 +141,7 @@ class CartViewModel extends BaseViewModel {
         customerName: customerName,
         customerPhone: customerPhone,
         note: note,
-         orderStatus: OrderStatus.PROCESSING,
+         orderStatus: OrderStatus.INITIAL,
       );
       if (currentCart?.canCheckOut == true) {
         bool isSuccess = await _repository.checkOutCart(

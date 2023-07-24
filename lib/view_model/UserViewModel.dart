@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fresh_fruit/db/DatabaseManager.dart';
 import 'package:fresh_fruit/extension/IterableExtension.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
+import 'package:fresh_fruit/model/OrderModel.dart';
 import 'package:fresh_fruit/model/address/AddressDistricts.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,6 @@ class UserViewModel extends BaseViewModel {
 
   bool get isVerifyingPhone => _isVerifyingPhone;
 
-
   bool get isSigningUp => _isSigningUp;
 
   bool get isVerifyingPhoneNumber => _isVerifyingPhoneNumber;
@@ -70,6 +70,7 @@ class UserViewModel extends BaseViewModel {
     _isVerifyingPhone = value;
     notifyListeners();
   }
+
   set verificationId(String? value) {
     _verificationId = value;
     notifyListeners();
@@ -80,13 +81,35 @@ class UserViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  set isGettingOrder(bool value) {
+    _isGettingOrder = value;
+    notifyListeners();
+  }
+
   bool isLoggedIn = false;
   bool isUpdatingProfile = false;
 
   bool isAddingAddress = false;
   bool isAddAddressSuccess = false;
 
+  bool _isGettingOrder = false;
+
+  bool get isGettingOrder => _isGettingOrder;
+
+  List<OrderModel> listOrders = [];
+
   //=======================FIELD VALUE=========================
+
+  void getOrders() async {
+    try {
+      isGettingOrder = true;
+      listOrders = await _repository.getOrders(currentUser?.uid ?? "");
+      isGettingOrder = false;
+    } catch (e) {
+      isGettingOrder = false;
+      AppLogger.e(e.toString(), extraMessage: 'get Orders failed');
+    }
+  }
 
   void checkIsLoggedIn() async {
     try {
@@ -190,7 +213,7 @@ class UserViewModel extends BaseViewModel {
       {required String phoneNumber,
       String? name,
       required Function codeSentCallback}) async {
-    isVerifyingPhone=true;
+    isVerifyingPhone = true;
     await _auth.verifyPhoneNumber(
       phoneNumber: StringUtils().getVietnamesePhoneNumber(phoneNumber),
       verificationCompleted: (PhoneAuthCredential phoneAuthCredential) async {
@@ -214,7 +237,7 @@ class UserViewModel extends BaseViewModel {
       },
       codeSent: (String verificationId, int? resendToken) async {
         _verificationId = verificationId;
-        isVerifyingPhone=false;
+        isVerifyingPhone = false;
         AppLogger.i('codeSent:${verificationId} -- resendToken:${resendToken}');
         EasyLoading.showToast(
           locale.language.OTP_CODE_SENT,
@@ -232,7 +255,6 @@ class UserViewModel extends BaseViewModel {
       },
     );
     // isVerifyingPhone=false;
-
   }
 
   Future<UserModel?> verifyOTP(String code) async {

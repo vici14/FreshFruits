@@ -175,7 +175,17 @@ abstract class LangBuilder {
 
   String get PLEASE_LOGIN;
 
-  String   TIME_PICKER_INFORMATION(String time);
+  String TIME_PICKER_INFORMATION(String time);
 
   String get CHECKOUT_NOTE;
+
+  String get ORDER_DETAIL_HEADER;
+
+  String get ORDER_DELIVERY_ON;
+
+  String get ORDER_PAYMENT_METHOD;
+
+  String get ORDER_CREATE_AT;
+
+  String get ORDER_TOTAL_PAID;
 }

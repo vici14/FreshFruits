@@ -11,7 +11,7 @@ class ViLangBuilder extends LangBuilder {
   String get HOME_SCREEN_NEW_PRODUCTS => "Mới nhất";
 
   @override
-  String get AUTHEN_TITLE => 'ECO GROCERY';
+  String get AUTHEN_TITLE => '530PM FRUITS';
 
   @override
   String get LOGIN => 'Đăng nhập';
@@ -291,4 +291,19 @@ class ViLangBuilder extends LangBuilder {
 
   @override
   String get CHECKOUT_NOTE => "Ghi chú: ";
+
+  @override
+  String get ORDER_DELIVERY_ON => "Giao lúc";
+
+  @override
+  String get ORDER_PAYMENT_METHOD => "Phương thức thanh toán";
+
+  @override
+  String get ORDER_CREATE_AT => "Ngày đặt";
+
+  @override
+  String get ORDER_TOTAL_PAID => "Tổng cộng";
+
+  @override
+  String get ORDER_DETAIL_HEADER => "Chi tiết đơn hàng";
 }
