@@ -108,6 +108,7 @@ class CartModel {
   OrderStatus? orderStatus;
   String? uid;
   double? totalPrice;
+
   CartModel({
     this.totalPrice,
     this.orderCheckoutTime,
@@ -145,14 +146,6 @@ class CartModel {
       paymentMethod != null &&
       shippingDetail != null &&
       orderedItems?.isNotEmpty == true;
-
-  // double get totalPrice {
-  //   double _totalCost = 0;
-  //   orderedItems?.forEach((element) {
-  //     _totalCost += element.quantity * double.parse(element.cost.toString());
-  //   });
-  //   return _totalCost;
-  // }
 
   factory CartModel.initial() {
     return CartModel(
@@ -199,7 +192,6 @@ class CartModel {
       customerName: snapshot['customerName'],
       customerPhone: snapshot['customerPhone'],
       note: snapshot['note'],
-
       orderedItems: (snapshot['orderedItems'].length > 0 &&
               snapshot['orderedItems'] != null)
           ? List<OrderedProductModel>.generate(
@@ -237,19 +229,22 @@ class CartModel {
     );
   }
 
-  CartModel copyWith(
-      {List<OrderedProductModel>? orderedItems,
-      String? note,
-      String? customerName,
-      String? customerPhone,
-      DateTime? orderCheckoutTime,
-      double? productsPrice,
-      ShippingDetailModel? shippingDetail,
-      AddressModel? addressModel,
-      DateTime? deliveryTime,
-      PaymentMethod? paymentMethod,
-      OrderStatus? orderStatus,
-       String? uid}) {
+  CartModel copyWith({
+    List<OrderedProductModel>? orderedItems,
+    String? note,
+    String? customerName,
+    String? customerPhone,
+    DateTime? orderCheckoutTime,
+    double? productsPrice,
+    ShippingDetailModel? shippingDetail,
+    AddressModel? addressModel,
+    DateTime? deliveryTime,
+    PaymentMethod? paymentMethod,
+    OrderStatus? orderStatus,
+    String? uid,
+    bool isResetShippingDetail = false,
+  }) {
+    print('CartModel: copyWith');
     return CartModel(
       customerPhone: customerPhone ?? this.customerPhone,
       customerName: customerName ?? this.customerName,
@@ -261,21 +256,10 @@ class CartModel {
       addressModel: addressModel ?? this.addressModel,
       orderCheckoutTime: orderCheckoutTime ?? this.orderCheckoutTime,
       shippingDetail:
-      shippingDetail,
+          isResetShippingDetail ? null : shippingDetail ?? this.shippingDetail,
       orderStatus: orderStatus ?? this.orderStatus,
       uid: uid ?? this.uid,
     );
-  }
-
-  CartModel withShippingInformation({
-    required AddressModel addressModel,
-    required DateTime deliveryTime,
-    required PaymentMethod paymentMethod,
-  }) {
-    return copyWith(
-        addressModel: addressModel,
-        deliveryTime: deliveryTime,
-        paymentMethod: paymentMethod);
   }
 
   Map<String, dynamic> toJson() {

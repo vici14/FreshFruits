@@ -176,4 +176,6 @@ abstract class LangBuilder {
   String get PLEASE_LOGIN;
 
   String   TIME_PICKER_INFORMATION(String time);
+
+  String get CHECKOUT_NOTE;
 }

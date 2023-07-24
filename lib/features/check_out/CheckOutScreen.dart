@@ -23,6 +23,7 @@ import 'package:fresh_fruit/widgets/button/PrimaryButton.dart';
 import 'package:fresh_fruit/widgets/button/SecondaryButton.dart';
 import 'package:fresh_fruit/widgets/common/CommonCircularLoading.dart';
 import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
+import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
 
 import '../../theme/AppColor.dart';
@@ -82,44 +83,50 @@ class _CheckOutScreenState
     return Consumer2<UserViewModel, CartViewModel>(
       builder: (context, userVM, cartVM, child) {
         return Stack(children: [
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppDimen.space16, vertical: AppDimen.space16),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 100.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildAddress(
-                    cartVM: cartVM,
-                    localState: localState,
-                    userVM: userVM,
+          GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child : Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimen.space16, vertical: AppDimen.space16),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 100.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAddress(
+                        cartVM: cartVM,
+                        localState: localState,
+                        userVM: userVM,
+                      ),
+                      _buildTimeSelect(
+                          onTap: () {
+                            showTimeBottomPicker(localState, userVM);
+                          },
+                          title: locale.language.CHECK_OUT_SCREEN_SHIPPING_TIME,
+                          value: localState.deliveryTime != null
+                              ? StringUtils()
+                                  .displayDateTime(localState.deliveryTime)
+                              : locale.language.DELIVERY_TIME),
+                      _buildPaymentAndShipping(
+                        localState,
+                        cartVM,
+                        onTap: () {
+                          showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(15),
+                                    topLeft: Radius.circular(15)),
+                              ),
+                              builder: (context) =>
+                                  _buildSelectPaymentMethod(localState));
+                        },
+                      ),
+                      _buildNote(localState)
+                    ],
                   ),
-                  _buildTimeSelect(
-                      onTap: () {
-                        showTimeBottomPicker(localState, userVM);
-                      },
-                      title: locale.language.CHECK_OUT_SCREEN_SHIPPING_TIME,
-                      value: localState.deliveryTime != null
-                          ? StringUtils()
-                              .displayDateTime(localState.deliveryTime)
-                          : locale.language.DELIVERY_TIME),
-                  _buildPaymentAndShipping(
-                    localState,
-                    cartVM,
-                    onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(15),
-                                topLeft: Radius.circular(15)),
-                          ),
-                          builder: (context) =>
-                              _buildSelectPaymentMethod(localState));
-                    },
-                  )
-                ],
+                ),
               ),
             ),
           ),
@@ -137,6 +144,24 @@ class _CheckOutScreenState
             )
         ]);
       },
+    );
+  }
+
+  Widget _buildNote(CheckOutController localState) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppDimen.space16, vertical: AppDimen.space16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: CommonTextField(
+        controller: localState.noteController,
+        placeholder: locale.language.CHECKOUT_NOTE,
+        border: InputBorder.none,
+        enabledBorder: InputBorder.none,
+        maxLines: 1,
+      ),
     );
   }
 
@@ -310,10 +335,10 @@ class _CheckOutScreenState
                 Text(
                   locale.language.TIME_PICKER_INFORMATION(
                       StringUtils().displayDateTime(now)),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: AppColor.textGrey,fontStyle: FontStyle.italic, fontSize: 15),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColor.textGrey,
+                      fontStyle: FontStyle.italic,
+                      fontSize: 15),
                 ),
                 TimePickerSpinner(
                   time: localState.deliveryTime,
@@ -440,7 +465,7 @@ class _CheckOutScreenState
                   .bodySmall
                   ?.copyWith(color: AppColor.textGrey),
             ),
-            const SizedBox(
+           /* const SizedBox(
               height: AppDimen.space8,
             ),
             EasyRichText(
@@ -459,7 +484,7 @@ class _CheckOutScreenState
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
-            ),
+            ),*/
           ],
         ),
       ),
@@ -645,12 +670,11 @@ class _CheckOutScreenState
               onTap: () async {
                 bool isSuccess = await cartViewModel.checkOutCart(
                     uid: userViewModel.currentUser?.uid ?? "",
-                    note: "",
+                    note: localState.noteController.text,
                     customerName: userViewModel.currentUser?.name ?? "",
                     customerPhone: userViewModel.currentUser?.phone ?? "",
                     orderCheckoutTime: DateTime.now(),
-                    shippingDetail: localState.shippingDetail!,
-                    addressModel: userViewModel.currentUser!.currentAddress!,
+                     addressModel: userViewModel.currentUser!.currentAddress!,
                     deliveryTime: localState.deliveryTime!,
                     paymentMethod: localState.paymentMethod);
                 if (isSuccess) {

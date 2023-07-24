@@ -49,6 +49,7 @@ abstract class BaseProviderScreenState<T extends StatefulWidget,
             top: enableSafeAreaTop(),
             bottom: enableSafeAreaBottom(),
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               backgroundColor: setBackgroundColor(),
                 appBar: enableHeader()
                     ? CommonAppbar(

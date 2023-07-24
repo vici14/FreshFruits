@@ -289,4 +289,7 @@ class EnLangBuilder extends LangBuilder {
   String TIME_PICKER_INFORMATION(String time) => "Please choose delivery time"
       " today "
       "after ${time}";
+
+  @override
+  String get CHECKOUT_NOTE => "Note: ";
 }

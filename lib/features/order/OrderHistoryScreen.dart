@@ -14,6 +14,14 @@ class OrderHistoryScreen extends StatefulWidget {
 }
 
 class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
+  UserViewModel get userViewModel =>
+      Provider.of<UserViewModel>(context, listen: false);
+  @override
+  void initState() {
+    userViewModel.refreshCurrentUser();
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(

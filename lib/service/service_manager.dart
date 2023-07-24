@@ -362,7 +362,23 @@ class ServiceManager {
 
       AppLogger.i('createCollectionCart success');
     } catch (e) {
-      AppLogger.e(e.toString(),extraMessage: 'createCollectionCart failed ');
+      AppLogger.e(e.toString(), extraMessage: 'createCollectionCart failed ');
+    }
+  }
+
+  void createCollectionOrderHistory(String uid) async {
+    try {
+      CartModel cartModel = CartModel.initial();
+      var _currentUser = await getCurrentUserDocument(uid);
+      var _cart = await _currentUser?.collection('orderHistory').get();
+      AppLogger.i('cart:${_cart}');
+      if (_cart != null && _cart.size < 1) {
+        await _currentUser?.collection('cart').add(cartModel.toJson());
+      }
+
+      AppLogger.i('createCollectionCart success');
+    } catch (e) {
+      AppLogger.e(e.toString(), extraMessage: 'createCollectionCart failed ');
     }
   }
 
@@ -514,46 +530,58 @@ class ServiceManager {
     required String uid,
   }) async {
     try {
-      await addToHistory(
+      var orderAdded = await addToHistory(
         uid: uid,
         cartModel: cartModel,
-      ).onError((error, stackTrace) => false);
-      cartModel = cartModel.copyWith(
-          uid: uid, shippingDetail: cartModel.shippingDetail);
-      OrderModel orderModel = OrderModel.fromCart(cartModel);
+      );
+      if (orderAdded != null) {
 
-      await addOrderToCollection(orderModel);
-      AppLogger.i('checkOutCart success');
-      var _cart = await getUserCurrentCart(uid);
-      _cart
-          .collection('orderedItems')
-          .get()
-          .then((value) => value.docs.forEach((element) {
-                element.reference.delete();
-              }));
+         orderAdded = orderAdded.copyWith(
+          shippingDetail: cartModel.shippingDetail,
+        );
+        await addOrderToCollection(orderAdded);
+        AppLogger.i('checkOutCart success');
+        var _cart = await getUserCurrentCart(uid);
+        _cart
+            .collection('orderedItems')
+            .get()
+            .then((value) => value.docs.forEach((element) {
+                  element.reference.delete();
+                }));
 
-      return true;
+        return true;
+      }
+      return false;
     } catch (e) {
       AppLogger.e(e.toString());
     }
     return false;
   }
 
-  Future<void> addToHistory({
+  Future<OrderModel?> addToHistory({
     required CartModel cartModel,
     required String uid,
   }) async {
     try {
       if (cartModel.canCheckOut) {
-        var _currentUser = await getCurrentUserDocument(uid);
-        _currentUser?.update({
-          'orderHistory': FieldValue.arrayUnion([cartModel.toJson()])
-        });
+        var user = await usersCollection.where('uid', isEqualTo: uid).get();
+        var order = OrderModel.fromCart(cartModel);
+        var orderHistoryCollection = user.docs.first.reference
+            .collection('orderHistory')
+            .withConverter<OrderModel>(
+                fromFirestore: (snapshot, _) =>
+                    OrderModel.fromQuerySnapshot(snapshot.data()!),
+                toFirestore: (order, _) => order.toJson());
+        var orderAdded = await orderHistoryCollection.add(order);
+        await orderAdded.update({"id": orderAdded.id, "user": uid});
+        return await orderAdded.get().then((value) => value.data());
       } else {
         AppLogger.i('cannot addToHistory');
+        return null;
       }
     } catch (e) {
       AppLogger.e(e.toString());
+      return null;
     }
   }
 

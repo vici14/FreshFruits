@@ -5,8 +5,9 @@ import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
 
 class OrderModel {
+  String? id;
+  String? user;
   List<OrderedProductModel>? orderedItems;
-  String? uid;
   String? note;
   String? customerName;
   String? customerPhone;
@@ -19,6 +20,8 @@ class OrderModel {
   OrderStatus? orderStatus;
 
   OrderModel({
+    this.id,
+    this.user,
     this.orderCheckoutTime,
     this.orderedItems,
     this.customerName,
@@ -30,7 +33,6 @@ class OrderModel {
     this.deliveryTime,
     this.paymentMethod,
     this.orderStatus,
-    this.uid,
   });
 
   double get allProductsPrice {
@@ -70,6 +72,8 @@ class OrderModel {
         customerName: '',
         customerPhone: '',
         note: '',
+        id: '',
+        user: '',
         orderCheckoutTime: null,
         destination: null,
         deliveryTime: null,
@@ -77,8 +81,11 @@ class OrderModel {
         shippingDetail: null,
         orderStatus: OrderStatus.PROCESSING);
   }
+
   factory OrderModel.fromCart(CartModel cartModel) {
     return OrderModel(
+        user: "",
+        id: "",
         productsPrice: cartModel.productsPrice,
         orderedItems: cartModel.orderedItems,
         customerName: cartModel.customerName,
@@ -117,7 +124,8 @@ class OrderModel {
       _orderStatus = snapshot['orderStatus'] as String;
     }
     return OrderModel(
-      uid: snapshot['uid'],
+      id: snapshot['id'],
+      user: snapshot['user'],
       customerName: snapshot['customerName'],
       customerPhone: snapshot['customerPhone'],
       note: snapshot['note'],
@@ -135,8 +143,8 @@ class OrderModel {
                   _orderCheckoutTime.millisecondsSinceEpoch)
               .toDate()
           : DateTime.now(),
-      destination: snapshot['address'] != null
-          ? AddressModel.fromQuerySnapshot(snapshot['address'])
+      destination: snapshot['destination'] != null
+          ? AddressModel.fromQuerySnapshot(snapshot['destination'])
           : null,
       shippingDetail: snapshot['shippingDetail'] != null
           ? ShippingDetailModel.fromQuerySnapshot(snapshot['shippingDetail'])
@@ -158,20 +166,24 @@ class OrderModel {
     );
   }
 
-  OrderModel copyWith(
-      {List<OrderedProductModel>? orderedItems,
-      String? note,
-      String? customerName,
-      String? customerPhone,
-      DateTime? orderCheckoutTime,
-      double? productsPrice,
-      ShippingDetailModel? shippingDetail,
-      AddressModel? addressModel,
-      DateTime? deliveryTime,
-      PaymentMethod? paymentMethod,
-      OrderStatus? orderStatus,
-      String? uid}) {
+  OrderModel copyWith({
+    String? id,
+    String? user,
+    List<OrderedProductModel>? orderedItems,
+    String? note,
+    String? customerName,
+    String? customerPhone,
+    DateTime? orderCheckoutTime,
+    double? productsPrice,
+    ShippingDetailModel? shippingDetail,
+    AddressModel? addressModel,
+    DateTime? deliveryTime,
+    PaymentMethod? paymentMethod,
+    OrderStatus? orderStatus,
+  }) {
     return OrderModel(
+      user: user ?? this.user,
+      id: id ?? this.id,
       customerPhone: customerPhone ?? this.customerPhone,
       customerName: customerName ?? this.customerName,
       orderedItems: orderedItems ?? this.orderedItems,
@@ -183,7 +195,6 @@ class OrderModel {
       orderCheckoutTime: orderCheckoutTime ?? this.orderCheckoutTime,
       shippingDetail: shippingDetail ?? this.shippingDetail,
       orderStatus: orderStatus ?? this.orderStatus,
-      uid: uid ?? this.uid,
     );
   }
 
@@ -200,6 +211,8 @@ class OrderModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
+      'user': user,
       'productsPrice': allProductsPrice,
       'totalPrice': totalPrice,
       'orderedItems': List.generate(
@@ -216,7 +229,6 @@ class OrderModel {
       'destination': destination?.toJson(),
       'paymentMethod': paymentMethod?.toJson(),
       'orderStatus': orderStatus?.toJson(),
-      'uid': uid,
     };
   }
 }

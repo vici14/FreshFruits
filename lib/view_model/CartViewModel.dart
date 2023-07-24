@@ -126,8 +126,7 @@ class CartViewModel extends BaseViewModel {
     required String customerName,
     required String customerPhone,
     required DateTime orderCheckoutTime,
-    required ShippingDetailModel shippingDetail,
-    required AddressModel addressModel,
+     required AddressModel addressModel,
     required DateTime deliveryTime,
     required PaymentMethod paymentMethod,
   }) async {
@@ -142,8 +141,7 @@ class CartViewModel extends BaseViewModel {
         customerName: customerName,
         customerPhone: customerPhone,
         note: note,
-        shippingDetail: shippingDetail,
-        orderStatus: OrderStatus.PROCESSING,
+         orderStatus: OrderStatus.PROCESSING,
       );
       if (currentCart?.canCheckOut == true) {
         bool isSuccess = await _repository.checkOutCart(
@@ -194,8 +192,10 @@ class CartViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+
   void resetDistance() {
-    currentCart = currentCart?.copyWith(shippingDetail: null);
+    currentCart = currentCart?.copyWith(shippingDetail: null,
+        isResetShippingDetail: true);
     notifyListeners();
   }
 }

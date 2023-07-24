@@ -288,4 +288,7 @@ class ViLangBuilder extends LangBuilder {
   @override
   String TIME_PICKER_INFORMATION(String time) => "Vui lòng chọn thời gian "
       "nhận hàng trong ngày và sau ${time}";
+
+  @override
+  String get CHECKOUT_NOTE => "Ghi chú: ";
 }

@@ -28,11 +28,18 @@ class CommonTextField extends StatelessWidget {
   final bool autoFocus;
   final TextInputAction? textInputAction;
   final int? maxLength;
+  final int? maxLines;
+  final InputBorder? border;
+  final InputBorder? enabledBorder;
+  final InputBorder? focusedBorder;
 
   const CommonTextField({
     Key? key,
     required this.controller,
     this.keyboardType = TextInputType.text,
+    this.focusedBorder,
+    this.enabledBorder,
+    this.border,
     this.labelText,
     this.placeholder = '',
     this.password = false,
@@ -56,6 +63,7 @@ class CommonTextField extends StatelessWidget {
     this.autoFocus = false,
     this.textInputAction,
     this.maxLength,
+    this.maxLines,
   }) : super(key: key);
 
   @override
@@ -66,14 +74,14 @@ class CommonTextField extends StatelessWidget {
       children: [
         labelText != null
             ? Text(
-              labelText ?? '',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 14,
-                height: 29 / 14,
-                color: hexToColor('#7C7C7C'),
-              ),
-            )
+                labelText ?? '',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  height: 29 / 14,
+                  color: hexToColor('#7C7C7C'),
+                ),
+              )
             : Container(),
         Container(
           height: 44,
@@ -86,6 +94,7 @@ class CommonTextField extends StatelessWidget {
                 child: Focus(
                   onFocusChange: onFocusChange,
                   child: TextFormField(
+                    maxLines: maxLines,
                     maxLength: maxLength ?? 150,
                     scrollPadding: scrollPadding ?? const EdgeInsets.all(0),
                     autovalidateMode: autoValidate
@@ -106,24 +115,27 @@ class CommonTextField extends StatelessWidget {
                       ),
                       filled: true,
                       suffixIcon: suffixIcon,
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: hexToColor('#E2E2E2'),
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: hexToColor('#E2E2E2'),
-                        ),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1,
-                          color: hexToColor('#E2E2E2'),
-                        ),
-                      ),
+                      border: border ??
+                          UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: hexToColor('#E2E2E2'),
+                            ),
+                          ),
+                      focusedBorder: focusedBorder ??
+                          UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: hexToColor('#E2E2E2'),
+                            ),
+                          ),
+                      enabledBorder: enabledBorder ??
+                          UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: hexToColor('#E2E2E2'),
+                            ),
+                          ),
                     ),
                     cursorWidth: 1.0,
                     controller: controller,

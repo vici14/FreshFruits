@@ -28,6 +28,12 @@ class CheckOutController extends ChangeNotifier {
   TabController? tabController;
   final GlobalKey _momoImageKey = GlobalKey();
   final GlobalKey _bankingImageKey = GlobalKey();
+  final TextEditingController _noteController = TextEditingController();
+
+
+  TextEditingController get noteController => _noteController;
+
+
 
   GlobalKey get bankingImageKey => _bankingImageKey;
 

@@ -26,7 +26,7 @@ extension ShippingDiscountExt on ShippingDiscount {
 }
 
 class ShippingDetailModel {
-  final ShippingDiscount? shippingDiscount;
+    ShippingDiscount? shippingDiscount;
   double price = 5000;
   Distance? distance;
   Distance? duration;
@@ -47,7 +47,7 @@ class ShippingDetailModel {
     return ShippingDetailModel(
       distance: distance ?? this.distance,
       duration: duration ?? this.duration,
-      shippingDiscount: shippingDiscount,
+      shippingDiscount: shippingDiscount ?? this.shippingDiscount,
     );
   }
 
@@ -58,6 +58,8 @@ class ShippingDetailModel {
   double get totalShippingPrice {
     if (distance != null) {
       double rawPrice = (price * getDistanceInKm());
+      print(' shippingDiscount${shippingDiscount.toString()} --- '
+          'price:$rawPrice');
       return (shippingDiscount != null)
           ? shippingDiscount!.getNumber() * rawPrice
           : rawPrice;
