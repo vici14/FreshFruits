@@ -11,7 +11,7 @@ class EnLangBuilder extends LangBuilder {
   String get HOME_SCREEN_NEW_PRODUCTS => "Newest";
 
   @override
-  String get AUTHEN_TITLE => '530PM FRUITS';
+  String get AUTHEN_TITLE => 'Fruits Chill';
 
   @override
   String get LOGIN => 'Login';
@@ -107,7 +107,7 @@ class EnLangBuilder extends LangBuilder {
   String get BUTTON_CONFIRM => "Confirm";
 
   @override
-  String get CHECK_OUT_SCREEN_SHIPPING_INFORMATION => '530PM Fruits apply '
+  String get CHECK_OUT_SCREEN_SHIPPING_INFORMATION => 'Fruits Chill apply '
       'promotion that customer will be free ship in District 5,10 and half '
       'off shipping fee for other district (not included Hoc Mon, Cu Chi, Nha'
       ' Be) when make order After 5:30 PM';

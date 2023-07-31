@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/HomeNavigationScreen.dart';
+import 'package:fresh_fruit/features/home/HomeViewModel.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
 import 'package:fresh_fruit/route/AppRoute.dart';
 import 'package:fresh_fruit/theme/AppTheme.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import 'view_model/UserViewModel.dart';
 import 'view_model/product_view_model.dart';
+
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class FreshFruitApp extends StatefulWidget {
@@ -29,7 +31,7 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
   void initState() {
     appViewModel = Provider.of<AppViewModel>(context, listen: false);
     AppLogger.i(appViewModel.appFlavor);
-     observer = FirebaseAnalyticsObserver(analytics: analytics);
+    observer = FirebaseAnalyticsObserver(analytics: analytics);
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       print("message recieved");
       print(event.notification!.body);
@@ -45,17 +47,23 @@ class _FreshFruitAppState extends State<FreshFruitApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ProductViewModel>(
-            create: (BuildContext context) => ProductViewModel()),
+          create: (BuildContext context) => ProductViewModel(),
+        ),
+        ChangeNotifierProvider<HomeViewModel>(
+          create: (BuildContext context) => HomeViewModel()
+            ..getBanners()
+            ..getPaymentMethods(),
+        ),
         ChangeNotifierProvider<UserViewModel>(
-          create: (BuildContext context) =>
-          UserViewModel()..checkIsLoggedIn(),
+          create: (BuildContext context) => UserViewModel()..checkIsLoggedIn(),
         ),
         ChangeNotifierProvider<CartViewModel>(
-            create: (BuildContext context) => CartViewModel()),
+          create: (BuildContext context) => CartViewModel(),
+        ),
       ],
       child: MaterialApp(
         navigatorObservers: [observer],
-        navigatorKey:navigatorKey ,
+        navigatorKey: navigatorKey,
         onGenerateRoute: (settings) => AppRoute.onGenerateRoute(settings),
         theme: AppTheme().lightTheme(),
         darkTheme: AppTheme().lightTheme(),

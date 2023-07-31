@@ -11,7 +11,7 @@ class ViLangBuilder extends LangBuilder {
   String get HOME_SCREEN_NEW_PRODUCTS => "Mới nhất";
 
   @override
-  String get AUTHEN_TITLE => '530PM FRUITS';
+  String get AUTHEN_TITLE => 'Fruits Chill';
 
   @override
   String get LOGIN => 'Đăng nhập';
@@ -108,7 +108,7 @@ class ViLangBuilder extends LangBuilder {
   String get BUTTON_CONFIRM => "Xác nhận";
 
   @override
-  String get CHECK_OUT_SCREEN_SHIPPING_INFORMATION => "530PM Fruits áp dụng "
+  String get CHECK_OUT_SCREEN_SHIPPING_INFORMATION => "Fruits Chill áp dụng "
       "chương trình khuyến mãi free ship quận 5,10 và giảm "
       "một nửa "
       "cho các "

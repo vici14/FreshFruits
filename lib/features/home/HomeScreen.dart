@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fresh_fruit/const.dart';
+import 'package:fresh_fruit/features/home/HomeViewModel.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/mock_data.dart';
 import 'package:fresh_fruit/theme/AppColor.dart';
@@ -181,13 +182,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: GestureDetector(
               onTap: () => searchNode?.unfocus(),
               child: Consumer<UserViewModel>(
-                builder: (context,userVM,child){
+                builder: (context, userVM, child) {
                   return CustomScrollView(
                     controller: _customScrollController,
                     physics: const BouncingScrollPhysics(),
                     slivers: [
                       SliverAppBar(
-                        backgroundColor: Theme.of(context).colorScheme.background,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.background,
                         centerTitle: false,
                         title: EasyRichText(
                           locale.language
@@ -252,8 +254,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SliverToBoxAdapter(
                         child: SizedBox(
-                          // height: 10,
-                        ),
+                            // height: 10,
+                            ),
                       ),
                       SliverToBoxAdapter(child: _buildHeaderBanner(context)),
                       const SliverToBoxAdapter(
@@ -292,22 +294,25 @@ class _HomeScreenState extends State<HomeScreen> {
                               horizontal: horizontalPadding),
                           sliver: SliverGrid(
                             gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
+                                const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 285.0,
                               mainAxisSpacing: 10.0,
                               crossAxisSpacing: 10.0,
                               childAspectRatio: 0.6,
                             ),
                             delegate: SliverChildBuilderDelegate(
-                                    (BuildContext context, int index) {
-                                  ProductModel product;
+                                (BuildContext context, int index) {
+                              ProductModel product;
 
-                                  product = productViewModel.getHottestProduct[index];
-                                  return ProductCardItem(productModel: product);
-                                }, childCount:  productViewModel.getHottestProduct.length),
+                              product =
+                                  productViewModel.getHottestProduct[index];
+                              return ProductCardItem(productModel: product);
+                            },
+                                childCount:
+                                    productViewModel.getHottestProduct.length),
                           )),
                     ],
-                  ) ;
+                  );
                 },
               ),
             ),
@@ -318,45 +323,91 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHeaderBanner(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: ClipRRect(
-            clipBehavior: Clip.antiAlias,
-            borderRadius: BorderRadius.circular(12),
-            child: CarouselSlider(
-              options: CarouselOptions(
-                viewportFraction: 16 / 9,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    carouselIndex = index;
-                  });
-                },
+    return Consumer<HomeViewModel>(
+      builder: (context, homeVM, child) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: ClipRRect(
+                  clipBehavior: Clip.antiAlias,
+                  borderRadius: BorderRadius.circular(12),
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      viewportFraction: 16 / 9,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          carouselIndex = index;
+                        });
+                      },
+                    ),
+                    items: homeVM.banners.map((banner) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return ClipRRect(
+                            clipBehavior: Clip.antiAlias,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: horizontalPadding),
+                              //decoration: const BoxDecoration(color: Colors.amber),
+                              child: ClipRRect(
+                                clipBehavior: Clip.antiAlias,
+                                borderRadius: BorderRadius.circular(8),
+                                child: CachedNetworkImage(
+                                  width: MediaQuery.of(context).size.width,
+                                  fit: BoxFit.cover,
+                                  imageUrl: banner.imageUrl?? "",
+                                  errorWidget: (context, url, error) =>
+                                      const Center(child: Text("ERROR")),
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) =>
+                                          Shimmer.fromColors(
+                                    baseColor: Colors.grey[200]!,
+                                    highlightColor: Colors.white10,
+                                    child: Container(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
-              items: listBanners.map((banner) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return ClipRRect(
-                      clipBehavior: Clip.antiAlias,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
-                          //decoration: const BoxDecoration(color: Colors.amber),
-                          child: ClipRRect(
-                              clipBehavior: Clip.antiAlias,
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.asset(banner))),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
+              Align(
+                alignment: Alignment(0, 0.4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [...homeVM.banners].map(
+                        (media) {
+                      var index =
+                      homeVM.banners.indexOf(media);
+                      return Container(
+                        width: 8.0,
+                        height: 8.0,
+                        margin:
+                        const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: carouselIndex == index
+                                ? const Color.fromRGBO(0, 0, 0, 0.9)
+                                : const Color.fromRGBO(0, 0, 0, 0.4)),
+                      );
+                    },
+                  ).toList(),
+                ),
+              ),
+            ],
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -444,8 +495,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             horizontal: horizontalPadding),
                         scrollDirection: Axis.horizontal,
                         children: [
-                          ...List.generate(viewModel.getNewestProduct.length ?? 0,
-                              (index) {
+                          ...List.generate(
+                              viewModel.getNewestProduct.length ?? 0, (index) {
                             var _newProduct = viewModel.getNewestProduct[index];
                             return Container(
                                 margin: const EdgeInsets.only(right: 16),
@@ -486,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.bold),
           ),
-        /*  TextButton(
+          /*  TextButton(
               onPressed: onTapViewMore,
               child: Text(
                 locale.language.HOME_SCREEN_SEE_ALL,

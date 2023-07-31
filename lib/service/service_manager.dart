@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
+import 'package:fresh_fruit/model/BannerModel.dart';
 import 'package:fresh_fruit/model/OrderModel.dart';
+import 'package:fresh_fruit/model/PaymentMethodModel.dart';
 import 'package:fresh_fruit/model/address/AddressModel.dart';
 import 'package:fresh_fruit/model/cart_model.dart';
 import 'package:fresh_fruit/model/ordered_product_model.dart';
@@ -21,12 +23,15 @@ class ServiceManager {
 
   //Firebase
   static final fireStore = FirebaseFirestore.instance;
-  final CollectionReference productsCollection =
+  final CollectionReference productCollection =
       fireStore.collection('products');
-  final CollectionReference ordersCollection = fireStore.collection('orders');
-  static final CollectionReference usersCollection =
+  final CollectionReference orderCollection = fireStore.collection('orders');
+  final CollectionReference bannerCollection = fireStore.collection('banners');
+  final CollectionReference paymentMethodCollection =
+      fireStore.collection('paymentMethods');
+  static final CollectionReference userCollection =
       fireStore.collection('users');
-  final userRef = usersCollection.withConverter<UserModel>(
+  final userRef = userCollection.withConverter<UserModel>(
     fromFirestore: (snapshot, _) =>
         UserModel.fromQuerySnapshot(snapshot.data()!),
     toFirestore: (user, _) => user.toJson(),
@@ -60,9 +65,33 @@ class ServiceManager {
 
 //==================GOOGLE MAP==================//
 
+// ==================RESOURCE==================//
+
+  Future<List<BannerModel>> getBanners() async {
+    var listBanner = await bannerCollection
+        .withConverter<BannerModel>(
+            fromFirestore: (snapshot, _) =>
+                BannerModel.fromQuerySnapshot(snapshot.data()!),
+            toFirestore: (banner, _) => banner.toJson())
+        .get();
+    return listBanner.docs.map((e) => e.data()).toList();
+  }
+
+  Future<List<PaymentMethodModel>> getPaymentMethods() async {
+    var listPaymentMethods = await paymentMethodCollection
+        .withConverter<PaymentMethodModel>(
+            fromFirestore: (snapshot, _) =>
+                PaymentMethodModel.fromQuerySnapshot(snapshot.data()!),
+            toFirestore: (banner, _) => banner.toJson())
+        .get();
+    return listPaymentMethods.docs.map((e) => e.data()).toList();
+  }
+
+  // ==================RESOURCE==================//
+
   Future<DocumentReference<CartModel>> getUserCurrentCart(String uid) async {
     try {
-      var _user = await usersCollection.where('uid', isEqualTo: uid).get();
+      var _user = await userCollection.where('uid', isEqualTo: uid).get();
       var _cart = await _user.docs.first.reference
           .collection('cart')
           .withConverter<CartModel>(
@@ -103,7 +132,7 @@ class ServiceManager {
   Future<DocumentReference<UserModel>?> getCurrentUserDocument(
       String uid) async {
     try {
-      var _user = await usersCollection
+      var _user = await userCollection
           .where('uid', isEqualTo: uid)
           .withConverter(
             fromFirestore: (snapshot, _) =>
@@ -123,7 +152,7 @@ class ServiceManager {
   Future<DocumentReference<ProductModel>> getCurrentProductDocument(
       String id) async {
     try {
-      var _product = await productsCollection
+      var _product = await productCollection
           .where('id', isEqualTo: id)
           .withConverter(
             fromFirestore: (snapshot, _) =>
@@ -143,7 +172,7 @@ class ServiceManager {
 //====================PRODUCTS=======================
   Future<List<ProductModel>> getProducts() async {
     List<ProductModel> list = [];
-    var _products = await productsCollection.get();
+    var _products = await productCollection.get();
     try {
       _products.docs.forEach((element) {
         var product = ProductModel.fromQuerySnapshot(
@@ -160,7 +189,7 @@ class ServiceManager {
 
   Future<List<ProductModel>> getProductsByCategory(String category) async {
     List<ProductModel> list = [];
-    var _products = await productsCollection
+    var _products = await productCollection
         .where('category', isEqualTo: category)
         .withConverter<ProductModel>(
             fromFirestore: (snapshot, _) =>
@@ -535,8 +564,7 @@ class ServiceManager {
         cartModel: cartModel,
       );
       if (orderAdded != null) {
-
-         orderAdded = orderAdded.copyWith(
+        orderAdded = orderAdded.copyWith(
           shippingDetail: cartModel.shippingDetail,
         );
         await addOrderToCollection(orderAdded);
@@ -557,6 +585,7 @@ class ServiceManager {
     }
     return false;
   }
+
   //////// ORDER ////////
   Future<OrderModel?> addToHistory({
     required CartModel cartModel,
@@ -564,7 +593,7 @@ class ServiceManager {
   }) async {
     try {
       if (cartModel.canCheckOut) {
-        var user = await usersCollection.where('uid', isEqualTo: uid).get();
+        var user = await userCollection.where('uid', isEqualTo: uid).get();
         var order = OrderModel.fromCart(cartModel);
         var orderHistoryCollection = user.docs.first.reference
             .collection('orderHistory')
@@ -585,16 +614,15 @@ class ServiceManager {
     }
   }
 
-
   Future<List<OrderModel>> getListOrder(String uid) async {
     try {
-      var _user = await usersCollection.where('uid', isEqualTo: uid).get();
+      var _user = await userCollection.where('uid', isEqualTo: uid).get();
       var _order = await _user.docs.first.reference
           .collection('orderHistory')
           .withConverter<OrderModel>(
-          fromFirestore: (snapshot, _) =>
-              OrderModel.fromQuerySnapshot(snapshot.data()!),
-          toFirestore: (cart, _) => cart.toJson())
+              fromFirestore: (snapshot, _) =>
+                  OrderModel.fromQuerySnapshot(snapshot.data()!),
+              toFirestore: (cart, _) => cart.toJson())
           .get();
       AppLogger.i('getUserCurrentCart ${uid} success');
 
@@ -607,7 +635,7 @@ class ServiceManager {
 
   Future<bool> addOrderToCollection(OrderModel order) async {
     try {
-      await ordersCollection.add(order.toJson());
+      await orderCollection.add(order.toJson());
       return true;
     } catch (e) {
       AppLogger.e(e.toString(), extraMessage: "addOrderToCollection");

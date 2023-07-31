@@ -15,6 +15,7 @@ class AppImageAsset {
   static const bottomCartIcon = '${_bottomBarFolder}icon_cart.svg';
   static const bottomUserIcon = '${_bottomBarFolder}icon_user.svg';
 
+  static const appLogoIcon = '${_assetFolder}app_logo.svg';
   static const iconNotification = '${_assetFolder}icon_notification.svg';
   static const iconBack = '${_assetFolder}icon_back.svg';
   static const iconFilter = '${_assetFolder}icon_filter.svg';

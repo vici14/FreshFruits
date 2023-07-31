@@ -144,9 +144,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   ),
 
                   Text(
-                    "${locale.language.ORDER_PAYMENT_METHOD}: ${DateTimeUtils.toDisplayString(
-                      order.orderCheckoutTime,
-                    )}",
+                    "${locale.language.ORDER_PAYMENT_METHOD}: ${order
+                        .paymentMethod!.toContent()}",
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 10,
                         color: AppColor.textGrey,

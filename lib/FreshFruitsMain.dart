@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fresh_fruit/AppViewModel.dart';
 import 'package:fresh_fruit/FreshFruitsApp.dart';
 import 'package:fresh_fruit/db/DatabaseManager.dart';
@@ -93,7 +94,8 @@ class FreshFruitsMain {
     AppViewModel appViewModel = AppViewModel();
     await Firebase.initializeApp();
     await PermissionUtil().requestNotificationPermission();
-
+    await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
     await StorageService.shared.init();

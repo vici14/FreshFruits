@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_rich_text/easy_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
@@ -5,6 +6,7 @@ import 'package:fresh_fruit/FreshFruitsApp.dart';
 import 'package:fresh_fruit/base/BaseProviderScreenState.dart';
 import 'package:fresh_fruit/features/check_out/CheckOutController.dart';
 import 'package:fresh_fruit/features/check_out/address/DeliveryAddressScreen.dart';
+import 'package:fresh_fruit/features/home/HomeViewModel.dart';
 import 'package:fresh_fruit/language/LanguagesManager.dart';
 import 'package:fresh_fruit/logger/AppLogger.dart';
 import 'package:fresh_fruit/model/ShippingDetailModel.dart';
@@ -25,6 +27,7 @@ import 'package:fresh_fruit/widgets/common/CommonCircularLoading.dart';
 import 'package:fresh_fruit/widgets/common/CommonIconButton.dart';
 import 'package:fresh_fruit/widgets/textfield/common_textfield.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../theme/AppColor.dart';
 
@@ -166,70 +169,78 @@ class _CheckOutScreenState
   }
 
   Widget _buildSelectPaymentMethod(CheckOutController localState) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        SizedBox(
-          height: 42,
-          child: TabBar(
-            controller: localState.tabController,
-            indicatorSize: TabBarIndicatorSize.tab,
-            isScrollable: false,
-            indicator: UnderlineTabIndicator(
-              // borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(
-                width: 2.0,
-                color: hexToColor('#A6CE3B'),
+    return Consumer<HomeViewModel>(
+      builder: (context,homeVM,child){
+        return Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+              height: 42,
+              child: TabBar(
+                controller: localState.tabController,
+                indicatorSize: TabBarIndicatorSize.tab,
+                isScrollable: false,
+                indicator: UnderlineTabIndicator(
+                  // borderRadius: BorderRadius.circular(5.0),
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: hexToColor('#A6CE3B'),
+                  ),
+                ),
+                indicatorPadding: const EdgeInsets.symmetric(horizontal: 45),
+                labelColor: Colors.black,
+                // dividerColor: Colors.transparent,
+                tabs: [
+                  Tab(text: PaymentMethod.COD.toJson()),
+                  Tab(text: PaymentMethod.MOMO.toContent()),
+                  Tab(text: PaymentMethod.BANKING.toContent()),
+                ],
               ),
             ),
-            indicatorPadding: const EdgeInsets.symmetric(horizontal: 45),
-            labelColor: Colors.black,
-            // dividerColor: Colors.transparent,
-            tabs: [
-              Tab(text: PaymentMethod.COD.toJson()),
-              Tab(text: PaymentMethod.MOMO.toContent()),
-              Tab(text: PaymentMethod.BANKING.toContent()),
-            ],
-          ),
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: localState.tabController,
-            children: [
-              Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.directions_bike_rounded,
-                      size: 50,
-                      color: AppColor.greenMain,
+            Expanded(
+              child: TabBarView(
+                controller: localState.tabController,
+                children: [
+                  Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.directions_bike_rounded,
+                          size: 50,
+                          color: AppColor.greenMain,
+                        ),
+                        Text(
+                          PaymentMethod.COD.toContent(),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        )
+                      ],
                     ),
-                    Text(
-                      PaymentMethod.COD.toContent(),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )
-                  ],
-                ),
+                  ),
+                  _buildImageQr(
+                      globalKey: localState.momoImageKey,
+                      imageUrl: homeVM.paymentMethods.firstWhere((element) => 
+                      element.paymentMethod == PaymentMethod.MOMO).imageUrl 
+                          ?? "",
+                      localState: localState),
+                  _buildImageQr(
+                      globalKey: localState.bankingImageKey,
+                      imageUrl: homeVM.paymentMethods.firstWhere((element) =>
+                      element.paymentMethod == PaymentMethod.BANKING).imageUrl
+                          ?? "",
+                      localState: localState),
+                ],
               ),
-              _buildImageQr(
-                  globalKey: localState.momoImageKey,
-                  image: AppImageAsset.imgMomo,
-                  localState: localState),
-              _buildImageQr(
-                  globalKey: localState.bankingImageKey,
-                  image: AppImageAsset.imgTechcombank,
-                  localState: localState),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _buildImageQr(
-      {required String image,
+      {required String imageUrl,
       required GlobalKey globalKey,
       required CheckOutController localState}) {
     return RepaintBoundary(
@@ -239,10 +250,23 @@ class _CheckOutScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(image,
-                height: MediaQuery.of(context).size.height * 0.35),
+            CachedNetworkImage(
+              width: 250,
+              height: 250,
+              fit: BoxFit.cover,
+              imageUrl: imageUrl  ,
+              errorWidget: (context, url, error) =>
+              const Center(child: Text("ERROR")),
+              progressIndicatorBuilder:
+                  (context, url, progress) =>
+                  Shimmer.fromColors(
+                    baseColor: Colors.grey[200]!,
+                    highlightColor: Colors.white10,
+                    child: Container(),
+                  ),
+            ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppDimen.space20),
